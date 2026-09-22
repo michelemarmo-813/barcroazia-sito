@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutte le fanzine — Bar Croazia</title>
+<style>
+<style>
+  @font-face{
+    font-family:'Anton';
+    src:url('assets/fonts/anton-400.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Silkscreen';
+    src:url('assets/fonts/silkscreen-400.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Silkscreen';
+    src:url('assets/fonts/silkscreen-700.woff2') format('woff2');
+    font-weight:700; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Fake Receipt';
+    src:url('assets/fonts/fakereceipt-400.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Pixeled English';
+    src:url('assets/fonts/pixeledenglish.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+  /* Experiment: swap in for the display font. Pixelcastle only covers
+     A-Z/a-z + space/!/comma (no digits, accents or periods), so it's
+     listed first and falls back to Pixeled English for anything it's
+     missing (dates, accented Italian words, punctuation). */
+  @font-face{
+    font-family:'Pixelcastle';
+    src:url('assets/fonts/pixelcastle.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+  :root{
+    --violet: #ffffff;
+  --violet-dark: rgba(20, 20, 20, 0.07);
+    --ink: #17151c;
+    /* deep receipt-red used for section titles and the vertical side
+       strips, echoing the dark red ink of a thermal receipt */
+    --receipt-red: #a83a3a;
+    /* same orange/blue used in the logo mark, reused sparingly as the
+       site's one touch of color */
+    --accent-orange: #ee3f10;
+    --accent-blue: #0a4aab;
+    --accent-yellow: #f5e34d;
+    --accent-green: #a3e6ac;
+    --accent-skyblue: #9ad9f0;
+    --line: 3px double var(--ink);
+    --line-thin: 1px solid var(--ink);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; overflow-anchor:none; }
+
+  body{
+    margin:0;
+    background-color:var(--violet);
+    background-image:
+      repeating-radial-gradient(circle at 0 0,
+        rgba(23,21,28,0.07) 0 1.2px, transparent 1.2px 7px),
+      url('assets/textures/paper-final.jpg');
+    background-repeat:repeat, repeat;
+    background-size:auto, 1000px 1000px;
+    background-blend-mode:normal, multiply;
+    color:var(--ink);
+    font-family:'Fake Receipt', monospace;
+  }
+
+  /* Paper grain lives directly on the scrolling content (.page) and on the
+     body underneath it (for the outer margins), so it scrolls at exactly
+     the same speed as the text — no fixed/parallax layer any more. Being
+     a single continuous tiled image, different sections naturally reveal
+     a different patch of it as the page scrolls, like turning through one
+     long sheet of newsprint rather than swapping backgrounds per section. */
+
+  h1,h2,.display{
+    font-family:'Fake Receipt', monospace;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+    font-weight:400;
+    margin:0;
+  }
+
+  .mono{
+    font-family:'Fake Receipt', monospace;
+  }
+
+  a{ color:inherit; }
+
+  /* ---------- PAGE FRAME ---------- */
+
+  .page{
+    max-width:1180px;
+    margin:0 auto;
+    background-color:var(--violet);
+    background-image:url('assets/textures/paper-final.jpg');
+    background-repeat:repeat;
+    background-size:1000px 1000px;
+    background-blend-mode:multiply;
+    border-left:var(--line);
+    border-right:var(--line);
+    border-top:var(--line);
+    position:relative;
+    z-index:1;
+  }
+
+  .side-tape{
+    display:none;
+    position:fixed;
+    top:0;
+    bottom:0;
+    width:2.4rem;
+    align-items:flex-start;
+    justify-content:center;
+    overflow:hidden;
+    z-index:1;
+    pointer-events:none;
+  }
+
+  .side-tape span{
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    font-size:0.78rem;
+    letter-spacing:0.35em;
+    text-transform:uppercase;
+    white-space:nowrap;
+    color:var(--receipt-red);
+    opacity:0.78;
+    writing-mode:vertical-rl;
+    display:inline-block;
+    will-change:transform;
+  }
+
+  .side-tape.left{ left:0.5rem; }
+  .side-tape.right{ right:0.5rem; }
+
+  /* Static now — no scroll animation, just fixed, top-aligned text. */
+  .side-tape.left span,
+  .side-tape.right span{
+    animation:none;
+    transform:translateY(0);
+  }
+
+  @media(min-width:1340px){
+    .side-tape{ display:flex; }
+  }
+
+  /* ---------- MASTHEAD ---------- */
+
+  /* Plain info line above the button bar: today's date (left) and the
+     city (right), just text — not clickable, no icons. */
+  .masthead-topline{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    max-width:1180px;
+    margin:0 auto;
+    padding:0.7rem 3px;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.85rem;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink);
+    position:relative;
+    z-index:1;
+  }
+
+  /* Auto-scrolling strip of boxed cells below the info line — same idea
+     as the nav buttons further down: each little extra gets its own
+     compartment, divided by a vertical rule. The strip scrolls itself
+     continuously and pauses the moment the mouse is over it, so it's
+     always possible to click something. */
+  .masthead-marquee{
+    overflow:hidden;
+    border-top:var(--line-thin);
+    border-bottom:var(--line-thin);
+  }
+
+  .masthead-line{
+    display:flex;
+    width:max-content;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    animation:masthead-scroll 50s linear infinite;
+  }
+
+  .masthead-marquee:hover .masthead-line{
+    animation-play-state:paused;
+  }
+
+  @keyframes masthead-scroll{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
+
+  @media(prefers-reduced-motion: reduce){
+    .masthead-line{ animation:none; }
+  }
+
+  .masthead-line .m-cell{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:0.4rem;
+    padding:0.55rem 0.9rem;
+    border-right:var(--line-thin);
+    white-space:nowrap;
+    text-decoration:none;
+    color:inherit;
+    background-color:var(--violet-dark);
+  }
+
+  .masthead-line .m-cell.m-quip{
+    font-weight:700;
+    opacity:1;
+  }
+
+  .masthead-line .m-cell{
+    cursor:pointer;
+    transition:background-color .15s ease, color .15s ease;
+  }
+
+  .masthead-line .m-cell:hover{
+    background-color:var(--receipt-red);
+    color:var(--violet);
+  }
+
+  .m-cell .m-emoji{
+    font-size:1.3rem;
+    line-height:1;
+  }
+
+  .logo-wrap{
+    padding:1.7rem 1.5rem 1.3rem;
+    display:flex;
+    justify-content:center;
+    border-bottom:var(--line-thin);
+  }
+
+  .logo-wrap svg{
+    width:100%;
+    max-width:520px;
+    height:auto;
+    display:block;
+  }
+
+  /* ---------- NAV (incasellata, morphs into navbar on scroll) ---------- */
+
+  nav.mainnav{
+    position:sticky;
+    top:0;
+    z-index:100;
+    display:flex;
+    flex-wrap:wrap;
+    background-color:var(--violet);
+    background-image:url('assets/textures/paper-final.jpg');
+    background-repeat:repeat;
+    background-size:1000px 1000px;
+    background-blend-mode:multiply;
+    border-bottom:var(--line);
+    transition:background-color .3s ease, box-shadow .3s ease;
+  }
+
+  /* Classic newspaper masthead rule: a thick line right under the buttons,
+     then a thin second line a few pixels below it. */
+  nav.mainnav::after{
+    content:'';
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:-4px;
+    border-bottom:1px solid var(--ink);
+  }
+
+  nav.mainnav a{
+    flex:1 1 16.6%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-family:'Fake Receipt', monospace;
+    text-transform:lowercase;
+    text-decoration:none;
+    letter-spacing:0;
+    font-size:clamp(0.78rem, 1.6vw, 1.15rem);
+    white-space:nowrap;
+    padding:0.6em 0.3em;
+    border-right:var(--line-thin);
+    background:transparent;
+    position:relative;
+    z-index:1;
+    transition:font-size .3s ease, padding .3s ease, background-color .12s ease,
+               color .12s ease, transform .12s ease;
+  }
+
+  /* Nav labels and section titles stay fully lowercase now — no
+     first-letter capital. */
+  nav.mainnav a span{ display:inline-block; }
+
+  nav.mainnav a:last-child{ border-right:none; }
+
+  /* Darker violet backing for every nav button — translucent, so the
+     paper grain underneath still shows through instead of being covered. */
+  nav.mainnav a{
+    background-color:var(--violet-dark);
+  }
+
+  nav.mainnav a:nth-child(odd):hover{
+    transform:scale(1.07) rotate(-2.4deg);
+  }
+
+  nav.mainnav a:nth-child(even):hover{
+    transform:scale(1.07) rotate(2.4deg);
+  }
+
+  nav.mainnav a:hover{
+    background:var(--receipt-red);
+    color:var(--violet);
+    z-index:2;
+    box-shadow:0 6px 16px rgba(23,21,28,0.4);
+  }
+
+  nav.mainnav a:active{
+    transform:scale(1.02) rotate(0deg) !important;
+  }
+
+  body.scrolled nav.mainnav{
+    box-shadow:0 3px 10px rgba(23,21,28,0.18);
+  }
+
+  body.scrolled nav.mainnav a{
+    font-size:0.82rem;
+    padding:0.5em 0.3em;
+  }
+
+  /* ---------- HERO DIVIDER (pull-quote slot separating home from content) ---------- */
+
+  .hero-divider{
+    border-bottom:3px double var(--ink);
+    padding:2.6rem 1.5rem 2.3rem;
+    position:relative;
+    display:flex;
+    justify-content:center;
+  }
+
+  .pull-quote{
+    margin:0;
+    max-width:760px;
+    text-align:center;
+  }
+
+  /* Label above the quote, in the site's pixel display font — same
+     lowercase-with-capital convention as nav labels and section titles. */
+  .quote-label{
+    display:block;
+    font-family:'Fake Receipt', monospace;
+    font-weight:400;
+    text-transform:lowercase;
+    font-size:clamp(0.95rem, 2vw, 1.15rem);
+    letter-spacing:0.05em;
+    opacity:0.6;
+    margin-bottom:1.1rem;
+  }
+
+  .quote-label::first-letter{ text-transform:uppercase; }
+
+  /* Same display font as the nav labels and section titles, at quote scale:
+     lowercase with only the first letter capitalized, matching that
+     convention site-wide. Plain, non-bold weight (the font only ships one
+     weight, 400 — the blocky look is the typeface itself, not bold text). */
+  /* Unlike the nav/section-title lowercase-with-capital convention, this
+     text keeps its natural capitalization as written (a ::first-letter
+     override doesn't reliably reach past the ::before-generated quote
+     mark that now sits right in front of it) — so future quotes just
+     need to be typed normally capitalized. */
+  .pull-quote p{
+    margin:0;
+    font-family:'Pixelcastle', 'Pixeled English', 'Silkscreen', 'Anton', sans-serif;
+    font-weight:400;
+    font-size:clamp(2rem, 5.6vw, 3.6rem);
+    line-height:1.08;
+    letter-spacing:0.01em;
+  }
+
+  /* Quote marks are generated content glued to the very first/last
+     character of the quote text itself (not separate elements laid out
+     around it), so they always sit exactly where the text starts and
+     ends — automatically, for any future quote, however long or short,
+     however it wraps. Classic serif marks (not the pixel font — it has
+     no curly glyphs), sized relative to the quote's own font-size so
+     they scale with it. */
+  .pull-quote p::before,
+  .pull-quote p::after{
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    font-style:italic;
+    font-size:0.62em;
+    opacity:0.5;
+  }
+
+  .pull-quote p::before{ content:'\201C'; margin-right:0.12em; }
+  .pull-quote p::after{ content:'\201D'; margin-left:0.08em; }
+
+  .pull-quote .quote-note{
+    display:block;
+    margin-top:0.9rem;
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    font-size:0.66rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    opacity:0.85;
+  }
+
+  /* Cut-out photo (transparent background) of whoever is "speaking" the
+     quote, sitting to its right — tilted slightly and drop-shadowed like a
+     photo cutout taped onto the page. Positioned absolutely so the quote
+     itself always stays truly centered on the page, regardless of the
+     photo's presence. */
+  .quote-photo{
+    position:absolute;
+    right:2.2rem;
+    bottom:0.6rem;
+    width:172px;
+    transform:rotate(-4deg);
+  }
+
+  .quote-photo img{
+    display:block;
+    width:100%;
+    height:auto;
+    filter:drop-shadow(3px 5px 0 rgba(23,21,28,0.28));
+  }
+
+  @media(max-width:820px){
+    .hero-divider{
+      flex-direction:column;
+      align-items:center;
+      gap:1.6rem;
+      padding:2.4rem 1.5rem 2.1rem;
+    }
+    .quote-photo{
+      position:static;
+    }
+  }
+
+  /* ---------- SECTIONS ---------- */
+
+  main{ display:block; }
+
+  .zine-section{
+    border-bottom:var(--line);
+    scroll-margin-top:var(--nav-compact-h, 64px);
+    opacity:0;
+    transform:translateY(26px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+
+  .zine-section.revealed{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  @media(prefers-reduced-motion: reduce){
+    .zine-section{
+      opacity:1;
+      transform:none;
+      transition:none;
+    }
+  }
+
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:1rem;
+    padding:1rem 1.2rem 0.7rem;
+    border-bottom:var(--line-thin);
+    background-color:var(--violet-dark);
+  }
+
+  .zine-section.alt .section-head{ flex-direction:row-reverse; }
+
+  .section-head h2{
+    font-family:'Pixelcastle', 'Pixeled English', 'Silkscreen', 'Anton', sans-serif;
+    font-weight:400;
+    text-transform:lowercase;
+    font-size:clamp(2.1rem, 6.6vw, 3.8rem);
+    line-height:1;
+    letter-spacing:0.01em;
+    color:var(--receipt-red);
+  }
+
+  .section-head .tag{
+    font-size:0.75rem;
+    letter-spacing:0.1em;
+    opacity:0.65;
+    white-space:nowrap;
+    padding-bottom:0.3em;
+  }
+
+  .section-body{
+    display:flex;
+  }
+
+  .text-col{
+    flex:1 1 0%;
+    padding:1.8rem 1.6rem;
+    border-right:var(--line-thin);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+  }
+
+  .zine-section.alt .text-col{
+    border-right:none;
+  }
+
+  .text-col p{
+    margin:0 0 1em;
+    text-align:left;
+    hyphens:none;
+    font-size:0.88rem;
+    line-height:1.5;
+    letter-spacing:0.01em;
+  }
+
+  /* Content title — the specific name inside a section (an event's name,
+     the collective's own name and members, a fanzine issue's title…) —
+     followed by a short divider, then the running text. Every section
+     follows this title / divider / text order. */
+  .content-title{
+    font-family:'Pixelcastle', 'Pixeled English', 'Silkscreen', 'Anton', sans-serif;
+    font-weight:400;
+    text-transform:lowercase;
+    font-size:clamp(1.15rem, 2.6vw, 1.55rem);
+    line-height:1.25;
+    margin-bottom:0.7rem;
+  }
+
+  .content-title::first-letter{ text-transform:uppercase; }
+
+  .content-divider{
+    width:2.6rem;
+    height:0;
+    border-top:2px solid var(--ink);
+    opacity:0.55;
+    margin-bottom:1.1rem;
+  }
+
+  /* Single, continuous column of ragged-left text in every section. */
+  .text-flow{
+    column-count:1;
+    column-rule:none;
+  }
+
+  /* Torn/zig-zag section edge in place of the straight rule — used sparingly,
+     on a couple of sections, to break the grid without upsetting it. The ink
+     teeth sit over the same paper texture the rest of the page uses (not a
+     flat fill), so the grain still shows through the gaps between them. */
+  .zz-border{ border-bottom:none; }
+
+  .zz-border::after{
+    content:'';
+    display:block;
+    height:19px;
+    /* flips the tile vertically so the ink teeth hang DOWN (into the gap
+       before the next section) instead of pointing up into this one. The
+       extra 7px (beyond the 12px tooth pattern) is solid --violet-dark,
+       same as the next section's own title bar, so there's no seam of
+       plain page background between the teeth and that title.
+       No separate paper-texture layer here (unlike an earlier version of
+       this rule): --violet-dark is translucent, same as section-head, so
+       it already shows the page's own texture through it — adding a
+       second texture layer with its own multiply blend threw the solid
+       fill's color off from the rest of the page instead of matching it. */
+    transform:scaleY(-1);
+    background-color:var(--violet-dark);
+    background-image:
+      linear-gradient(135deg, transparent 50%, var(--ink) 50%),
+      linear-gradient(45deg, var(--ink) 50%, transparent 50%);
+    background-size:12px 12px, 12px 12px;
+    background-position:bottom left, bottom left;
+    background-repeat:repeat-x, repeat-x;
+  }
+
+  .placeholder-note{
+    font-family:'Fake Receipt', monospace;
+    text-transform:uppercase;
+    font-size:0.68rem;
+    letter-spacing:0.06em;
+    opacity:0.55;
+    margin-top:0.3rem;
+  }
+
+  /* Open call's CTA: sits in the text column itself, right next to the
+     photo it belongs to, and its label/link swap with the active slide. */
+  .call-cta{
+    display:inline-block;
+    align-self:flex-start;
+    margin-top:1.3rem;
+    padding:0.75em 1.3em;
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:0.8rem;
+    letter-spacing:0.05em;
+    text-decoration:none;
+    color:var(--violet);
+    border:var(--line-thin);
+    background-color:var(--receipt-red);
+    transition:background-color .15s ease, color .15s ease;
+  }
+
+  .call-cta:hover,
+  .call-cta:focus-visible{
+    background-color:var(--violet-dark);
+    color:var(--receipt-red);
+    outline:none;
+  }
+
+  /* ---------- REVEAL BUTTONS / PANELS ---------- */
+  /* Full-width bar anchored to the section's own box: its top border is the
+     only border it draws itself — left, right and bottom are literally the
+     zine-section's own border (page edges + the section's border-bottom). */
+
+  .reveal-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    border-top:var(--line);
+  }
+
+  .reveal-btn{
+    flex:1 1 0;
+    min-width:0;
+    -webkit-appearance:none;
+    appearance:none;
+    margin:0;
+    font-family:'Fake Receipt', monospace;
+    text-transform:uppercase;
+    font-size:0.92rem;
+    letter-spacing:0.05em;
+    line-height:1.3;
+    padding:0.9em 1em;
+    border:none;
+    border-right:var(--line-thin);
+    border-radius:0;
+    background:var(--receipt-red);
+    color:var(--violet);
+    cursor:pointer;
+    text-align:center;
+    transition:background-color .15s ease, color .15s ease;
+  }
+
+  .reveal-btn:last-child{ border-right:none; }
+
+  .reveal-btn::before{ content:"+ "; }
+  .reveal-btn.open::before{ content:"– "; }
+
+  .reveal-btn:hover,
+  .reveal-btn:focus-visible{
+    background:var(--violet-dark);
+    color:var(--receipt-red);
+    outline:none;
+  }
+
+  .reveal-btn.open{
+    background:var(--violet-dark);
+    color:var(--receipt-red);
+  }
+
+  /* full-width panel that drops open below a section */
+
+  .expand-panel{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .45s ease;
+  }
+
+  .expand-panel.open{
+    max-height:1400px;
+  }
+
+  .expand-inner{
+    border-bottom:var(--line);
+  }
+
+  .expand-inner .section-head{
+    border-bottom:var(--line-thin);
+    padding:0.7rem 1.2rem 0.5rem;
+  }
+
+  .expand-inner .section-head h2{
+    font-size:clamp(1.5rem, 4.4vw, 2.3rem);
+    opacity:0.88;
+  }
+
+  .expand-inner .section-head .tag{
+    opacity:0.5;
+  }
+
+  .expand-body{
+    padding:1.4rem 1.3rem;
+  }
+
+  .expand-body p{ margin:0 0 0.7em; }
+  .expand-body p:last-child{ margin-bottom:0; }
+
+  /* ---------- CONTATTI: Instagram / Telegram link cards ---------- */
+  .contact-links{
+    display:flex;
+    flex-wrap:wrap;
+  }
+
+  .contact-link{
+    flex:1 1 260px;
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    padding:1.5rem 1.4rem;
+    text-decoration:none;
+    color:var(--ink);
+    border-right:var(--line-thin);
+    transition:background-color .15s ease, color .15s ease;
+  }
+
+  .contact-link:last-child{ border-right:none; }
+
+  @media(max-width:600px){
+    .contact-link{ border-right:none; border-bottom:var(--line-thin); }
+    .contact-link:last-child{ border-bottom:none; }
+  }
+
+  .contact-link:hover{
+    background:var(--receipt-red);
+    color:var(--violet);
+  }
+
+  .contact-emoji{
+    font-size:2rem;
+    line-height:1;
+    flex:0 0 auto;
+  }
+
+  .contact-text{
+    display:flex;
+    flex-direction:column;
+    gap:0.2rem;
+    flex:1 1 auto;
+    min-width:0;
+  }
+
+  .contact-label{
+    font-family:'Pixelcastle', 'Pixeled English', 'Silkscreen', 'Anton', sans-serif;
+    font-weight:400;
+    text-transform:lowercase;
+    font-size:1.3rem;
+  }
+
+  .contact-label::first-letter{ text-transform:uppercase; }
+
+  .contact-handle{
+    font-family:'Fake Receipt', monospace;
+    font-size:0.78rem;
+    opacity:0.75;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .contact-arrow{
+    font-size:1.3rem;
+    flex:0 0 auto;
+    transition:transform .15s ease;
+  }
+
+  .contact-link:hover .contact-arrow{
+    transform:translateX(4px);
+  }
+
+  .expand-body-split{
+    display:flex;
+    flex-wrap:wrap;
+  }
+
+  .expand-body-split .expand-body{
+    flex:1 1 260px;
+  }
+
+  .map-box{
+    flex:1 1 260px;
+    min-height:200px;
+    border-left:var(--line-thin);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      repeating-linear-gradient(45deg,
+        rgba(23,21,28,0.12) 0 2px,
+        transparent 2px 10px);
+  }
+
+  .map-box:has(iframe){
+    background:none;
+    padding:0;
+  }
+
+  .map-box span{
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    letter-spacing:0.15em;
+    font-size:0.85rem;
+    background:var(--violet);
+    padding:0.3em 0.7em;
+    border:var(--line-thin);
+  }
+
+  @media(max-width:600px){
+    .map-box{ border-left:none; border-top:var(--line-thin); }
+  }
+
+  .tile-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));
+    border-top:var(--line-thin);
+  }
+
+  .tile{
+    border-right:var(--line-thin);
+    border-bottom:var(--line-thin);
+    padding:1.5rem 0.8rem;
+    text-align:center;
+    transition:background-color .15s ease, color .15s ease;
+    cursor:pointer;
+  }
+
+  .tile:hover{ background:var(--receipt-red); color:var(--violet); }
+
+  .tile .tile-num{
+    display:block;
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    font-size:1.3rem;
+    margin-bottom:0.3em;
+  }
+
+  .tile .tile-label{
+    display:block;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.62rem;
+    text-transform:uppercase;
+    opacity:0.7;
+    letter-spacing:0.06em;
+  }
+
+  /* ---------- ISSUE CARDS (fanzine back-catalogue) ---------- */
+
+  .issue-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(170px, 1fr));
+    border-top:var(--line-thin);
+  }
+
+  .issue-card{
+    border-right:var(--line-thin);
+    border-bottom:var(--line-thin);
+    display:flex;
+    flex-direction:column;
+    cursor:pointer;
+    transition:background-color .15s ease;
+  }
+
+  .issue-card:hover{ background:rgba(23,21,28,0.06); }
+
+  .issue-cover{
+    aspect-ratio:4 / 5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-bottom:var(--line-thin);
+    background:repeating-linear-gradient(45deg, rgba(23,21,28,0.12) 0 2px, transparent 2px 10px);
+    overflow:hidden;
+  }
+
+  .issue-cover img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:top center;
+    display:block;
+  }
+
+  .issue-cover span{
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    letter-spacing:0.1em;
+    font-size:0.68rem;
+    background:var(--violet);
+    padding:0.25em 0.55em;
+    border:var(--line-thin);
+  }
+
+  .issue-info{
+    padding:0.7rem 0.9rem;
+    display:flex;
+    flex-direction:column;
+    gap:0.25rem;
+  }
+
+  .issue-info .issue-title{
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    font-size:0.8rem;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+
+  .issue-info .issue-date{
+    font-family:'Fake Receipt', monospace;
+    font-size:0.7rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    opacity:0.6;
+  }
+
+  /* ---------- EVENT TILES (archivio back-catalogue) ---------- */
+  /* Same idea as the fanzine issue cards, but horizontal: a small square
+     photo on the left, the event's name and date on the right. */
+
+  .event-tile-list{
+    border-top:var(--line-thin);
+  }
+
+  .event-tile{
+    display:flex;
+    align-items:stretch;
+    border-bottom:var(--line-thin);
+    cursor:pointer;
+    transition:background-color .15s ease;
+  }
+
+  .event-tile:hover{ background:rgba(23,21,28,0.06); }
+
+  .event-tile-photo{
+    flex:0 0 96px;
+    aspect-ratio:1;
+    border-right:var(--line-thin);
+    background-size:cover;
+    background-position:top center;
+    background-color:var(--ink);
+  }
+
+  .event-tile-info{
+    flex:1 1 auto;
+    padding:0.8rem 1rem;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:0.3rem;
+  }
+
+  .event-tile-title{
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    font-size:0.85rem;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+
+  .event-tile-date{
+    font-family:'Fake Receipt', monospace;
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    opacity:0.6;
+  }
+
+  /* ---------- BLOG: four article cards instead of text-col/photo-col ---------- */
+
+  #blog .section-body{ display:block; }
+
+  .blog-intro{ padding:1.8rem 1.6rem 0; }
+
+  .post-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border-top:var(--line-thin);
+    border-left:var(--line-thin);
+  }
+
+  @media(max-width:560px){
+    .post-grid{ grid-template-columns:1fr; }
+  }
+
+  .post-card{
+    display:block;
+    text-decoration:none;
+    color:inherit;
+    border-right:var(--line-thin);
+    border-bottom:var(--line-thin);
+    transition:background-color .15s ease, color .15s ease;
+  }
+
+  .post-card:hover{ background:var(--receipt-red); color:var(--violet); }
+
+  .post-photo{
+    aspect-ratio:16 / 6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-bottom:var(--line-thin);
+    background:repeating-linear-gradient(45deg, rgba(23,21,28,0.12) 0 2px, transparent 2px 10px);
+  }
+
+  .post-photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  .post-photo span{
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    letter-spacing:0.1em;
+    font-size:0.68rem;
+    background:var(--violet);
+    padding:0.25em 0.55em;
+    border:var(--line-thin);
+  }
+
+  .post-card:hover .post-photo span{
+    background:var(--receipt-red);
+    color:var(--violet);
+    border-color:var(--violet);
+  }
+
+  .post-info{
+    padding:1.5rem 1.3rem;
+    display:flex;
+    flex-direction:column;
+    gap:0.55rem;
+  }
+
+  .post-info .post-title{
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    font-size:1rem;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    line-height:1.35;
+  }
+
+  .post-info .post-author{
+    font-family:'Fake Receipt', monospace;
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    opacity:0.6;
+  }
+
+  .post-card:hover .post-info .post-author{ opacity:0.85; }
+
+  .photo-col{
+    flex:0 0 auto;
+    padding:0 1.2rem;
+    border-right:none;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .zine-section.alt .photo-col{
+    border-right:var(--line-thin);
+  }
+
+  .photo-main{
+    /* Real photos here are portrait (roughly 4:5), so the box is driven
+       by its OWN height/ratio — width:auto plus max-width — instead of
+       stretching to the column's full width. Filling the column's width
+       first and then capping the height (the old approach) silently broke
+       the 4:5 ratio into something flatter/squarer whenever the column
+       was wide enough that a true 4:5 box would be taller than the height
+       cap; sizing from the height first keeps the ratio correct at any
+       column width, and the column can stay a plain, unstretched 50/50
+       split with the text side instead of being narrowed as a workaround. */
+    align-self:center;
+    width:auto;
+    max-width:100%;
+    height:min(70vh, 580px);
+    aspect-ratio:4 / 5;
+    border-bottom:var(--line-thin);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    background:
+      repeating-linear-gradient(45deg,
+        rgba(23,21,28,0.12) 0 2px,
+        transparent 2px 10px);
+  }
+
+  .photo-main img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:top center;
+    opacity:0;
+    transition:opacity .6s ease;
+  }
+
+  .photo-main img.active{ opacity:1; }
+
+  .photo-main.has-photos{ cursor:zoom-in; }
+
+  /* ---------- LIGHTBOX ---------- */
+  .lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(23,21,28,0.88);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:500;
+    padding:4vh 4vw;
+    cursor:zoom-out;
+  }
+
+  .lightbox.open{ display:flex; }
+
+  .lightbox img{
+    max-width:100%;
+    max-height:92vh;
+    display:block;
+    box-shadow:0 10px 40px rgba(0,0,0,0.5);
+  }
+
+  .lightbox-close{
+    position:absolute;
+    top:1.2rem;
+    right:1.4rem;
+    font-family:'Fake Receipt', monospace;
+    font-size:1.6rem;
+    line-height:1;
+    color:var(--violet);
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0.4rem 0.6rem;
+  }
+
+  #chi-siamo .photo-main img[src*="umberto"]{
+    object-position:center 42%;
+  }
+
+  #chi-siamo .thumb[style*="umberto"]{
+    background-position:center 38%;
+  }
+
+  #chi-siamo .text-col{
+    padding-top:1.2rem;
+    padding-bottom:1.2rem;
+  }
+
+  .photo-main span{
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    letter-spacing:0.15em;
+    font-size:0.85rem;
+    background:var(--violet);
+    padding:0.3em 0.7em;
+    border:var(--line-thin);
+  }
+
+  .photo-menu{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x proximity;
+    scrollbar-width:thin;
+    scrollbar-color:var(--ink) transparent;
+  }
+
+  .photo-menu::-webkit-scrollbar{ height:6px; }
+  .photo-menu::-webkit-scrollbar-thumb{ background:var(--ink); }
+
+  .photo-menu{
+    justify-content:center;
+    align-items:center;
+    gap:0.55rem;
+    padding:0.7rem 0;
+    overflow:visible;
+  }
+
+  .photo-menu .thumb{
+    flex:0 0 auto;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--ink) !important;
+    background-image:none !important;
+    border:none;
+    opacity:0.3;
+    cursor:pointer;
+    scroll-snap-align:none;
+    transition:opacity .15s ease, transform .15s ease, background-color .15s ease;
+  }
+
+  .photo-menu .thumb:hover{ opacity:0.6; }
+
+  .photo-menu .thumb.active{
+    background:var(--receipt-red) !important;
+    opacity:1;
+    transform:scale(1.35);
+  }
+
+  .photo-nav-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:2.1rem;
+    height:2.1rem;
+    border:var(--line-thin);
+    background:var(--violet);
+    color:var(--ink);
+    font-family:'Fake Receipt', monospace;
+    font-size:1.1rem;
+    line-height:1;
+    cursor:pointer;
+    opacity:0.75;
+    transition:opacity .15s ease, background-color .15s ease, color .15s ease;
+  }
+
+  .photo-nav-arrow:hover{
+    opacity:1;
+    background:var(--receipt-red);
+    color:var(--violet);
+  }
+
+  .photo-nav-arrow.prev{ left:0.6rem; }
+  .photo-nav-arrow.next{ right:0.6rem; }
+
+  @media(max-width:700px){
+    nav.mainnav{ display:grid; grid-template-columns:1fr 1fr; }
+    nav.mainnav a{ flex:none; border-bottom:var(--line-thin); }
+    nav.mainnav a:nth-child(even){ border-right:none; }
+    nav.mainnav a:nth-last-child(-n+2){ border-bottom:none; }
+
+    .section-body,
+    .zine-section.alt .section-body{ flex-direction:column; }
+    .text-col,
+    .zine-section.alt .text-col{
+      border-left:none;
+      border-right:none;
+      border-bottom:var(--line-thin);
+    }
+    .section-head,
+    .zine-section.alt .section-head{ flex-direction:row; }
+  }
+
+  footer{
+    text-align:center;
+    padding:1.6rem 1.5rem;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    opacity:0.6;
+    border-bottom:var(--line);
+  }
+
+
+  /* ---------- SUB-PAGE HEADER (fanzine/archivio/blog listing pages) ---------- */
+  .sub-topline{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    max-width:1180px;
+    margin:0 auto;
+    padding:0.7rem 3px;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.85rem;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink);
+  }
+
+  .back-btn{
+    display:inline-block;
+    text-decoration:none;
+    color:var(--ink);
+    border:var(--line-thin);
+    padding:0.45em 1em;
+    background-color:var(--violet-dark);
+    transition:background-color .15s ease, color .15s ease;
+  }
+
+  .back-btn:hover,
+  .back-btn:focus-visible{
+    background-color:var(--receipt-red);
+    color:var(--violet);
+    outline:none;
+  }
+
+  .sub-hero{
+    padding:1.4rem 1.2rem 1.1rem;
+    border-bottom:var(--line);
+    background-color:var(--violet-dark);
+  }
+
+  .sub-hero .tag{
+    display:block;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.75rem;
+    letter-spacing:0.1em;
+    opacity:0.65;
+    margin-bottom:0.4rem;
+  }
+
+  .sub-hero h1{
+    font-family:'Pixelcastle', 'Pixeled English', 'Silkscreen', 'Anton', sans-serif;
+    font-weight:400;
+    text-transform:lowercase;
+    font-size:clamp(2.1rem, 6.6vw, 3.8rem);
+    line-height:1;
+    letter-spacing:0.01em;
+    margin:0 0 0.5rem;
+  }
+
+  .sub-hero p{
+    max-width:46ch;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.95rem;
+    margin:0;
+  }
+
+  /* ---------- ACQUISTA (non-functional placeholder purchase button) ---------- */
+  .buy-btn{
+    -webkit-appearance:none;
+    appearance:none;
+    display:inline-block;
+    align-self:flex-start;
+    margin-top:0.7rem;
+    padding:0.55em 1.1em;
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:0.7rem;
+    letter-spacing:0.05em;
+    text-decoration:none;
+    color:var(--ink);
+    border:var(--line-thin);
+    background-color:transparent;
+    cursor:not-allowed;
+    opacity:0.55;
+  }
+
+  .issue-info{ align-items:flex-start; }
+
+  .issue-more{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .35s ease;
+    padding:0 0.9rem;
+  }
+
+  .issue-card.open .issue-more{
+    max-height:220px;
+    padding:0 0.9rem 0.9rem;
+  }
+
+  .issue-more p{
+    margin:0;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.82rem;
+    line-height:1.45;
+  }
+
+  .event-tile-info{ align-items:flex-start; }
+
+  .event-more{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .35s ease;
+  }
+
+  .event-tile.open .event-more{
+    max-height:220px;
+    margin-top:0.4rem;
+  }
+
+  .event-more p{
+    margin:0;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.82rem;
+    line-height:1.45;
+  }
+
+  .sub-main{ padding-bottom:0; }
+
+</style>
+</head>
+<body>
+
+<div class="lightbox" id="lightbox">
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Chiudi">&times;</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<div class="sub-topline">
+  <a class="back-btn" href="index.html#fanzine">&larr; Indietro</a>
+  <span class="m-strong">Bar Croazia &middot; Bologna</span>
+</div>
+
+<div class="page">
+
+  <div class="sub-hero">
+    <span class="tag mono">03a</span>
+    <h1>Tutte le fanzine</h1>
+    <p>L&rsquo;elenco completo dei numeri usciti finora. Clicca su un numero per leggere qualche informazione in pi&ugrave;; il tasto &laquo;Acquista&raquo; non &egrave; ancora attivo.</p>
+  </div>
+
+  <main class="sub-main">
+    <section class="zine-section revealed">
+      <div class="issue-grid">
+        <div class="issue-card">
+          <div class="issue-cover"><img src="assets/img/fanzine/copertina-violetto.jpg" alt=""></div>
+          <div class="issue-info">
+            <span class="issue-title">Numero 1</span>
+            <span class="issue-date">Data in arrivo</span>
+            <div class="issue-more"><p>Testo di prova — in attesa della sinossi vera di questo numero. Clicca ancora per richiudere.</p></div>
+            <button type="button" class="buy-btn" disabled>Acquista</button>
+          </div>
+        </div>
+        <div class="issue-card">
+          <div class="issue-cover"><img src="assets/img/fanzine/copertina-azzurrino.jpg" alt=""></div>
+          <div class="issue-info">
+            <span class="issue-title">Numero 2</span>
+            <span class="issue-date">Data in arrivo</span>
+            <div class="issue-more"><p>Testo di prova — in attesa della sinossi vera di questo numero. Clicca ancora per richiudere.</p></div>
+            <button type="button" class="buy-btn" disabled>Acquista</button>
+          </div>
+        </div>
+        <div class="issue-card">
+          <div class="issue-cover"><img src="assets/img/fanzine/copertina-verdino.jpg" alt=""></div>
+          <div class="issue-info">
+            <span class="issue-title">Numero 3</span>
+            <span class="issue-date">Data in arrivo</span>
+            <div class="issue-more"><p>Testo di prova — in attesa della sinossi vera di questo numero. Clicca ancora per richiudere.</p></div>
+            <button type="button" class="buy-btn" disabled>Acquista</button>
+          </div>
+        </div>
+        <div class="issue-card">
+          <div class="issue-cover"><img src="assets/img/fanzine/copertina-giallo.jpg" alt=""></div>
+          <div class="issue-info">
+            <span class="issue-title">Numero 4</span>
+            <span class="issue-date">Data in arrivo</span>
+            <div class="issue-more"><p>Testo di prova — in attesa della sinossi vera di questo numero. Clicca ancora per richiudere.</p></div>
+            <button type="button" class="buy-btn" disabled>Acquista</button>
+          </div>
+        </div>
+        <div class="issue-card">
+          <div class="issue-cover"><img src="assets/img/fanzine/copertina.jpg" alt=""></div>
+          <div class="issue-info">
+            <span class="issue-title">Numero 5</span>
+            <span class="issue-date">Lunedì 22 giugno 2026</span>
+            <div class="issue-more"><p>Testo di prova — in attesa della sinossi vera di questo numero. Clicca ancora per richiudere.</p></div>
+            <button type="button" class="buy-btn" disabled>Acquista</button>
+          </div>
+        </div>
+        <div class="issue-card">
+          <div class="issue-cover"><img src="assets/img/fanzine/copertina-azzurrino.jpg" alt=""></div>
+          <div class="issue-info">
+            <span class="issue-title">Numero 6</span>
+            <span class="issue-date">Data in arrivo</span>
+            <div class="issue-more"><p>Testo di prova — in attesa della sinossi vera di questo numero. Clicca ancora per richiudere.</p></div>
+            <button type="button" class="buy-btn" disabled>Acquista</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Bar Croazia &middot; sito in costruzione</footer>
+
+</div>
+
+<script>
+  var revealEls = document.querySelectorAll('.zine-section');
+  if('IntersectionObserver' in window){
+    var revealIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('revealed');
+          revealIO.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.08, rootMargin:'0px 0px -40px 0px' });
+    revealEls.forEach(function(el){ revealIO.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('revealed'); });
+  }
+
+  document.querySelectorAll('.issue-card').forEach(function(card){
+    card.addEventListener('click', function(e){
+      if(e.target.closest('.buy-btn')) return;
+      card.classList.toggle('open');
+    });
+  });
+
+</script>
+
+</body>
+</html>

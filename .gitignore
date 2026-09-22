@@ -1,0 +1,6 @@
+# File di sistema macOS
+.DS_Store
+
+# File temporanei di editor
+*.swp
+*~
