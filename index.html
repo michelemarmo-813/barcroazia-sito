@@ -2962,7 +2962,16 @@
       }
     }, true);
 
+    // On the mobile layout, drawing with a finger fights with scrolling the
+    // page (both use the same one-finger drag gesture), so touch-drawing is
+    // switched off below that breakpoint — mouse/trackpad drawing on desktop
+    // is untouched.
+    function isMobileLayout(){
+      return window.innerWidth <= 820;
+    }
+
     document.addEventListener('touchstart', function(e){
+      if(isMobileLayout()) return;
       var t = e.touches[0];
       if(begin(t.target, t.clientX, t.clientY)){
         e.preventDefault();
@@ -2971,6 +2980,7 @@
       }
     }, { passive:false });
     document.addEventListener('touchmove', function(e){
+      if(isMobileLayout()) return;
       if(!drawing && !pendingNav) return;
       e.preventDefault();
       var t = e.touches[0];
