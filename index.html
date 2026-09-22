@@ -794,7 +794,10 @@
   }
 
   .contact-label{
-    font-family:'Pixelcastle', 'Pixeled English', 'Silkscreen', 'Anton', sans-serif;
+    /* Not 'Pixelcastle' here: its lowercase "k" reads as an "f" at this
+       size (e.g. "Facebook" looked like "Faceboof") — 'Pixeled English'
+       has the same hand-drawn family look without that glyph problem. */
+    font-family:'Pixeled English', 'Silkscreen', 'Anton', sans-serif;
     font-weight:400;
     text-transform:lowercase;
     font-size:1.3rem;
@@ -1829,6 +1832,9 @@
           <div class="expand-body mono">
             <p>Via Santo Stefano, 24, Bologna.</p>
             <p>Ci trovi lì tutti i lunedì alle 20:30.</p>
+            <a class="reveal-btn" style="display:inline-block; margin-top:0.6rem;"
+               href="https://www.google.com/maps/place/Bar+Croazia/@44.4922864,11.3461034,16.77z/data=!4m6!3m5!1s0x477fd5001c126e13:0x6e61735c3b2d17d3!8m2!3d44.4921579!4d11.3484782!16s%2Fg%2F11z2t0s1jl"
+               target="_blank" rel="noopener">Apri su Google Maps ↗</a>
           </div>
           <div class="map-box">
             <iframe
@@ -2156,7 +2162,37 @@
     'Jackie Kay', 'Bella Achmadulina', 'Vera Pavlova', 'Yosano Akiko',
     'Fadwa Tuqan', 'Nazik al-Mala\'ika', 'Delmira Agustini',
     'Juana de Ibarbourou', 'Julia de Burgos', 'Claribel Alegría',
-    'Sor Juana Inés de la Cruz', 'Cecília Meireles', 'Hilda Hilst'
+    'Sor Juana Inés de la Cruz', 'Cecília Meireles', 'Hilda Hilst',
+    'Vittoria Aganoor', 'Alba de Céspedes', 'Giulia Niccolai',
+    'Nadia Campana', 'Cristina Annino', 'Bianca Tarozzi',
+    'Rossana Ombres', 'Fernanda Romagnoli', 'Alba Donati',
+    'Anna Maria Ortese', 'Renée Vivien', 'Andrée Chedid', 'Anne Hébert',
+    'Marie Noël', 'Louise de Vilmorin', 'Rosalía de Castro',
+    'Idea Vilariño', 'Blanca Varela', 'Olga Orozco', 'Gioconda Belli',
+    'Elvira Sastre', 'Chantal Maillard', 'Florbela Espanca',
+    'Sophia de Mello Breyner Andresen', 'Adélia Prado',
+    'Ana Cristina César', 'Cora Coralina', 'Zinaida Gippius',
+    'Yunna Morits', 'Halina Poświatowska',
+    'Maria Pawlikowska-Jasnorzewska', 'Inger Christensen',
+    'Pia Tafdrup', 'Sonja Åkesson', 'Marie Under', 'Simin Behbahani',
+    'Suheir Hammad', 'Rupi Kaur', 'Sarojini Naidu', 'Toru Dutt',
+    'Meena Kandasamy', 'Ono no Komachi', 'Izumi Shikibu',
+    'Machi Tawara', 'Hiromi Itō', 'Li Qingzhao', 'Xi Xi',
+    'Zhai Yongming', 'Noémia de Sousa', 'Lorna Goodison',
+    'Olive Senior', 'Dionne Brand', 'Margaret Atwood', 'Lorna Crozier',
+    'Judith Wright', 'Gwen Harwood', 'Dorothy Hewett', 'Fleur Adcock',
+    'Anne Bradstreet', 'Phillis Wheatley', 'Emily Brontë',
+    'Charlotte Mew', 'Edith Sitwell', 'Vita Sackville-West',
+    'Denise Riley', 'Alice Oswald', 'Jo Shapcott', 'Wendy Cope',
+    'Ruth Padel', 'Jean \'Binta\' Breeze', 'Grace Nichols',
+    'Patience Agbabi', 'Erica Jong', 'Diane di Prima', 'Anne Waldman',
+    'Alice Notley', 'Eileen Myles', 'Ada Limón', 'Joy Harjo',
+    'Kay Ryan', 'Mary Oliver', 'Louise Erdrich', 'Naomi Shihab Nye',
+    'Marge Piercy', 'Anne Stevenson', 'Alicia Ostriker',
+    'Muriel Rukeyser', 'May Sarton', 'Amy Clampitt', 'Jean Valentine',
+    'Brenda Hillman', 'Rae Armantrout', 'Lyn Hejinian', 'Susan Howe',
+    'Fanny Howe', 'C.D. Wright', 'Alice Fulton', 'Sarah Kirsch',
+    'Rose Ausländer', 'Hilde Domin'
   ];
   var poetessaScelta = poetesse[Math.floor(Math.random() * poetesse.length)];
   // Fallback used only when the Italian page can't be confirmed (missing,
