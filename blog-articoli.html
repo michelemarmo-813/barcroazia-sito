@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tutti gli articoli — Bar Croazia</title>
 <style>
-<style>
   @font-face{
     font-family:'Anton';
     src:url('assets/fonts/anton-400.woff2') format('woff2');
@@ -1074,6 +1073,24 @@
 
   .post-card:hover .post-info .post-author{ opacity:0.85; }
 
+  .post-info .post-date{
+    align-self:flex-start;
+    order:-1;
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    font-size:0.65rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    padding:0.2em 0.6em;
+    border:1px dashed var(--ink);
+    opacity:0.7;
+  }
+
+  .post-card:hover .post-info .post-date{
+    border-color:var(--violet);
+    opacity:0.9;
+  }
+
   .photo-col{
     flex:0 0 auto;
     padding:0 1.2rem;
@@ -1442,46 +1459,36 @@
   <main class="sub-main">
     <section class="zine-section revealed">
       <div class="post-grid">
-          <a class="post-card" href="https://www.lipslam.it/intervista-a-sofia-zoli/" target="_blank" rel="noopener">
-            <div class="post-photo"><img src="https://www.lipslam.it/wp-content/uploads/2024/12/1000004166-816x544.jpg" alt="Sofia Zoli"></div>
+          <a class="post-card" href="articolo-taddia.html">
+            <div class="post-photo"><img src="assets/img/blog/taddia-1.jpg" alt="La poesia riempie la Piazza"></div>
             <div class="post-info">
-              <span class="post-title">Intervista a Sofia Zoli</span>
-              <span class="post-author">di Isidoro Concas</span>
+              <span class="post-date">30 Maggio 2026</span>
+              <span class="post-title">La poesia riempie la Piazza</span>
+              <span class="post-author">Federico Taddia</span>
             </div>
           </a>
-          <a class="post-card" href="https://bologna.repubblica.it/cronaca/2024/11/17/news/poetry_slam_duocane_poesia_santo_stefano_bar_maurizio_giuseppe_armillotta_sofia_zoli-423637844/" target="_blank" rel="noopener">
-            <div class="post-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Piazza%20Santo%20Stefano%20(Bologna).JPG" alt="Piazza Santo Stefano, Bologna"></div>
+          <a class="post-card" href="articolo-egidio.html">
+            <div class="post-photo"><img src="assets/img/blog/egidio-1.png" alt="La setta dei poeti che rinasce a Primavera"></div>
             <div class="post-info">
-              <span class="post-title">DuoCane e il poetry slam di piazza Santo Stefano</span>
-              <span class="post-author">la Repubblica Bologna</span>
+              <span class="post-date">27 Marzo 2026</span>
+              <span class="post-title">La setta dei poeti che rinasce a Primavera</span>
+              <span class="post-author">Giovanni Egidio</span>
+            </div>
+          </a>
+          <a class="post-card" href="https://www.youtube.com/shorts/kUYE4-iikMA" target="_blank" rel="noopener">
+            <div class="post-photo"><img src="https://img.youtube.com/vi/kUYE4-iikMA/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/kUYE4-iikMA/hqdefault.jpg';" alt="Non Mi Capisci - Radio 24"></div>
+            <div class="post-info">
+              <span class="post-date">2 Dicembre 2025</span>
+              <span class="post-title">Non Mi Capisci - Radio 24</span>
+              <span class="post-author">Federico Taddia e Matteo Bussola</span>
             </div>
           </a>
           <a class="post-card" href="https://corrieredibologna.corriere.it/notizie/cronaca/25_ottobre_22/bologna-il-rito-collettivo-della-poesia-in-piazza-santo-stefano-prima-un-salto-al-bar-vicino-e-poi-ci-si-siede-per-terra-1c55092d-7cce-44c4-9b37-92562f0a4xlk.shtml" target="_blank" rel="noopener">
             <div class="post-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Bologna%2C%20Piazza%20Santo%20Stefano.jpg" alt="Piazza Santo Stefano, Bologna"></div>
             <div class="post-info">
+              <span class="post-date">Ottobre 2025</span>
               <span class="post-title">Il rito collettivo della poesia in piazza Santo Stefano</span>
-              <span class="post-author">Corriere di Bologna</span>
-            </div>
-          </a>
-          <a class="post-card" href="https://poesiainverso.com/2026/01/22/le-regole-del-gioco-stanno-cambiando-bar-croazia/" target="_blank" rel="noopener">
-            <div class="post-photo"><img src="https://i0.wp.com/poesiainverso.com/wp-content/uploads/2025/01/image.png?fit=1080%2C540&ssl=1" alt="Bar Croazia"></div>
-            <div class="post-info">
-              <span class="post-title">Le regole del gioco stanno cambiando</span>
-              <span class="post-author">di Francesco Ciuffoli</span>
-            </div>
-          </a>
-          <a class="post-card" href="articolo-5.html">
-            <div class="post-photo"><span>FOTO</span></div>
-            <div class="post-info">
-              <span class="post-title">Titolo dell'articolo — dimmi tu quale</span>
-              <span class="post-author">di [nome autore]</span>
-            </div>
-          </a>
-          <a class="post-card" href="articolo-6.html">
-            <div class="post-photo"><span>FOTO</span></div>
-            <div class="post-info">
-              <span class="post-title">Titolo dell'articolo — dimmi tu quale</span>
-              <span class="post-author">di [nome autore]</span>
+              <span class="post-author">Piero Di Domenico</span>
             </div>
           </a>
       </div>
@@ -1508,6 +1515,96 @@
     revealEls.forEach(function(el){ el.classList.add('revealed'); });
   }
 
+</script>
+
+<script>
+  // ---- ink trail (same "scribble on the page" effect as the home page) ----
+  // Simplified for this sub-page: a single canvas covering .page (no
+  // morphing nav overlay, no accordion-panel layers — this page has
+  // neither), everything else — stroke look, mobile touch-scroll
+  // exception — matches index.html's version exactly.
+  (function(){
+    var INTERACTIVE_SELECTOR = 'a, button, input, select, textarea, label, [role="button"]';
+    var pageWrap = document.querySelector('.page');
+    if(!pageWrap) return;
+
+    var canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:absolute; top:0; left:50%; transform:translateX(-50vw); width:100vw; pointer-events:none; z-index:60; will-change:transform;';
+    pageWrap.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+
+    function resize(){
+      var w = window.innerWidth;
+      var h = Math.ceil(pageWrap.getBoundingClientRect().height);
+      if(canvas.width === w && canvas.height === h) return;
+      var keep = document.createElement('canvas');
+      keep.width = canvas.width;
+      keep.height = canvas.height;
+      keep.getContext('2d').drawImage(canvas, 0, 0);
+      canvas.width = w;
+      canvas.height = h;
+      ctx.drawImage(keep, 0, 0);
+    }
+    resize();
+    if('ResizeObserver' in window){
+      new ResizeObserver(resize).observe(pageWrap);
+    } else {
+      window.addEventListener('resize', resize);
+    }
+
+    function strokeInk(x0, y0, x1, y1){
+      ctx.strokeStyle = 'rgba(23,21,28,0.62)';
+      ctx.lineWidth = 2.4;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x1, y1);
+      ctx.stroke();
+    }
+
+    var drawing = false, lastClientX = 0, lastClientY = 0;
+
+    function begin(target, clientX, clientY){
+      if(target.closest(INTERACTIVE_SELECTOR)) return false;
+      lastClientX = clientX; lastClientY = clientY;
+      drawing = true;
+      return true;
+    }
+    function move(clientX, clientY){
+      if(!drawing) return;
+      var rect = canvas.getBoundingClientRect();
+      strokeInk(lastClientX - rect.left, lastClientY - rect.top, clientX - rect.left, clientY - rect.top);
+      lastClientX = clientX; lastClientY = clientY;
+    }
+    function end(){ drawing = false; }
+
+    document.addEventListener('mousedown', function(e){
+      if(e.button !== 0) return;
+      if(begin(e.target, e.clientX, e.clientY)){ e.preventDefault(); }
+    });
+    document.addEventListener('mousemove', function(e){ move(e.clientX, e.clientY); });
+    document.addEventListener('mouseup', end);
+    document.addEventListener('mouseleave', end);
+
+    // Same mobile exception as the home page: touch-drawing fights with
+    // scrolling on a phone, so it's off below that breakpoint.
+    function isMobileLayout(){ return window.innerWidth <= 820; }
+
+    document.addEventListener('touchstart', function(e){
+      if(isMobileLayout()) return;
+      var t = e.touches[0];
+      if(begin(t.target, t.clientX, t.clientY)){ e.preventDefault(); }
+    }, { passive:false });
+    document.addEventListener('touchmove', function(e){
+      if(isMobileLayout()) return;
+      if(!drawing) return;
+      e.preventDefault();
+      var t = e.touches[0];
+      move(t.clientX, t.clientY);
+    }, { passive:false });
+    document.addEventListener('touchend', end);
+  })();
 </script>
 
 </body>

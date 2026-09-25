@@ -1107,6 +1107,26 @@
 
   .post-card:hover .post-info .post-author{ opacity:0.85; }
 
+  /* Small dashed-border stamp for each article's date — same "ticket
+     stub" idea as the receipt aesthetic elsewhere on the site. */
+  .post-info .post-date{
+    align-self:flex-start;
+    order:-1;
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    font-size:0.65rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    padding:0.2em 0.6em;
+    border:1px dashed var(--ink);
+    opacity:0.7;
+  }
+
+  .post-card:hover .post-info .post-date{
+    border-color:var(--violet);
+    opacity:0.9;
+  }
+
   .photo-col{
     /* Hugs the photo's own (auto) width instead of claiming half the row —
        the two text columns share whatever space that leaves. In a normal
@@ -1219,17 +1239,30 @@
     padding:0.4rem 0.6rem;
   }
 
-  #chi-siamo .photo-main img[src*="umberto"]{
-    object-position:center 42%;
-  }
-
-  #chi-siamo .thumb[style*="umberto"]{
-    background-position:center 38%;
-  }
-
   #chi-siamo .text-col{
     padding-top:1.2rem;
     padding-bottom:1.2rem;
+  }
+
+  /* Chi siamo now has a single photo — no point showing a thumbnail
+     strip with just one (non-interactive) dot underneath it. */
+  #chi-siamo .photo-menu{
+    display:none;
+  }
+
+  /* Marker/highlighter effect instead of plain bold, for the key terms in
+     the real "Chi siamo" text — a translucent band of color under the
+     text (mix-blend-mode:multiply lets the paper grain show through it,
+     same as the site's other translucent color fills), closer in spirit
+     to the paper-and-ink look than a plain font-weight change. */
+  #chi-siamo .text-flow strong{
+    font-weight:inherit;
+    background-color:var(--accent-yellow);
+    background-repeat:no-repeat;
+    background-size:100% 0.62em;
+    background-position:0 78%;
+    mix-blend-mode:multiply;
+    padding:0 0.05em;
   }
 
   .photo-main span{
@@ -1755,21 +1788,20 @@
       </div>
       <div class="section-body">
         <div class="text-col">
-          <div class="content-title">Bar croazia è bar croazia è bar croazia</div>
+          <div class="content-title">Bar Croazia</div>
           <div class="content-divider"></div>
-          <div class="text-flow"></div>
-          <span class="placeholder-note">testo di prova — in attesa dei testi veri</span>
+          <div class="text-flow" data-static="1">
+            <p>Bar Croazia è un progetto di poesia underground su Bologna, che organizza <strong>Poetry Slam</strong>, eventi di <strong>divulgazione letteraria</strong>, collaborazioni con tante realtà giovani del territorio e soprattutto <strong>Raw Poetry</strong>, format di poesia che si svolge ogni lunedì in Piazza Santo Stefano dal 2024.</p>
+            <p><strong>Bar Croazia</strong> ha ricevuto riconoscimenti da testate giornalistiche nazionali e territoriali (La Stampa, La Repubblica, Corriere di Bologna, AboutBologna, Inverso Giornale di Poesia, Radio24) e da giugno 2026 ha ricevuto il patrocinio del Comune di Bologna in quanto evento di rilevanza artistica e culturale sul territorio.</p>
+            <p>Crediamo nell'inclusione attraverso la poesia, e cerchiamo di raggiungere questo obiettivo tramite l'organizzazione di eventi gratuiti e a libera partecipazione, oltre alla creazione di una fanzine autoprodotta con interventi di chiunque voglia farne parte.</p>
+          </div>
         </div>
-        <div class="photo-col" data-autoplay="4500">
+        <div class="photo-col">
           <div class="photo-main" data-base="FOTO">
-            <img src="assets/img/chi_siamo/1.jpg" alt="">
-            <img src="assets/img/chi_siamo/sofia.jpg" alt="">
-            <img src="assets/img/chi_siamo/umberto.jpg" alt="">
+            <img src="assets/img/chi_siamo/1.jpg" alt="Bar Croazia">
           </div>
           <div class="photo-menu">
-            <div class="thumb" data-name="Bar Croazia" data-title="Bar croazia è bar croazia è bar croazia" style="background-image:url('assets/img/chi_siamo/1.jpg')"></div>
-            <div class="thumb" data-name="Sofia Zoli" data-gender="f" data-title="Sofia Zoli è Sofia Zoli" style="background-image:url('assets/img/chi_siamo/sofia.jpg')"></div>
-            <div class="thumb" data-name="Umberto Eco" data-title="Umberto Eco è Umberto Eco" style="background-image:url('assets/img/chi_siamo/umberto.jpg')"></div>
+            <div class="thumb" data-name="Bar Croazia" data-title="Bar Croazia" style="background-image:url('assets/img/chi_siamo/1.jpg')"></div>
           </div>
         </div>
       </div>
@@ -1988,32 +2020,36 @@
       </div>
       <div class="section-body">
         <div class="post-grid">
-          <a class="post-card" href="https://www.lipslam.it/intervista-a-sofia-zoli/" target="_blank" rel="noopener">
-            <div class="post-photo"><img src="https://www.lipslam.it/wp-content/uploads/2024/12/1000004166-816x544.jpg" alt="Sofia Zoli"></div>
+          <a class="post-card" href="articolo-taddia.html">
+            <div class="post-photo"><img src="assets/img/blog/taddia-1.jpg" alt="La poesia riempie la Piazza"></div>
             <div class="post-info">
-              <span class="post-title">Intervista a Sofia Zoli</span>
-              <span class="post-author">di Isidoro Concas</span>
+              <span class="post-date">30 Maggio 2026</span>
+              <span class="post-title">La poesia riempie la Piazza</span>
+              <span class="post-author">Federico Taddia</span>
             </div>
           </a>
-          <a class="post-card" href="https://bologna.repubblica.it/cronaca/2024/11/17/news/poetry_slam_duocane_poesia_santo_stefano_bar_maurizio_giuseppe_armillotta_sofia_zoli-423637844/" target="_blank" rel="noopener">
-            <div class="post-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Piazza%20Santo%20Stefano%20(Bologna).JPG" alt="Piazza Santo Stefano, Bologna"></div>
+          <a class="post-card" href="articolo-egidio.html">
+            <div class="post-photo"><img src="assets/img/blog/egidio-1.png" alt="La setta dei poeti che rinasce a Primavera"></div>
             <div class="post-info">
-              <span class="post-title">DuoCane e il poetry slam di piazza Santo Stefano</span>
-              <span class="post-author">la Repubblica Bologna</span>
+              <span class="post-date">27 Marzo 2026</span>
+              <span class="post-title">La setta dei poeti che rinasce a Primavera</span>
+              <span class="post-author">Giovanni Egidio</span>
+            </div>
+          </a>
+          <a class="post-card" href="https://www.youtube.com/shorts/kUYE4-iikMA" target="_blank" rel="noopener">
+            <div class="post-photo"><img src="https://img.youtube.com/vi/kUYE4-iikMA/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/kUYE4-iikMA/hqdefault.jpg';" alt="Non Mi Capisci - Radio 24"></div>
+            <div class="post-info">
+              <span class="post-date">2 Dicembre 2025</span>
+              <span class="post-title">Non Mi Capisci - Radio 24</span>
+              <span class="post-author">Federico Taddia e Matteo Bussola</span>
             </div>
           </a>
           <a class="post-card" href="https://corrieredibologna.corriere.it/notizie/cronaca/25_ottobre_22/bologna-il-rito-collettivo-della-poesia-in-piazza-santo-stefano-prima-un-salto-al-bar-vicino-e-poi-ci-si-siede-per-terra-1c55092d-7cce-44c4-9b37-92562f0a4xlk.shtml" target="_blank" rel="noopener">
             <div class="post-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Bologna%2C%20Piazza%20Santo%20Stefano.jpg" alt="Piazza Santo Stefano, Bologna"></div>
             <div class="post-info">
+              <span class="post-date">Ottobre 2025</span>
               <span class="post-title">Il rito collettivo della poesia in piazza Santo Stefano</span>
-              <span class="post-author">Corriere di Bologna</span>
-            </div>
-          </a>
-          <a class="post-card" href="https://poesiainverso.com/2026/01/22/le-regole-del-gioco-stanno-cambiando-bar-croazia/" target="_blank" rel="noopener">
-            <div class="post-photo"><img src="https://i0.wp.com/poesiainverso.com/wp-content/uploads/2025/01/image.png?fit=1080%2C540&ssl=1" alt="Bar Croazia"></div>
-            <div class="post-info">
-              <span class="post-title">Le regole del gioco stanno cambiando</span>
-              <span class="post-author">di Francesco Ciuffoli</span>
+              <span class="post-author">Piero Di Domenico</span>
             </div>
           </a>
         </div>
@@ -2529,7 +2565,7 @@
         ctaEl.textContent = t.dataset.ctaLabel;
         ctaEl.href = t.dataset.ctaHref;
       }
-      if(flowEl && t.dataset.name){
+      if(flowEl && t.dataset.name && flowEl.dataset.static !== '1'){
         fillTextToFit(flowEl, t.dataset.name, t.dataset.gender, measureFlowBudget());
       }
       if(flowElB && t.dataset.name){
@@ -2583,7 +2619,7 @@
     photoColAPI.set(col, { goTo: goTo, getIndex: function(){ return index; } });
 
     render(0);
-    restartAutoplay();
+    if(thumbs.length > 1){ restartAutoplay(); }
   }
 
   document.querySelectorAll('.photo-col').forEach(initPhotoCol);

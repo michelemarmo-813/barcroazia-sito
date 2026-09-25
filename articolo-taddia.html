@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La poesia riempie la Piazza — Bar Croazia</title>
+<style>
+  @font-face{
+    font-family:'Anton';
+    src:url('assets/fonts/anton-400.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Silkscreen';
+    src:url('assets/fonts/silkscreen-400.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Silkscreen';
+    src:url('assets/fonts/silkscreen-700.woff2') format('woff2');
+    font-weight:700; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Fake Receipt';
+    src:url('assets/fonts/fakereceipt-400.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Pixeled English';
+    src:url('assets/fonts/pixeledenglish.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+  /* Pixelcastle only covers A-Z/a-z + space/!/comma (no digits, accents or
+     periods), so it's listed first and falls back to Pixeled English for
+     anything it's missing (dates, accented Italian words, punctuation). */
+  @font-face{
+    font-family:'Pixelcastle';
+    src:url('assets/fonts/pixelcastle.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+  :root{
+    --violet: #ffffff;
+    --violet-dark: rgba(20, 20, 20, 0.07);
+    --ink: #17151c;
+    --receipt-red: #a83a3a;
+    --line: 3px double var(--ink);
+    --line-thin: 1px solid var(--ink);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background-color:var(--violet);
+    background-image:
+      repeating-radial-gradient(circle at 0 0,
+        rgba(23,21,28,0.07) 0 1.2px, transparent 1.2px 7px),
+      url('assets/textures/paper-final.jpg');
+    background-repeat:repeat, repeat;
+    background-size:auto, 1000px 1000px;
+    background-blend-mode:normal, multiply;
+    color:var(--ink);
+    font-family:'Fake Receipt', monospace;
+  }
+
+  a{ color:inherit; }
+
+  .page{
+    max-width:1180px;
+    margin:0 auto;
+    background-color:var(--violet);
+    background-image:url('assets/textures/paper-final.jpg');
+    background-repeat:repeat;
+    background-size:1000px 1000px;
+    background-blend-mode:multiply;
+    border-left:var(--line);
+    border-right:var(--line);
+    border-top:var(--line);
+    position:relative;
+    z-index:1;
+  }
+
+  .sub-topline{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    max-width:1180px;
+    margin:0 auto;
+    padding:0.7rem 3px;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.85rem;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink);
+  }
+
+  .back-btn{
+    display:inline-block;
+    text-decoration:none;
+    color:var(--ink);
+    border:var(--line-thin);
+    padding:0.45em 1em;
+    background-color:var(--violet-dark);
+    transition:background-color .15s ease, color .15s ease;
+  }
+
+  .back-btn:hover,
+  .back-btn:focus-visible{
+    background-color:var(--receipt-red);
+    color:var(--violet);
+    outline:none;
+  }
+
+  .sub-hero{
+    padding:1.4rem 1.2rem 1.1rem;
+    border-bottom:var(--line);
+    background-color:var(--violet-dark);
+  }
+
+  .sub-hero .tag{
+    display:block;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.75rem;
+    letter-spacing:0.1em;
+    opacity:0.65;
+    margin-bottom:0.4rem;
+  }
+
+  .sub-hero h1{
+    font-family:'Pixelcastle', 'Pixeled English', 'Silkscreen', 'Anton', sans-serif;
+    font-weight:400;
+    text-transform:lowercase;
+    font-size:clamp(1.9rem, 5.4vw, 3rem);
+    line-height:1.08;
+    letter-spacing:0.01em;
+    margin:0 0 0.6rem;
+  }
+
+  .sub-hero h1::first-letter{ text-transform:uppercase; }
+
+  .sub-hero .article-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.5rem 1rem;
+    align-items:center;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.85rem;
+  }
+
+  .sub-hero .article-author{
+    opacity:0.85;
+  }
+
+  .sub-hero .article-date{
+    font-weight:700;
+    font-size:0.7rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    padding:0.25em 0.65em;
+    border:1px dashed var(--ink);
+    opacity:0.8;
+  }
+
+  main.sub-main{ padding-bottom:0; }
+
+  .article-photo-wrap{
+    padding:1.6rem;
+    display:flex;
+    justify-content:center;
+    border-bottom:var(--line);
+  }
+
+  .article-photo{
+    position:relative;
+    max-width:640px;
+    width:100%;
+    cursor:zoom-in;
+  }
+
+  .article-photo img{
+    display:block;
+    width:100%;
+    height:auto;
+    border:var(--line-thin);
+    box-shadow:0 8px 26px rgba(23,21,28,0.25);
+  }
+
+  .article-photo-hint{
+    display:block;
+    text-align:center;
+    margin-top:0.7rem;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.7rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    opacity:0.55;
+  }
+
+  footer{
+    text-align:center;
+    padding:1.6rem 1.5rem;
+    font-family:'Fake Receipt', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    opacity:0.6;
+    border-bottom:var(--line);
+  }
+
+  /* ---------- LIGHTBOX (same zoomable-photo pattern used across the site) ---------- */
+  .lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(23,21,28,0.88);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:500;
+    padding:4vh 4vw;
+    cursor:zoom-out;
+  }
+
+  .lightbox.open{ display:flex; }
+
+  .lightbox img{
+    max-width:100%;
+    max-height:92vh;
+    display:block;
+    box-shadow:0 10px 40px rgba(0,0,0,0.5);
+    cursor:zoom-in;
+    transition:max-width .2s ease, max-height .2s ease;
+  }
+
+  .lightbox.zoomed{
+    align-items:flex-start;
+    justify-content:flex-start;
+    overflow:auto;
+    padding:2vh 2vw;
+  }
+
+  .lightbox.zoomed img{
+    max-width:none;
+    max-height:none;
+    width:180vw;
+    height:auto;
+    cursor:zoom-out;
+  }
+
+  .lightbox-close{
+    position:absolute;
+    top:1.2rem;
+    right:1.4rem;
+    font-family:'Fake Receipt', monospace;
+    font-size:1.6rem;
+    line-height:1;
+    color:var(--violet);
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0.4rem 0.6rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="lightbox" id="lightbox">
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Chiudi">&times;</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<div class="sub-topline">
+  <a class="back-btn" href="blog-articoli.html">&larr; Indietro</a>
+  <span>Bar Croazia &middot; Bologna</span>
+</div>
+
+<div class="page">
+
+  <div class="sub-hero">
+    <span class="tag mono">06b</span>
+    <h1>La poesia riempie la Piazza</h1>
+    <div class="article-meta">
+      <span class="article-author">Federico Taddia</span>
+      <span class="article-date">30 Maggio 2026</span>
+    </div>
+  </div>
+
+  <main class="sub-main">
+    <div class="article-photo-wrap">
+      <div>
+        <div class="article-photo" id="articlePhoto">
+          <img src="assets/img/blog/taddia-1.jpg" alt="La poesia riempie la Piazza — foto dell'articolo di Federico Taddia">
+        </div>
+        <span class="article-photo-hint">Tocca la foto per ingrandirla</span>
+      </div>
+    </div>
+  </main>
+
+  <footer>Bar Croazia &middot; sito in costruzione</footer>
+
+</div>
+
+<script>
+  var lightboxEl = document.getElementById('lightbox');
+  var lightboxImgEl = document.getElementById('lightboxImg');
+
+  function openLightbox(src){
+    lightboxImgEl.src = src;
+    lightboxEl.classList.remove('zoomed');
+    lightboxEl.classList.add('open');
+  }
+  function closeLightbox(){
+    lightboxEl.classList.remove('open');
+    lightboxEl.classList.remove('zoomed');
+    lightboxEl.scrollTop = 0;
+    lightboxEl.scrollLeft = 0;
+    lightboxImgEl.src = '';
+  }
+  lightboxEl.addEventListener('click', closeLightbox);
+  lightboxImgEl.addEventListener('click', function(e){
+    e.stopPropagation();
+    lightboxEl.classList.toggle('zoomed');
+  });
+  document.getElementById('lightboxClose').addEventListener('click', function(e){
+    e.stopPropagation();
+    closeLightbox();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeLightbox();
+  });
+
+  document.getElementById('articlePhoto').addEventListener('click', function(){
+    var img = this.querySelector('img');
+    openLightbox(img.src);
+  });
+</script>
+
+<script>
+  // ---- ink trail (same "scribble on the page" effect as the home page) ----
+  // Simplified for this sub-page: a single canvas covering .page (no
+  // morphing nav overlay, no accordion-panel layers — this page has
+  // neither), everything else — stroke look, mobile touch-scroll
+  // exception — matches index.html's version exactly.
+  (function(){
+    var INTERACTIVE_SELECTOR = 'a, button, input, select, textarea, label, [role="button"]';
+    var pageWrap = document.querySelector('.page');
+    if(!pageWrap) return;
+
+    var canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:absolute; top:0; left:50%; transform:translateX(-50vw); width:100vw; pointer-events:none; z-index:60; will-change:transform;';
+    pageWrap.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+
+    function resize(){
+      var w = window.innerWidth;
+      var h = Math.ceil(pageWrap.getBoundingClientRect().height);
+      if(canvas.width === w && canvas.height === h) return;
+      var keep = document.createElement('canvas');
+      keep.width = canvas.width;
+      keep.height = canvas.height;
+      keep.getContext('2d').drawImage(canvas, 0, 0);
+      canvas.width = w;
+      canvas.height = h;
+      ctx.drawImage(keep, 0, 0);
+    }
+    resize();
+    if('ResizeObserver' in window){
+      new ResizeObserver(resize).observe(pageWrap);
+    } else {
+      window.addEventListener('resize', resize);
+    }
+
+    function strokeInk(x0, y0, x1, y1){
+      ctx.strokeStyle = 'rgba(23,21,28,0.62)';
+      ctx.lineWidth = 2.4;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x1, y1);
+      ctx.stroke();
+    }
+
+    var drawing = false, lastClientX = 0, lastClientY = 0;
+
+    function begin(target, clientX, clientY){
+      if(target.closest(INTERACTIVE_SELECTOR)) return false;
+      lastClientX = clientX; lastClientY = clientY;
+      drawing = true;
+      return true;
+    }
+    function move(clientX, clientY){
+      if(!drawing) return;
+      var rect = canvas.getBoundingClientRect();
+      strokeInk(lastClientX - rect.left, lastClientY - rect.top, clientX - rect.left, clientY - rect.top);
+      lastClientX = clientX; lastClientY = clientY;
+    }
+    function end(){ drawing = false; }
+
+    document.addEventListener('mousedown', function(e){
+      if(e.button !== 0) return;
+      if(begin(e.target, e.clientX, e.clientY)){ e.preventDefault(); }
+    });
+    document.addEventListener('mousemove', function(e){ move(e.clientX, e.clientY); });
+    document.addEventListener('mouseup', end);
+    document.addEventListener('mouseleave', end);
+
+    // Same mobile exception as the home page: touch-drawing fights with
+    // scrolling on a phone, so it's off below that breakpoint.
+    function isMobileLayout(){ return window.innerWidth <= 820; }
+
+    document.addEventListener('touchstart', function(e){
+      if(isMobileLayout()) return;
+      var t = e.touches[0];
+      if(begin(t.target, t.clientX, t.clientY)){ e.preventDefault(); }
+    }, { passive:false });
+    document.addEventListener('touchmove', function(e){
+      if(isMobileLayout()) return;
+      if(!drawing) return;
+      e.preventDefault();
+      var t = e.touches[0];
+      move(t.clientX, t.clientY);
+    }, { passive:false });
+    document.addEventListener('touchend', end);
+  })();
+</script>
+
+</body>
+</html>
