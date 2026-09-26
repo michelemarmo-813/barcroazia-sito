@@ -550,9 +550,13 @@
   /* Single, continuous column of ragged-left text ("testo a bandiera")
      in every section, instead of the old justified two-column flow —
      tried first on "chi siamo" alone, then extended everywhere once
-     approved. */
+     approved. Deliberately NOT column-count:1 (visually identical to a
+     plain block, since one column is no columns) — that still opens a
+     multicol formatting context, and any overflowing content quietly
+     flows into a hidden second column sideways instead of making the
+     element taller, which was making every scrollHeight-based height
+     measurement (the read-more truncation/expand system) unreliable. */
   .text-flow{
-    column-count:1;
     column-rule:none;
   }
 
@@ -578,6 +582,79 @@
     opacity:0.55;
     margin-bottom:1.1rem;
   }
+
+  /* Small dashed "ticket stub" date badge — same idea as the blog cards'
+     post-date — for sections whose content-title needs a date attached
+     (an event's date, a fanzine issue's release day). Hidden by default;
+     the carousel JS shows it and fills it in only when the active slide
+     actually has a data-date. */
+  .content-date-badge{
+    display:inline-block;
+    align-self:flex-start;
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    padding:0.25em 0.65em;
+    border:1px dashed var(--ink);
+    opacity:0.75;
+    margin:-0.2rem 0 0.9rem;
+  }
+
+  /* Eventi's date reads as more of a headline detail than a ticket-stub
+     footnote, so it gets a bigger, bolder treatment in the site's red. */
+  #eventi .content-date-badge{
+    font-size:0.95rem;
+    color:var(--receipt-red);
+    border-color:var(--receipt-red);
+    opacity:0.9;
+  }
+
+  /* Real, hand-written text (chi siamo / eventi / fanzine) varies in
+     length from one slide to the next, and used to stretch .text-col
+     taller than the photo beside it whenever a slide ran long — visibly
+     deforming the row. Instead the box keeps the height the layout
+     established, and the JS truncates the text word-by-word right at
+     that height, cutting only between whole words and always closing
+     with a plain "…" straight after the last visible word — like speech
+     trailing off — rather than a hard, unmarked crop. A "continua a
+     leggere" link swaps the truncated copy back for the full text. */
+  .text-flow[data-static="1"]{
+    overflow:hidden;
+    transition:max-height .35s ease;
+  }
+
+  .flow-ellipsis{
+    font-weight:400;
+    color:var(--ink);
+    opacity:0.75;
+  }
+
+  .flow-more-btn{
+    -webkit-appearance:none;
+    appearance:none;
+    display:none;
+    align-self:flex-start;
+    margin:0.6rem 0 0;
+    padding:0;
+    border:none;
+    background:none;
+    font-family:'Fake Receipt', monospace;
+    font-weight:700;
+    font-size:0.62rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--receipt-red);
+    text-decoration:underline;
+    text-underline-offset:0.2em;
+    cursor:pointer;
+  }
+
+  .flow-more-btn.is-visible{ display:inline-block; }
+
+  .flow-more-btn:hover,
+  .flow-more-btn:focus-visible{ opacity:0.68; outline:none; }
 
   /* A second, lighter kind of "torn" divider — a perforated dashed line,
      like where a receipt is torn off at the register — used standalone
@@ -1138,6 +1215,7 @@
     border-right:none;
     display:flex;
     flex-direction:column;
+    position:relative;
   }
 
   .zine-section.alt .photo-col{
@@ -1172,12 +1250,16 @@
   }
 
   .photo-main img{
+    /* Filling the frame edge to edge, cropping whatever doesn't fit,
+       reads bigger and bolder than showing every photo whole with the
+       hatch mat around it — worth the occasional crop on a photo whose
+       own ratio doesn't match the frame's fixed 4:5. */
     position:absolute;
     inset:0;
     width:100%;
     height:100%;
     object-fit:cover;
-    object-position:top center;
+    object-position:center center;
     opacity:0;
     transition:opacity .6s ease;
   }
@@ -1250,19 +1332,16 @@
     display:none;
   }
 
-  /* Marker/highlighter effect instead of plain bold, for the key terms in
-     the real "Chi siamo" text — a translucent band of color under the
-     text (mix-blend-mode:multiply lets the paper grain show through it,
-     same as the site's other translucent color fills), closer in spirit
-     to the paper-and-ink look than a plain font-weight change. */
-  #chi-siamo .text-flow strong{
-    font-weight:inherit;
-    background-color:var(--accent-yellow);
-    background-repeat:no-repeat;
-    background-size:100% 0.62em;
-    background-position:0 78%;
-    mix-blend-mode:multiply;
-    padding:0 0.05em;
+  /* Plain bold for the key terms and collaborators' names in every
+     section's real text — a bit heavier than the browser's own synthetic
+     bold for this font (which only ships a single 400 weight), since a
+     straight font-weight:700 barely reads as emphasis on a monospace
+     pixel face. The thin extra text-stroke thickens the glyphs without
+     changing their shape. Applied to every .text-flow (chi siamo,
+     eventi, fanzine, open call) so the emphasis reads consistently. */
+  .text-flow strong{
+    font-weight:700;
+    -webkit-text-stroke:0.4px currentColor;
   }
 
   .photo-main span{
@@ -1291,13 +1370,34 @@
      carousel logic reads), only hidden here with !important since an
      inline style="background-image:…" otherwise always wins over a
      stylesheet rule regardless of specificity. Visually this is now just
-     a row of small dots, one per photo, with the active one picked out. */
+     a row of small dots, one per photo, with the active one picked out.
+     They live directly over the photo itself (bottom edge) instead of
+     claiming a strip of their own beneath it, and stay hidden until the
+     person is actually browsing the photos — hovering/focusing the
+     column, or just after a slide change (own class, toggled by the
+     carousel script) so a tap on mobile gets the same brief confirmation
+     a hover gives on desktop. */
   .photo-menu{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0.65rem;
+    z-index:4;
     justify-content:center;
     align-items:center;
     gap:0.55rem;
-    padding:0.7rem 0;
+    padding:0.3rem 0;
     overflow:visible;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease;
+  }
+
+  .photo-col:hover .photo-menu,
+  .photo-col:focus-within .photo-menu,
+  .photo-menu.is-visible{
+    opacity:1;
+    pointer-events:auto;
   }
 
   .photo-menu .thumb{
@@ -1305,16 +1405,17 @@
     width:8px;
     height:8px;
     border-radius:50%;
-    background:var(--ink) !important;
+    background:var(--violet) !important;
     background-image:none !important;
     border:none;
-    opacity:0.3;
+    opacity:0.55;
+    box-shadow:0 0 0 1px rgba(23,21,28,0.35);
     cursor:pointer;
     scroll-snap-align:none;
     transition:opacity .15s ease, transform .15s ease, background-color .15s ease;
   }
 
-  .photo-menu .thumb:hover{ opacity:0.6; }
+  .photo-menu .thumb:hover{ opacity:0.85; }
 
   .photo-menu .thumb.active{
     background:var(--receipt-red) !important;
@@ -1776,7 +1877,6 @@
       <p>A rose is a rose is a rose is a rose.</p>
       <span class="quote-note">Gertrude Stein &middot; <em>Sacred Emily</em>, 1913</span>
     </blockquote>
-    <div class="quote-photo"><img src="assets/img/gertrude-stein.png" alt="Ritratto di Gertrude Stein, in bianco e nero"></div>
   </div>
 
   <main>
@@ -1793,8 +1893,9 @@
           <div class="text-flow" data-static="1">
             <p>Bar Croazia è un progetto di poesia underground su Bologna, che organizza <strong>Poetry Slam</strong>, eventi di <strong>divulgazione letteraria</strong>, collaborazioni con tante realtà giovani del territorio e soprattutto <strong>Raw Poetry</strong>, format di poesia che si svolge ogni lunedì in Piazza Santo Stefano dal 2024.</p>
             <p><strong>Bar Croazia</strong> ha ricevuto riconoscimenti da testate giornalistiche nazionali e territoriali (La Stampa, La Repubblica, Corriere di Bologna, AboutBologna, Inverso Giornale di Poesia, Radio24) e da giugno 2026 ha ricevuto il patrocinio del Comune di Bologna in quanto evento di rilevanza artistica e culturale sul territorio.</p>
-            <p>Crediamo nell'inclusione attraverso la poesia, e cerchiamo di raggiungere questo obiettivo tramite l'organizzazione di eventi gratuiti e a libera partecipazione, oltre alla creazione di una fanzine autoprodotta con interventi di chiunque voglia farne parte.</p>
+            <p><strong>Crediamo nell'inclusione attraverso la poesia</strong>, e cerchiamo di raggiungere questo obiettivo tramite l'organizzazione di eventi gratuiti e a libera partecipazione, oltre alla creazione di una fanzine autoprodotta con interventi di chiunque voglia farne parte.</p>
           </div>
+          <button type="button" class="flow-more-btn">Continua a leggere</button>
         </div>
         <div class="photo-col">
           <div class="photo-main" data-base="FOTO">
@@ -1888,21 +1989,48 @@
         <h2>Eventi</h2>
       </div>
       <div class="section-body">
-        <div class="photo-col" data-autoplay="4500">
+        <div class="photo-col" data-autoplay="8000">
           <div class="photo-main" data-base="FOTO">
-            <img src="assets/img/eventi/evento1.jpg" alt="">
-            <img src="assets/img/eventi/evento2.jpg" alt="">
+            <img src="assets/img/eventi/poetry-slam.png" alt="Poetry Slam round I — Bar Croazia x Farm">
+            <img src="assets/img/eventi/raw-poetry.png" alt="Raw Poetry — nuova stagione, ottobre 2026 parte 1">
           </div>
           <div class="photo-menu">
-            <div class="thumb" data-name="Evento1" data-title="Un Evento1 è un Evento1 è un Evento1" style="background-image:url('assets/img/eventi/evento1.jpg')"></div>
-            <div class="thumb" data-name="Evento2" data-title="Un Evento2 è un Evento2 è un Evento2" style="background-image:url('assets/img/eventi/evento2.jpg')"></div>
+            <div class="thumb" data-name="Poetry Slam" data-title="Poetry Slam round I — Bar Croazia x Farm" data-date="6 Ottobre 2026" data-template="tpl-eventi-slam" style="background-image:url('assets/img/eventi/poetry-slam.png')"></div>
+            <div class="thumb" data-name="Raw Poetry" data-title="Raw Poetry — nuova stagione, ottobre 2026 parte 1" data-date="5 e 12 Ottobre 2026" data-template="tpl-eventi-raw" style="background-image:url('assets/img/eventi/raw-poetry.png')"></div>
           </div>
         </div>
         <div class="text-col">
-          <div class="content-title">Un Evento1 è un Evento1 è un Evento1</div>
+          <div class="content-title">Poetry Slam round I — Bar Croazia x Farm</div>
+          <span class="content-date-badge">6 Ottobre 2026</span>
           <div class="content-divider"></div>
-          <div class="text-flow"></div>
-          <span class="placeholder-note">testo di prova — in attesa dei testi veri</span>
+          <!-- Per-slide real text, kept OUTSIDE .text-flow: that div's
+               content gets overwritten wholesale on every slide switch
+               (see the carousel JS), so a <template> living inside it
+               would be destroyed the first time it swaps in. -->
+          <template id="tpl-eventi-slam">
+            <p>Farm e Bar Croazia presentano il primo round del torneo di Poetry Slam!</p>
+            <p>Il Poetry Slam è una gara di poesia performativa, dove 6 performers si sfidano tra loro in due manches e una finale. Una giuria popolare di 5 persone vota da 1 a 10 ogni performance, determinando due persone che si qualificano alla finale di torneo in data 19 gennaio 2027. Lo Slam è parte del circuito L.I.P.S. (Lega Italiana di Poetry Slam).</p>
+            <p>Ogni performer ha 3 minuti di tempo, può usare solo corpo e voce e può portare solo testi originali.</p>
+            <p>Parteciperanno a questa data:<br><strong>Giovanni Fantomars Monti</strong><br><strong>Valeria Nucera</strong><br><strong>Martina Rizzo</strong><br><strong>Fabrizio Borghese</strong><br><strong>Yari Demartini</strong><br><strong>Tamara</strong><br>Presentano <strong>Sofia Zoli</strong> e <strong>Nicole Venturi</strong></p>
+            <p>Poetry Slam valido per il campionato L.I.P.S. e sostenuto da Emilia Romagna Poetry Slam.</p>
+            <p>Ingresso libero e gratuito.</p>
+          </template>
+          <template id="tpl-eventi-raw">
+            <p>Raw Poetry è un format che da novembre 2024 costruisce uno spazio poetico settimanale (ogni lunedì in Piazza Santo Stefano o Palazzo della Mercanzia in caso di maltempo) dove si incontrano diversi generi di poesia, in gare e Open Mic a cui si può partecipare sempre in modo libero e gratuito.</p>
+            <p>Per iscriverti, porta almeno 5 testi e presentati in loco alle 20.30; il tipo di gara dipende dal numero dei partecipanti, per un massimo di 12.</p>
+            <p>Lunedì 5 Ottobre, ore 20.30<br>Ospiti della serata <strong>Federico Costantini</strong>, <strong>Andrea Mitri</strong>, <strong>Valeria Nucera</strong>, <strong>Marco dell'Omo</strong> e giuria di <strong>Vincenzo Bosco</strong>, <strong>Marshall</strong> + 1 dal pubblico</p>
+            <p>Lunedì 12 Ottobre, ore 20.30<br>Ospiti della serata <strong>Cognome D'Arte</strong>, <strong>Patrik Fongarelli Frizzera</strong>, <strong>Giorgio Guzzetta</strong>, <strong>Andrea Corbetta</strong> e giuria di <strong>Gennaro Màdera</strong>, <strong>Robbè</strong> + 1 dal pubblico</p>
+            <p>Entra nel canale telegram per non perderti nessun aggiornamento!</p>
+          </template>
+          <div class="text-flow" data-static="1">
+            <p>Farm e Bar Croazia presentano il primo round del torneo di Poetry Slam!</p>
+            <p>Il Poetry Slam è una gara di poesia performativa, dove 6 performers si sfidano tra loro in due manches e una finale. Una giuria popolare di 5 persone vota da 1 a 10 ogni performance, determinando due persone che si qualificano alla finale di torneo in data 19 gennaio 2027. Lo Slam è parte del circuito L.I.P.S. (Lega Italiana di Poetry Slam).</p>
+            <p>Ogni performer ha 3 minuti di tempo, può usare solo corpo e voce e può portare solo testi originali.</p>
+            <p>Parteciperanno a questa data:<br><strong>Giovanni Fantomars Monti</strong><br><strong>Valeria Nucera</strong><br><strong>Martina Rizzo</strong><br><strong>Fabrizio Borghese</strong><br><strong>Yari Demartini</strong><br><strong>Tamara</strong><br>Presentano <strong>Sofia Zoli</strong> e <strong>Nicole Venturi</strong></p>
+            <p>Poetry Slam valido per il campionato L.I.P.S. e sostenuto da Emilia Romagna Poetry Slam.</p>
+            <p>Ingresso libero e gratuito.</p>
+          </div>
+          <button type="button" class="flow-more-btn">Continua a leggere</button>
         </div>
       </div>
     </section>
@@ -1914,12 +2042,67 @@
       </div>
       <div class="section-body">
         <div class="text-col">
-          <div class="content-title">Una Fanzine 1 è una Fanzine 1 è una Fanzine 1</div>
+          <div class="content-title">Fanzine n.0</div>
+          <span class="content-date-badge">Lunedì 22 Settembre 2025 &middot; Bologna</span>
           <div class="content-divider"></div>
-          <div class="text-flow"></div>
-          <span class="placeholder-note">testo di prova — in attesa dei testi veri</span>
+          <!-- Per-slide real text, kept OUTSIDE .text-flow (see the same
+               note on the Eventi section above). -->
+          <template id="tpl-fanzine-0">
+            <p>Fanzine N.0 contiene interventi di <strong>Isidoro Concas</strong>, <strong>Francesco Terzi</strong>, <strong>Sofia Zoli</strong>, <strong>Giuseppe Armillotta</strong>, <strong>Claudio Palumbo</strong>, <strong>Ilaria Sofia Parisi</strong> e foto di <strong>Cecilia Romano</strong> e <strong>Dante Farricella</strong>.</p>
+            <p>A cura di <strong>Nicole Venturi</strong> e <strong>Sofia Zoli</strong></p>
+            <p>La fanzine di Bar Croazia è una raccolta cartacea di articoli, riflessioni, approfondimenti, racconti brevi, poesia, foto e disegni - tutto a tema letterario. Ogni numero è autoprodotto a partire dalla correzione dei testi, le grafiche, la stampa e l'assemblaggio.</p>
+            <p>La fanzine di Bar Croazia è in forma cartacea per molti motivi, primo fra tutti quello di creare vicinanza, così in Piazza così in carta. Viviamo un tempo dove nulla ci appartiene e, nel nostro piccolo, vorremmo provare a fare la differenza: per questo abbiamo preferito offrire un prodotto che può essere stampato autonomamente su carta e possa essere mantenuto nel tempo, curato, esposto, sottolineato, appuntato, letto senza distrazioni e con l'attenzione che serve a valorizzare il lavoro di chi ha scelto di dare il suo prezioso contributo a questo progetto, che ci auguriamo nel tempo possa essere significativo e resistente.</p>
+            <p>Ordinando qui la tua copia, riceverai le istruzioni per stamparla direttamente in casa con una normalissima fotocopiatrice - o nella tua copisteria di fiducia!</p>
+          </template>
+          <template id="tpl-fanzine-1">
+            <p>Fanzine N.1 contiene interventi di <strong>Emilia Todaro</strong>, <strong>Mario Falato</strong>, <strong>Francesca Fiori</strong>, <strong>Chiara Acri</strong>, <strong>Nina Raggi</strong> e foto di <strong>Andrea Bellaroto</strong> e <strong>Cecilia Romano</strong>.</p>
+            <p>A cura di <strong>Nicole Venturi</strong> e <strong>Sofia Zoli</strong></p>
+            <p>La fanzine di Bar Croazia è una raccolta cartacea di articoli, riflessioni, approfondimenti, racconti brevi, poesia, foto e disegni - tutto a tema letterario. Ogni numero è autoprodotto a partire dalla correzione dei testi, le grafiche, la stampa e l'assemblaggio.</p>
+            <p>La fanzine di Bar Croazia è in forma cartacea per molti motivi, primo fra tutti quello di creare vicinanza, così in Piazza così in carta. Viviamo un tempo dove nulla ci appartiene e, nel nostro piccolo, vorremmo provare a fare la differenza: per questo abbiamo preferito offrire un prodotto che può essere stampato autonomamente su carta e possa essere mantenuto nel tempo, curato, esposto, sottolineato, appuntato, letto senza distrazioni e con l'attenzione che serve a valorizzare il lavoro di chi ha scelto di dare il suo prezioso contributo a questo progetto, che ci auguriamo nel tempo possa essere significativo e resistente.</p>
+            <p>Ordinando qui la tua copia, riceverai le istruzioni per stamparla direttamente in casa con una normalissima fotocopiatrice - o nella tua copisteria di fiducia!</p>
+          </template>
+          <template id="tpl-fanzine-2">
+            <p>Fanzine N.2 contiene interventi di <strong>Nina Sharms</strong>, <strong>Manuela Morara</strong>, <strong>Gennaro Màdera</strong>, <strong>Benedetta Colombo</strong> e foto di <strong>Cecilia Romano</strong>.</p>
+            <p>A cura di <strong>Nicole Venturi</strong> e <strong>Sofia Zoli</strong></p>
+            <p>La fanzine di Bar Croazia è una raccolta cartacea di articoli, riflessioni, approfondimenti, racconti brevi, poesia, foto e disegni - tutto a tema letterario. Ogni numero è autoprodotto a partire dalla correzione dei testi, le grafiche, la stampa e l'assemblaggio.</p>
+            <p>La fanzine di Bar Croazia è in forma cartacea per molti motivi, primo fra tutti quello di creare vicinanza, così in Piazza così in carta. Viviamo un tempo dove nulla ci appartiene e, nel nostro piccolo, vorremmo provare a fare la differenza: per questo abbiamo preferito offrire un prodotto che può essere stampato autonomamente su carta e possa essere mantenuto nel tempo, curato, esposto, sottolineato, appuntato, letto senza distrazioni e con l'attenzione che serve a valorizzare il lavoro di chi ha scelto di dare il suo prezioso contributo a questo progetto, che ci auguriamo nel tempo possa essere significativo e resistente.</p>
+            <p>Ordinando qui la tua copia, riceverai le istruzioni per stamparla direttamente in casa con una normalissima fotocopiatrice - o nella tua copisteria di fiducia!</p>
+          </template>
+          <template id="tpl-fanzine-3">
+            <p>Fanzine N.3 contiene interventi di <strong>Diavoli</strong>, <strong>Francesca Fiori</strong>, <strong>Lorenzo Milite</strong>, <strong>Tommaso Virga</strong> e foto di <strong>Cecilia Romano</strong>.</p>
+            <p>A cura di <strong>Nicole Venturi</strong> e <strong>Sofia Zoli</strong></p>
+            <p>La fanzine di Bar Croazia è una raccolta cartacea di articoli, riflessioni, approfondimenti, racconti brevi, poesia, foto e disegni - tutto a tema letterario. Ogni numero è autoprodotto a partire dalla correzione dei testi, le grafiche, la stampa e l'assemblaggio.</p>
+            <p>La fanzine di Bar Croazia è in forma cartacea per molti motivi, primo fra tutti quello di creare vicinanza, così in Piazza così in carta. Viviamo un tempo dove nulla ci appartiene e, nel nostro piccolo, vorremmo provare a fare la differenza: per questo abbiamo preferito offrire un prodotto che può essere stampato autonomamente su carta e possa essere mantenuto nel tempo, curato, esposto, sottolineato, appuntato, letto senza distrazioni e con l'attenzione che serve a valorizzare il lavoro di chi ha scelto di dare il suo prezioso contributo a questo progetto, che ci auguriamo nel tempo possa essere significativo e resistente.</p>
+            <p>Ordinando qui la tua copia, riceverai le istruzioni per stamparla direttamente in casa con una normalissima fotocopiatrice - o nella tua copisteria di fiducia!</p>
+          </template>
+          <template id="tpl-fanzine-4">
+            <p>Fanzine N.4 contiene interventi di <strong>Lorenzo Pauri</strong>, <strong>Giulia Morini</strong>, <strong>Nicole Venturi</strong>, <strong>Chiara Pinesi</strong>, <strong>Francesca Lepiane</strong>.</p>
+            <p>Foto di <strong>Cecilia Romano</strong> e <strong>Valentina Pocaterra</strong></p>
+            <p>Illustrazioni di <strong>Carlotta Cardillo</strong> e <strong>Sole Benedettini</strong></p>
+            <p>A cura di <strong>Nicole Venturi</strong> e <strong>Sofia Zoli</strong></p>
+            <p>La fanzine di Bar Croazia è una raccolta cartacea di articoli, riflessioni, approfondimenti, racconti brevi, poesia, foto e disegni - tutto a tema letterario. Ogni numero è autoprodotto a partire dalla correzione dei testi, le grafiche, la stampa e l'assemblaggio.</p>
+            <p>La fanzine di Bar Croazia è in forma cartacea per molti motivi, primo fra tutti quello di creare vicinanza, così in Piazza così in carta. Viviamo un tempo dove nulla ci appartiene e, nel nostro piccolo, vorremmo provare a fare la differenza: per questo abbiamo preferito offrire un prodotto che può essere stampato autonomamente su carta e possa essere mantenuto nel tempo, curato, esposto, sottolineato, appuntato, letto senza distrazioni e con l'attenzione che serve a valorizzare il lavoro di chi ha scelto di dare il suo prezioso contributo a questo progetto, che ci auguriamo nel tempo possa essere significativo e resistente.</p>
+            <p>Ordinando qui la tua copia, riceverai le istruzioni per stamparla direttamente in casa con una normalissima fotocopiatrice - o nella tua copisteria di fiducia!</p>
+          </template>
+          <template id="tpl-fanzine-5">
+            <p>Fanzine N.5 contiene interventi di <strong>Sofia Caruso</strong>, <strong>Tommaso Virga</strong>, <strong>Michele Marmo</strong>, <strong>Simòn Ramirez Contreras</strong>, <strong>Giuseppe Piccolo</strong>.</p>
+            <p>Foto di <strong>Cecilia Romano</strong></p>
+            <p>Illustrazioni di <strong>Marzio Mariani</strong></p>
+            <p>A cura di <strong>Nicole Venturi</strong> e <strong>Sofia Zoli</strong></p>
+            <p>La fanzine di Bar Croazia è una raccolta cartacea di articoli, riflessioni, approfondimenti, racconti brevi, poesia, foto e disegni - tutto a tema letterario. Ogni numero è autoprodotto a partire dalla correzione dei testi, le grafiche, la stampa e l'assemblaggio.</p>
+            <p>La fanzine di Bar Croazia è in forma cartacea per molti motivi, primo fra tutti quello di creare vicinanza, così in Piazza così in carta. Viviamo un tempo dove nulla ci appartiene e, nel nostro piccolo, vorremmo provare a fare la differenza: per questo abbiamo preferito offrire un prodotto che può essere stampato autonomamente su carta e possa essere mantenuto nel tempo, curato, esposto, sottolineato, appuntato, letto senza distrazioni e con l'attenzione che serve a valorizzare il lavoro di chi ha scelto di dare il suo prezioso contributo a questo progetto, che ci auguriamo nel tempo possa essere significativo e resistente.</p>
+            <p>Ordinando qui la tua copia, riceverai le istruzioni per stamparla direttamente in casa con una normalissima fotocopiatrice - o nella tua copisteria di fiducia!</p>
+          </template>
+          <div class="text-flow" data-static="1">
+            <p>Fanzine N.0 contiene interventi di <strong>Isidoro Concas</strong>, <strong>Francesco Terzi</strong>, <strong>Sofia Zoli</strong>, <strong>Giuseppe Armillotta</strong>, <strong>Claudio Palumbo</strong>, <strong>Ilaria Sofia Parisi</strong> e foto di <strong>Cecilia Romano</strong> e <strong>Dante Farricella</strong>.</p>
+            <p>A cura di <strong>Nicole Venturi</strong> e <strong>Sofia Zoli</strong></p>
+            <p>La fanzine di Bar Croazia è una raccolta cartacea di articoli, riflessioni, approfondimenti, racconti brevi, poesia, foto e disegni - tutto a tema letterario. Ogni numero è autoprodotto a partire dalla correzione dei testi, le grafiche, la stampa e l'assemblaggio.</p>
+            <p>La fanzine di Bar Croazia è in forma cartacea per molti motivi, primo fra tutti quello di creare vicinanza, così in Piazza così in carta. Viviamo un tempo dove nulla ci appartiene e, nel nostro piccolo, vorremmo provare a fare la differenza: per questo abbiamo preferito offrire un prodotto che può essere stampato autonomamente su carta e possa essere mantenuto nel tempo, curato, esposto, sottolineato, appuntato, letto senza distrazioni e con l'attenzione che serve a valorizzare il lavoro di chi ha scelto di dare il suo prezioso contributo a questo progetto, che ci auguriamo nel tempo possa essere significativo e resistente.</p>
+            <p>Ordinando qui la tua copia, riceverai le istruzioni per stamparla direttamente in casa con una normalissima fotocopiatrice - o nella tua copisteria di fiducia!</p>
+          </div>
+          <button type="button" class="flow-more-btn">Continua a leggere</button>
         </div>
-        <div class="photo-col" data-autoplay="4500">
+        <div class="photo-col" data-autoplay="8000">
           <div class="photo-main" data-base="COPERTINA">
             <img src="assets/img/fanzine/copertina-violetto.jpg" alt="">
             <img src="assets/img/fanzine/copertina-azzurrino.jpg" alt="">
@@ -1929,12 +2112,12 @@
             <img src="assets/img/fanzine/copertina-azzurrino.jpg" alt="">
           </div>
           <div class="photo-menu">
-            <div class="thumb" data-name="Fanzine 1" data-gender="f" data-title="Una Fanzine 1 è una Fanzine 1 è una Fanzine 1" style="background-image:url('assets/img/fanzine/copertina-violetto.jpg')"></div>
-            <div class="thumb" data-name="Fanzine 2" data-gender="f" data-title="Una Fanzine 2 è una Fanzine 2 è una Fanzine 2" style="background-image:url('assets/img/fanzine/copertina-azzurrino.jpg')"></div>
-            <div class="thumb" data-name="Fanzine 3" data-gender="f" data-title="Una Fanzine 3 è una Fanzine 3 è una Fanzine 3" style="background-image:url('assets/img/fanzine/copertina-verdino.jpg')"></div>
-            <div class="thumb" data-name="Fanzine 4" data-gender="f" data-title="Una Fanzine 4 è una Fanzine 4 è una Fanzine 4" style="background-image:url('assets/img/fanzine/copertina-giallo.jpg')"></div>
-            <div class="thumb" data-name="Fanzine 5" data-gender="f" data-title="N. 5 — lunedì 22 giugno 2026" style="background-image:url('assets/img/fanzine/copertina.jpg')"></div>
-            <div class="thumb" data-name="Fanzine 6" data-gender="f" data-title="Una Fanzine 6 è una Fanzine 6 è una Fanzine 6" style="background-image:url('assets/img/fanzine/copertina-azzurrino.jpg')"></div>
+            <div class="thumb" data-name="Fanzine N.0" data-gender="f" data-title="Fanzine n.0" data-date="Lunedì 22 Settembre 2025 &middot; Bologna" data-template="tpl-fanzine-0" style="background-image:url('assets/img/fanzine/copertina-violetto.jpg')"></div>
+            <div class="thumb" data-name="Fanzine N.1" data-gender="f" data-title="Fanzine n.1" data-date="Lunedì 20 Ottobre 2025 &middot; Bologna" data-template="tpl-fanzine-1" style="background-image:url('assets/img/fanzine/copertina-azzurrino.jpg')"></div>
+            <div class="thumb" data-name="Fanzine N.2" data-gender="f" data-title="Fanzine n.2" data-date="Lunedì 24 Novembre 2025 &middot; Bologna" data-template="tpl-fanzine-2" style="background-image:url('assets/img/fanzine/copertina-verdino.jpg')"></div>
+            <div class="thumb" data-name="Fanzine N.3" data-gender="f" data-title="Fanzine n.3" data-date="Lunedì 20 Gennaio 2026 &middot; Bologna" data-template="tpl-fanzine-3" style="background-image:url('assets/img/fanzine/copertina-giallo.jpg')"></div>
+            <div class="thumb" data-name="Fanzine N.4" data-gender="f" data-title="Fanzine n.4" data-date="Lunedì 27 Aprile 2026 &middot; Bologna" data-template="tpl-fanzine-4" style="background-image:url('assets/img/fanzine/copertina.jpg')"></div>
+            <div class="thumb" data-name="Fanzine N.5" data-gender="f" data-title="Fanzine n.5" data-date="Lunedì 22 Giugno 2026 &middot; Bologna" data-template="tpl-fanzine-5" style="background-image:url('assets/img/fanzine/copertina-azzurrino.jpg')"></div>
           </div>
         </div>
       </div>
@@ -1949,7 +2132,7 @@
         <h2>Open call</h2>
       </div>
       <div class="section-body">
-        <div class="photo-col" data-autoplay="4500">
+        <div class="photo-col" data-autoplay="8000">
           <div class="photo-main" data-base="FOTO">
             <img src="assets/img/opencall/1.jpg" alt="">
             <img src="assets/img/opencall/2.jpg" alt="">
@@ -1987,7 +2170,7 @@
           <div class="text-flow"></div>
           <span class="placeholder-note">testo di prova — in attesa dei testi veri</span>
         </div>
-        <div class="photo-col" data-autoplay="4500">
+        <div class="photo-col" data-autoplay="8000">
           <div class="photo-main" data-base="FOTO">
             <img src="assets/img/archivio/3maggio-1.jpg" alt="">
             <img src="assets/img/archivio/3maggio-2.jpg" alt="">
@@ -2474,16 +2657,30 @@
 
   function initPhotoCol(col){
     var main = col.querySelector('.photo-main');
+    var menuEl = col.querySelector('.photo-menu');
+    var menuFlashTimer = null;
+    // The position dots live over the photo and stay hidden until the
+    // person is actually browsing — hover/focus (CSS) covers desktop
+    // pointers, and this flashes them briefly on any slide change so a
+    // tap on mobile (no hover) gets the same confirmation.
+    function flashMenu(){
+      if(!menuEl) return;
+      menuEl.classList.add('is-visible');
+      if(menuFlashTimer) clearTimeout(menuFlashTimer);
+      menuFlashTimer = setTimeout(function(){ menuEl.classList.remove('is-visible'); }, 1800);
+    }
     var thumbs = Array.prototype.slice.call(col.querySelectorAll('.thumb'));
     var images = Array.prototype.slice.call(main.querySelectorAll('img'));
     var section = col.closest('.zine-section');
     var textCol = col.parentElement ? col.parentElement.querySelector('.text-col') : null;
     var textColB = section ? section.querySelector('.text-col-b') : null;
     var titleEl = section ? section.querySelector('.content-title') : null;
+    var dateBadgeEl = section ? section.querySelector('.content-date-badge') : null;
     var flowEl = section ? section.querySelector('.text-flow') : null;
     var flowElB = textColB ? textColB.querySelector('.text-flow') : null;
     var placeholderEl = section ? section.querySelector('.placeholder-note') : null;
     var ctaEl = section ? section.querySelector('.call-cta') : null;
+    var moreBtnEl = (flowEl && flowEl.parentElement) ? flowEl.parentElement.querySelector('.flow-more-btn') : null;
 
     // How tall the running text is allowed to get: the photo column's own
     // content height (the big photo + the thumbnail strip, which don't
@@ -2494,8 +2691,10 @@
     function measureFlowBudget(){
       if(!flowEl || !textCol) return 0;
       var mainEl = col.querySelector('.photo-main');
-      var menuEl = col.querySelector('.photo-menu');
-      var photoContentH = (mainEl ? mainEl.offsetHeight : 0) + (menuEl ? menuEl.offsetHeight : 0);
+      // The dot menu now overlays the photo itself (position:absolute)
+      // instead of sitting in its own strip below it, so it no longer
+      // adds to the column's actual rendered height.
+      var photoContentH = mainEl ? mainEl.offsetHeight : 0;
       if(!photoContentH) return 0;
       // Everything ABOVE the flow (title + divider + text-col's own
       // padding-top) is fixed regardless of how much filler text there
@@ -2525,13 +2724,192 @@
     function measureFlowBudgetB(){
       if(!flowElB || !textColB) return 0;
       var mainEl = col.querySelector('.photo-main');
-      var menuEl = col.querySelector('.photo-menu');
-      var photoContentH = (mainEl ? mainEl.offsetHeight : 0) + (menuEl ? menuEl.offsetHeight : 0);
+      var photoContentH = mainEl ? mainEl.offsetHeight : 0;
       if(!photoContentH) return 0;
       var style = window.getComputedStyle(textColB);
       var padTop = parseFloat(style.paddingTop) || 0;
       var padBottom = parseFloat(style.paddingBottom) || 0;
       return photoContentH - padTop - padBottom;
+    }
+
+    // Real, hand-written text (chi siamo / eventi / fanzine) runs to a
+    // different length on every slide and must never be reflowed or
+    // truncated by fillTextToFit — but left unconstrained, a long slide
+    // stretches .text-col taller than the photo beside it, deforming the
+    // row. So instead the text itself is cut to fit the height the layout
+    // already established (the same budget the filler system targets):
+    // word by word, never mid-word, always ending with a plain "…" right
+    // after the last word that made it in — like the sentence trails off
+    // mid-thought — with a "continua a leggere" link swapping the full
+    // text back in on demand. Re-run on every render() (slide switch,
+    // fonts-ready re-measure) so it always matches the CURRENT slide.
+
+    function escapeFlowText(s){
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Breaks a slide's HTML (plain text, <strong> runs, <br> line breaks,
+    // multiple <p> paragraphs) into a flat list of word / line-break /
+    // paragraph-break tokens, so truncation can always cut cleanly
+    // between two tokens instead of slicing into a word or a tag.
+    function tokenizeFlowHtml(html){
+      var wrapper = document.createElement('div');
+      wrapper.innerHTML = html;
+      var tokens = [];
+      function walkInline(node, strong){
+        Array.prototype.forEach.call(node.childNodes, function(child){
+          if(child.nodeType === 3){
+            var words = child.textContent.split(/\s+/).filter(function(w){ return w.length; });
+            words.forEach(function(w){ tokens.push({ type:'word', text:w, strong:strong }); });
+          } else if(child.nodeType === 1){
+            var tag = child.tagName;
+            if(tag === 'BR'){
+              tokens.push({ type:'br' });
+            } else if(tag === 'STRONG' || tag === 'B'){
+              walkInline(child, true);
+            } else {
+              walkInline(child, strong);
+            }
+          }
+        });
+      }
+      Array.prototype.forEach.call(wrapper.children, function(el, idx){
+        if(idx > 0) tokens.push({ type:'p-break' });
+        walkInline(el, false);
+      });
+      return tokens;
+    }
+
+    // Rebuilds HTML from the first `wordLimit` word-tokens (plus whatever
+    // br/paragraph breaks fall among them), optionally closing with the
+    // ellipsis span right after the last word — never detached from it.
+    function renderFlowTokens(tokens, wordLimit, addEllipsis){
+      var html = '<p>';
+      var used = 0;
+      var openStrong = false;
+      var pendingSpace = false;
+      for(var i = 0; i < tokens.length && used < wordLimit; i++){
+        var tok = tokens[i];
+        if(tok.type === 'p-break'){
+          if(openStrong){ html += '</strong>'; openStrong = false; }
+          html += '</p><p>';
+          pendingSpace = false;
+          continue;
+        }
+        if(tok.type === 'br'){
+          if(openStrong){ html += '</strong>'; openStrong = false; }
+          html += '<br>';
+          pendingSpace = false;
+          continue;
+        }
+        if(pendingSpace){ html += ' '; }
+        if(tok.strong && !openStrong){ html += '<strong>'; openStrong = true; }
+        if(!tok.strong && openStrong){ html += '</strong>'; openStrong = false; }
+        html += escapeFlowText(tok.text);
+        pendingSpace = true;
+        used++;
+      }
+      if(addEllipsis){
+        if(openStrong){ html += '</strong>'; openStrong = false; }
+        html += '<span class="flow-ellipsis">…</span>';
+      } else if(openStrong){
+        html += '</strong>';
+      }
+      html += '</p>';
+      return html;
+    }
+
+    // Binary-searches the largest word count whose rendered height still
+    // fits the budget, then appends the ellipsis right after that last
+    // word. flowEl is used as the live measuring stick throughout.
+    function truncateFlowToFit(fullHtml, budget){
+      var tokens = tokenizeFlowHtml(fullHtml);
+      var totalWords = 0;
+      tokens.forEach(function(t){ if(t.type === 'word') totalWords++; });
+      var lo = 0, hi = totalWords;
+      while(lo < hi){
+        var mid = Math.ceil((lo + hi) / 2);
+        flowEl.innerHTML = renderFlowTokens(tokens, mid, true);
+        if(flowEl.scrollHeight <= budget + 4){
+          lo = mid;
+        } else {
+          hi = mid - 1;
+        }
+      }
+      if(lo < 1 && totalWords > 0){ lo = 1; }
+      return renderFlowTokens(tokens, lo, true);
+    }
+
+    // Once the person expands a given slide's text, that choice must
+    // stick — even though render() (and so applyReadMore()) legitimately
+    // runs again later for reasons that have nothing to do with them:
+    // most notably document.fonts.ready re-running every column's render
+    // the moment the custom pixel font finishes loading, which otherwise
+    // silently re-clamped (and effectively undid) an expand that happened
+    // just beforehand. Tracked per slide index so switching away and back
+    // still remembers it, but a different slide starts clamped again.
+    var expandedSlides = {};
+
+    function pauseAutoplayForReading(){
+      var existing = photoColTimers.get(col);
+      if(existing){ clearInterval(existing); photoColTimers.delete(col); }
+    }
+
+    function applyReadMore(){
+      if(!flowEl || flowEl.dataset.static !== '1') return;
+      var slideIndex = index;
+      var fullHtml = flowEl.innerHTML;
+
+      flowEl.style.maxHeight = 'none';
+      if(moreBtnEl){
+        moreBtnEl.classList.remove('is-visible');
+        moreBtnEl.onclick = null;
+        moreBtnEl.textContent = 'Continua a leggere';
+      }
+      var budget = measureFlowBudget();
+      if(!budget || budget < 40) return;
+      var natural = flowEl.scrollHeight;
+      // This slide's own text already fits — nothing to clamp or toggle.
+      if(natural <= budget + 6) return;
+
+      var truncatedHtml = truncateFlowToFit(fullHtml, budget);
+
+      function showExpanded(){
+        flowEl.innerHTML = fullHtml;
+        flowEl.style.maxHeight = flowEl.scrollHeight + 'px';
+        // Autoplay silently swapping the slide out from under someone
+        // mid-read is exactly what made an earlier expand look like it
+        // "did nothing" — so reading a slide's full text pauses it.
+        pauseAutoplayForReading();
+        if(moreBtnEl){
+          moreBtnEl.classList.add('is-visible');
+          moreBtnEl.textContent = 'Comprimi';
+          moreBtnEl.onclick = function(){
+            expandedSlides[slideIndex] = false;
+            showCollapsed();
+          };
+        }
+      }
+
+      function showCollapsed(){
+        flowEl.innerHTML = truncatedHtml;
+        flowEl.style.maxHeight = flowEl.scrollHeight + 'px';
+        if(moreBtnEl){
+          moreBtnEl.classList.add('is-visible');
+          moreBtnEl.textContent = 'Continua a leggere';
+          moreBtnEl.onclick = function(){
+            expandedSlides[slideIndex] = true;
+            showExpanded();
+          };
+        }
+        if(thumbs.length > 1 && !photoColTimers.get(col)){ restartAutoplay(); }
+      }
+
+      if(expandedSlides[slideIndex]){
+        showExpanded();
+      } else {
+        showCollapsed();
+      }
     }
 
     var old = photoColTimers.get(col);
@@ -2561,11 +2939,32 @@
       thumbs.forEach(function(t, idx){ t.classList.toggle('active', idx === i); });
       var t = thumbs[i];
       if(titleEl && t.dataset.title){ titleEl.textContent = t.dataset.title; }
+      if(dateBadgeEl){
+        if(t.dataset.date){
+          dateBadgeEl.textContent = t.dataset.date;
+          dateBadgeEl.style.display = 'inline-block';
+        } else {
+          dateBadgeEl.style.display = 'none';
+        }
+      }
       if(ctaEl && t.dataset.ctaLabel && t.dataset.ctaHref){
         ctaEl.textContent = t.dataset.ctaLabel;
         ctaEl.href = t.dataset.ctaHref;
       }
-      if(flowEl && t.dataset.name && flowEl.dataset.static !== '1'){
+      if(flowEl && flowEl.dataset.static === '1'){
+        // Static text-flow: real, hand-written content that the filler
+        // system must never touch. A slide can still swap in its OWN real
+        // text (rather than staying fixed like Chi siamo's single slide)
+        // by pointing data-template at a <template> holding that slide's
+        // markup — every slide that needs its own text carries one, so
+        // switching back and forth always lands on the right copy instead
+        // of leaving a previous slide's text behind.
+        if(t.dataset.template){
+          var tpl = document.getElementById(t.dataset.template);
+          if(tpl){ flowEl.innerHTML = tpl.innerHTML; }
+        }
+        applyReadMore();
+      } else if(flowEl && t.dataset.name){
         fillTextToFit(flowEl, t.dataset.name, t.dataset.gender, measureFlowBudget());
       }
       if(flowElB && t.dataset.name){
@@ -2575,6 +2974,7 @@
 
     function goTo(i, userTriggered){
       render(i);
+      flashMenu();
       if(userTriggered) restartAutoplay();
     }
 
