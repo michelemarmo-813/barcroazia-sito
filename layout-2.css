@@ -1007,3 +1007,11 @@ body[data-layout="2"] .post-card:hover{
   background:var(--receipt-red);
   color:var(--violet);
 }
+
+/* titolo dell'evento sempre su una riga */
+body[data-layout="2"] #eventi .content-title{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:100%;
+}

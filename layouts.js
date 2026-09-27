@@ -376,6 +376,20 @@
     });
   }
 
+  // Layout 2: titoli brevi degli eventi (data-l2-title), sempre su una
+  // riga; negli altri layout resta il titolo completo (data-title).
+  var evTitleEl = eventiSection ? eventiSection.querySelector('.content-title') : null;
+  function applyEventTitle(){
+    if(!evTitleEl) return;
+    var active = eventiSection.querySelector('.thumb.active') || eventiSection.querySelector('.thumb');
+    if(!active) return;
+    var want = (current() === '2' && active.dataset.l2Title) ? active.dataset.l2Title : active.dataset.title;
+    if(want && evTitleEl.textContent !== want){ evTitleEl.textContent = want; }
+  }
+  if(evTitleEl && 'MutationObserver' in window){
+    new MutationObserver(applyEventTitle).observe(evTitleEl, { childList:true, characterData:true, subtree:true });
+  }
+
   function resetLayoutState(){
     if(callSection){ callSection.classList.remove('l2-open'); }
     if(collaboraBtn){ collaboraBtn.classList.remove('open'); collaboraBtn.setAttribute('aria-expanded', 'false'); }
@@ -386,6 +400,7 @@
   }
 
   function onLayoutApplied(){
+    applyEventTitle();
     updateTapeTop();
     if(current() === '2' || current() === '4'){ updateFanzineNames(); }
     updateEventDetails();
@@ -399,6 +414,7 @@
   updateTapeTop();
   window.addEventListener('load', function(){
     updateTapeTop();
+    applyEventTitle();
     updateFanzineNames();
     updateEventDetails();
     updateFanzineCounter();
