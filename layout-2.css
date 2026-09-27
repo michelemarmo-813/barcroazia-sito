@@ -199,7 +199,7 @@ body[data-layout="2"] .pull-quote p{
 /* poetessa e poesia: più grandi e in grassetto */
 body[data-layout="2"] .pull-quote .quote-note{
   margin:0.8rem 0 0;
-  font-size:0.82rem;
+  font-size:0.72rem;
   font-weight:700;
   letter-spacing:0.06em;
   -webkit-text-stroke:0.35px currentColor;
@@ -853,83 +853,117 @@ body[data-layout="2"] #chi-siamo .text-flow strong{
   background:linear-gradient(transparent 62%, rgba(230,57,70,0.28) 62%);
 }
 
-/* ---------- Fanzine: come nel layout 4 ----------
-   numero (alla stessa altezza del titolo dell'evento), data e autori a
-   sinistra; copertina più piccola a destra con le miniature accanto */
-body[data-layout="2"]{ --l2-fz-h:270px; }
+/* ---------- Fanzine: speculare alla colonna Eventi ----------
+   Le due colonne condividono le stesse righe (subgrid):
+   separatore / titolo sezione / numero–titolo evento / data / (vuota) /
+   foto + miniature–pallini / autori / pulsante / testo aperto.
+   Così titolo, data, foto e pulsanti stanno sempre alla stessa altezza. */
+
+body[data-layout="2"] #eventi,
+body[data-layout="2"] #fanzine{ grid-row:span 9; }
+
+body[data-layout="2"] #eventi .section-body{ grid-row:3 / span 7; }
+body[data-layout="2"] #eventi .l2-scopri{ grid-row:6; align-self:end; }
+body[data-layout="2"] #eventi .text-flow{ grid-row:7; }
+body[data-layout="2"] #eventi .photo-col{ align-self:start; }
 
 body[data-layout="2"] #fanzine .section-body{
-  grid-template-columns:minmax(0, 1fr) auto;
-  column-gap:calc(40px + 1.6rem);
-  justify-items:start;
+  grid-row:3 / span 5;
+  grid-template-columns:minmax(0, 1fr);
+  justify-items:center;
 }
 
 body[data-layout="2"] #fanzine .text-col{
-  grid-column:1 / -1;
-  grid-row:1 / 5;
-  grid-template-columns:subgrid;
-  justify-items:start;
-  text-align:left;
+  grid-column:1;
+  grid-row:1 / 6;
+  grid-template-columns:minmax(0, 1fr);
+  justify-items:center;
+  text-align:center;
 }
 
-/* numero e data su tutta la larghezza, alla stessa altezza di titolo e
-   data dell'evento */
-body[data-layout="2"] .l2-fz-num,
-body[data-layout="2"] #fanzine .content-date-badge{ grid-column:1 / -1; }
-body[data-layout="2"] .l2-fz-num{ justify-self:start; }
+/* numero del fascicolo: stesso font e misura del titolo dell'evento */
+body[data-layout="2"] .l2-fz-num{
+  grid-row:1;
+  align-self:end;
+  justify-self:center;
+  margin:0 0 0.35rem;
+  font-family:'Pixelcastle', 'Pixeled English', 'Silkscreen', 'Anton', sans-serif;
+  font-size:clamp(1.05rem, 2vw, 1.35rem);
+  line-height:1.25;
+  text-transform:lowercase;
+}
 
-/* data: stessa grafica della data degli Eventi */
+/* data: stessa grafica e stessa riga della data dell'evento */
 body[data-layout="2"] #fanzine .content-date-badge{
-  justify-self:start;
+  grid-row:2;
+  grid-column:1;
+  justify-self:center;
   color:var(--receipt-red);
   border-color:var(--receipt-red);
   opacity:0.9;
 }
 
-/* autori uno per riga, con più spazio per i testi lunghi */
+/* copertina: stessa misura, taglio, inclinazione e ombra della foto
+   dell'evento; niente frecce, si sceglie dalle miniature */
+body[data-layout="2"] #fanzine .photo-col{
+  grid-column:1;
+  grid-row:4;
+  align-self:start;
+  justify-self:center;
+  align-items:center;
+}
+
+body[data-layout="2"] #fanzine .photo-main{ height:var(--l2-ph); }
+body[data-layout="2"] #fanzine .photo-nav-arrow{ display:none; }
+
+/* miniature in fila sotto la copertina, al posto dei pallini */
+body[data-layout="2"] #fanzine .photo-menu{
+  position:static;
+  flex-direction:row;
+  justify-content:center;
+  align-items:center;
+  gap:0.45rem;
+  margin:0.8rem 0 0;
+  padding:0;
+  opacity:1;
+  pointer-events:auto;
+}
+
+body[data-layout="2"] #fanzine .photo-menu .thumb,
+body[data-layout="2"] #fanzine .photo-menu .thumb.active{
+  width:30px;
+  height:39px;
+}
+
+body[data-layout="2"] .l4-counter{ display:none; }
+
+/* autori: sotto le miniature, compatti, su righe di altezza fissa
+   (un elenco più lungo resta nello stesso spazio) */
 body[data-layout="2"] #fanzine .l2-names{
   grid-column:1;
-  grid-row:3 / 5;
+  grid-row:5;
   align-self:start;
-  display:flex;
-  flex-direction:column;
-  gap:0.3rem;
-  max-width:none;
-  text-align:left;
-}
-body[data-layout="2"] #fanzine .l2-names span + span:not(:nth-child(2))::before{ content:none; }
-body[data-layout="2"] #fanzine .l2-names-label{ margin:0 0 0.25rem; }
-
-body[data-layout="2"] #fanzine .photo-col{
-  grid-column:2;
-  grid-row:3 / 5;
-  align-self:start;
-  justify-self:end;
+  justify-self:center;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:3;
+  overflow:hidden;
+  height:calc(3 * 1.4em);
+  max-width:28rem;
+  margin:0.7rem 0 0;
+  font-size:0.72rem;
+  line-height:1.4;
+  text-align:center;
 }
 
-body[data-layout="2"] #fanzine .photo-main{ height:var(--l2-fz-h); }
+body[data-layout="2"] #fanzine .l2-names span{ display:inline; }
+body[data-layout="2"] #fanzine .l2-names span + span:not(:nth-child(2))::before{ content:" \00B7  "; }
+body[data-layout="2"] #fanzine .l2-names-label{ margin:0 0.4em 0 0; }
 
+/* "Leggi le fanzine" chiude la colonna, sulla riga di "Scopri" */
 body[data-layout="2"] #fanzine .reveal-buttons{
   grid-column:1 / -1;
+  grid-row:8;
+  align-self:end;
   justify-self:center;
-}
-
-@media(max-width:760px){
-  /* da telefono: testo sopra, copertina sotto */
-  body[data-layout="2"] #fanzine .section-body{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-  }
-  body[data-layout="2"] #fanzine .text-col{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-  }
-  body[data-layout="2"] .l2-fz-num,
-  body[data-layout="2"] #fanzine .content-date-badge{ align-self:center; }
-  body[data-layout="2"] #fanzine .l2-names{ align-self:center; align-items:center; text-align:center; }
-  body[data-layout="2"] #fanzine .photo-col{ align-self:center; }
-  body[data-layout="2"] #fanzine .photo-main{ height:min(52vh, 340px); }
 }

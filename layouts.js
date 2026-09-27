@@ -238,6 +238,15 @@
 
   // ---------- layout 4 ----------
 
+  // Niente "finta penna" nel layout 4: la pressione del mouse (o del dito)
+  // viene fermata prima che arrivi allo script dell'inchiostro. I clic
+  // su link e pulsanti sono un evento a parte e funzionano normalmente.
+  ['mousedown', 'touchstart'].forEach(function(type){
+    window.addEventListener(type, function(e){
+      if(current() === '4'){ e.stopPropagation(); }
+    }, true);
+  });
+
   // Le miniature dei caroselli hanno la foto come stile in linea, che il
   // CSS del layout 1 nasconde (diventano pallini). Il layout 4 le mostra
   // come copertine: qui la foto viene copiata in una variabile CSS.

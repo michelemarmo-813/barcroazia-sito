@@ -1850,3 +1850,22 @@ body[data-layout="4"] #fanzine .photo-main{ clip-path:var(--l4-torn-box); box-sh
   body[data-layout="4"] .l4-photo:hover img,
   body[data-layout="4"] .photo-main:hover img.active{ transform:none; }
 }
+
+/* ---------- niente "finta penna": via anche i segni fatti in altri layout ---------- */
+body[data-layout="4"] canvas{ display:none !important; }
+
+/* ---------- citazione: testo e foto più grandi nella fascia rossa ---------- */
+body[data-layout="4"] .hero-divider{ padding:2.6rem 1.5rem 2.8rem; }
+body[data-layout="4"] .pull-quote{
+  max-width:54rem;
+  padding:2.4rem 5.6rem 2rem 3rem;
+}
+body[data-layout="4"] .pull-quote p{ font-size:clamp(2rem, 4.2vw, 3.3rem); line-height:1.2; }
+body[data-layout="4"] .pull-quote .quote-note{ font-size:0.9rem; }
+body[data-layout="4"] .l4-quote-photo{ width:250px; margin-left:-3rem; }
+
+@media(max-width:760px){
+  body[data-layout="4"] .pull-quote{ padding:1.8rem 1.4rem 1.4rem; }
+  body[data-layout="4"] .pull-quote p{ font-size:clamp(1.7rem, 7.4vw, 2.2rem); }
+  body[data-layout="4"] .l4-quote-photo{ width:190px; margin:-2.4rem 0 0; }
+}
