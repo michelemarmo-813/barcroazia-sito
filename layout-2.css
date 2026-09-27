@@ -967,3 +967,43 @@ body[data-layout="2"] #fanzine .reveal-buttons{
   align-self:end;
   justify-self:center;
 }
+
+/* ---------- Allineamento Eventi | Fanzine ----------
+   - numero della fanzine e titolo dell'evento allineati in alto (se il
+     titolo va su due righe, "n.1" resta sulla prima);
+   - la copertina della fanzine è più bassa della foto dell'evento
+     esattamente quanto occupano in più miniature e autori rispetto ai
+     pallini: le due colonne finiscono nello stesso punto. Le misure in
+     gioco sono tutte fisse (gli autori hanno un riquadro di 3 righe),
+     quindi il calcolo regge con titoli o elenchi di nomi più lunghi. */
+body[data-layout="2"]{
+  /* pallini: margine 0.8rem + 8px; miniature: 0.8rem + 39px;
+     autori: 0.7rem + 3 righe da 1.4 × 0.72rem */
+  --l2-fz-h:calc(var(--l2-ph) - 31px - 0.7rem - 3 * 1.4 * 0.72rem);
+}
+
+body[data-layout="2"] #eventi .content-title,
+body[data-layout="2"] .l2-fz-num{ align-self:start; }
+
+/* la foto dell'evento (con i pallini) occupa la riga della copertina e
+   quella degli autori */
+body[data-layout="2"] #eventi .photo-col{ grid-row:4 / span 2; }
+
+body[data-layout="2"] #fanzine .photo-main{ height:var(--l2-fz-h); }
+
+@media(max-width:760px){
+  /* colonne una sotto l'altra: la copertina torna grande come la foto */
+  body[data-layout="2"] #fanzine .photo-main{ height:var(--l2-ph); }
+}
+
+/* ---------- Blog: foto diritte dentro le schede, hover rosso ---------- */
+body[data-layout="2"] .post-photo,
+body[data-layout="2"] .post-card:nth-child(even) .post-photo{
+  clip-path:none;
+  transform:none;
+}
+
+body[data-layout="2"] .post-card:hover{
+  background:var(--receipt-red);
+  color:var(--violet);
+}
