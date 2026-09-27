@@ -22,8 +22,8 @@
 body[data-layout="3"]{
   --l3-orange:#e8461c;
   --l3-ink:#141414;
-  --l3-col:780px;
-  --l3-photo-h:360px;
+  --l3-col:1000px;
+  --l3-photo-h:450px;
   /* le variabili del layout 1 riportate sulla nuova palette */
   --receipt-red:var(--l3-orange);
   --ink:var(--l3-ink);
@@ -33,6 +33,12 @@ body[data-layout="3"]{
   --line-thin:1px solid var(--l3-ink);
   background:#ffffff;
   color:var(--l3-ink);
+}
+
+/* Più grande: la colonna passa da 780 a 1000px e testi, pulsanti e
+   spaziature (tutti in rem) crescono in proporzione. */
+@media(min-width:841px){
+  html:has(body[data-layout="3"]){ font-size:125%; }
 }
 
 body[data-layout="3"],
@@ -65,34 +71,28 @@ body[data-layout="3"] .masthead-topline{
   letter-spacing:0.02em;
 }
 
-/* link del ticker: piccole etichette bordate, ferme */
+/* link del ticker: piccole etichette bordate che scorrono (si fermano
+   passandoci sopra col mouse, come nei layout 1 e 2) */
 body[data-layout="3"] .masthead-marquee{
   border:none;
-  overflow:visible;
+  border-left:1px solid var(--l3-orange);
+  border-right:1px solid var(--l3-orange);
 }
 
 body[data-layout="3"] .masthead-line{
-  width:auto;
-  flex-wrap:wrap;
-  animation:none;
   font-size:0.66rem;
   letter-spacing:0;
   border-top:1px solid var(--l3-orange);
-  border-left:1px solid var(--l3-orange);
 }
 
 body[data-layout="3"] .masthead-line .m-cell{
-  flex:1 1 auto;
-  padding:0.2rem 0.35rem;
+  padding:0.2rem 0.6rem;
   background:transparent;
   color:var(--l3-orange);
   border-right:1px solid var(--l3-orange);
   border-bottom:1px solid var(--l3-orange);
   font-weight:400;
 }
-
-/* il ticker del layout 1 contiene i link due volte (per lo scorrimento) */
-body[data-layout="3"] .masthead-line .m-cell:nth-child(n+10){ display:none; }
 
 body[data-layout="3"] .masthead-line .m-cell .m-emoji{ display:none; }
 
@@ -248,7 +248,7 @@ body[data-layout="3"] .side-tape.left{ left:calc(50% - var(--l3-col) / 2 - 3.4re
 body[data-layout="3"] .side-tape.right{ right:calc(50% - var(--l3-col) / 2 - 3.4rem); }
 body[data-layout="3"] .side-tape.left::before{ transform:rotate(180deg); }
 
-@media(min-width:960px){
+@media(min-width:1160px){
   body[data-layout="3"] .side-tape{ display:flex; }
 }
 
@@ -654,16 +654,20 @@ body[data-layout="3"] footer{
   font-size:0.66rem;
 }
 
-body[data-layout="3"] .foot-barcode{ height:2.2rem; }
+body[data-layout="3"] .foot-barcode,
+body[data-layout="3"] .foot-barcode-num{ display:none; }
 body[data-layout="3"] .foot-thanks{ color:var(--l3-orange); font-size:0.85rem; }
 body[data-layout="3"] .foot-thanks::before{ content:"*** "; }
 body[data-layout="3"] .foot-thanks::after{ content:" ***"; }
 
 /* ---------- tablet e mobile ---------- */
 
-@media(max-width:840px){
+@media(max-width:1080px){
   body[data-layout="3"] .page{ padding-left:1rem; padding-right:1rem; }
   body[data-layout="3"] .masthead-topline{ padding-left:1rem; padding-right:1rem; }
+}
+
+@media(max-width:840px){
   body[data-layout="3"]{ --l3-photo-h:300px; }
 }
 
@@ -723,3 +727,11 @@ body[data-layout="3"] .foot-thanks::after{ content:" ***"; }
 
   body[data-layout="3"] .post-grid{ grid-template-columns:1fr; }
 }
+
+/* ---------- Eventi: niente frecce, c'è già "Prossimo evento >>" ---------- */
+body[data-layout="3"] #eventi .photo-nav-arrow{ display:none; }
+
+/* Chi siamo: qui il sottotitolo "Bar Croazia" resta (nascosto solo nei
+   layout 1 e 2) */
+body[data-layout="3"] #chi-siamo .content-title{ display:block; }
+body[data-layout="3"] #chi-siamo .content-divider{ display:block; }

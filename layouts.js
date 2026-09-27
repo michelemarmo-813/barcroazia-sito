@@ -47,6 +47,35 @@
     });
   }
 
+  // Spazio per il testo nei riquadri: lo script principale lo chiede qui
+  // prima di usare il proprio calcolo (quello del layout 1).
+  // Layout 3 (da tablet in su): il testo riempie tutto il riquadro fino al
+  // fondo della cornice arancione della foto, e "Continua a leggere" resta
+  // in fondo. Negli altri layout non restituisce nulla.
+  window.layoutFlowBudget = function(o){
+    var layout = current();
+    if(layout === '3'){
+      if(window.matchMedia && window.matchMedia('(max-width: 640px)').matches) return;
+      var boxBottom = o.col.getBoundingClientRect().bottom;
+      var flowTop = o.flowEl.getBoundingClientRect().top;
+      var reserve = 0;
+      [o.placeholderEl, o.ctaEl].forEach(function(el){
+        if(!el) return;
+        var cs = window.getComputedStyle(el);
+        reserve += el.getBoundingClientRect().height + (parseFloat(cs.marginTop) || 0);
+      });
+      if(o.moreBtnEl && o.flowEl.dataset.static === '1'){
+        var mb = window.getComputedStyle(o.moreBtnEl);
+        reserve += (parseFloat(mb.fontSize) || 12) * 1.5 + (parseFloat(mb.marginTop) || 0);
+      }
+      return Math.max(0, boxBottom - flowTop - reserve - 2);
+    }
+    if(layout === '4' && o.flowEl.dataset.static === '1'){
+      // layout 4: i testi veri restano sempre interi (nessun troncamento)
+      return 100000;
+    }
+  };
+
   // ---------- selettore ----------
   var sw = document.createElement('div');
   sw.className = 'layout-switch';
@@ -185,15 +214,122 @@
     });
   })();
 
+  // ---------- layout 4 ----------
+
+  // Le miniature dei caroselli hanno la foto come stile in linea, che il
+  // CSS del layout 1 nasconde (diventano pallini). Il layout 4 le mostra
+  // come copertine: qui la foto viene copiata in una variabile CSS.
+  Array.prototype.forEach.call(document.querySelectorAll('.photo-menu .thumb'), function(t){
+    if(t.style.backgroundImage){ t.style.setProperty('--thumb-img', t.style.backgroundImage); }
+  });
+
+  // Tasti che aprono "Dove trovarci" ("Vieni", la mappa): usano il tasto
+  // vero della sezione Chi siamo, poi portano al pannello.
+  Array.prototype.forEach.call(document.querySelectorAll('[data-open-panel]'), function(btn){
+    btn.addEventListener('click', function(){
+      var target = btn.getAttribute('data-open-panel');
+      var opener = document.querySelector('.reveal-btn[data-target="' + target + '"]');
+      var panel = document.getElementById('panel-' + target);
+      if(opener && panel && !panel.classList.contains('open')){ opener.click(); }
+      if(panel){
+        setTimeout(function(){ panel.scrollIntoView({ behavior:'smooth', block:'start' }); }, 120);
+      }
+    });
+  });
+
+  // Eventi: dati della locandina e del dettaglio, presi dalla slide attiva
+  var l4Meta = document.querySelector('.l4-ev-meta');
+  var l4Date = document.querySelector('.l4-ev-date');
+  var l4Time = document.querySelector('.l4-ev-time');
+  var l4Place = document.querySelector('.l4-ev-place');
+  function updateEventDetails(){
+    if(!eventiSection) return;
+    var active = eventiSection.querySelector('.thumb.active') || eventiSection.querySelector('.thumb');
+    if(!active) return;
+    if(l4Meta){ l4Meta.textContent = (active.dataset.l4Meta || '').split(' \u00B7 ').join('\n'); }
+    if(l4Date){ l4Date.textContent = active.dataset.date || ''; }
+    if(l4Time){ l4Time.textContent = active.dataset.l4Time || ''; }
+    if(l4Place){ l4Place.textContent = active.dataset.l4Place || ''; }
+  }
+
+  var l4ScopriBtn = document.querySelector('.l4-scopri');
+  if(l4ScopriBtn && eventiSection){
+    l4ScopriBtn.addEventListener('click', function(){
+      var open = !eventiSection.classList.contains('l4-open');
+      eventiSection.classList.toggle('l4-open', open);
+      l4ScopriBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      l4ScopriBtn.textContent = open ? 'Chiudi' : 'Scopri';
+    });
+  }
+
+  var shareBtn = document.querySelector('.l4-share');
+  if(shareBtn){
+    shareBtn.addEventListener('click', function(){
+      var title = (eventiSection && eventiSection.querySelector('.content-title') || {}).textContent || 'Bar Croazia';
+      var url = location.href.split('#')[0] + '#eventi';
+      if(navigator.share){
+        navigator.share({ title: title, url: url }).catch(function(){});
+      } else if(navigator.clipboard){
+        navigator.clipboard.writeText(url).then(function(){
+          shareBtn.textContent = 'Link copiato';
+          setTimeout(function(){ shareBtn.textContent = 'Condividi'; }, 2200);
+        }).catch(function(){});
+      }
+    });
+  }
+
+  // Fanzine: contatore "numero / totale" accanto alla copertina
+  var l4Counter = document.querySelector('.l4-counter');
+  function updateFanzineCounter(){
+    if(!fanzineSection || !l4Counter) return;
+    var thumbs = Array.prototype.slice.call(fanzineSection.querySelectorAll('.thumb'));
+    var i = thumbs.indexOf(fanzineSection.querySelector('.thumb.active'));
+    l4Counter.textContent = (i < 0 ? 1 : i + 1) + ' / ' + thumbs.length;
+  }
+
+  if('MutationObserver' in window){
+    var evTitle = eventiSection ? eventiSection.querySelector('.content-title') : null;
+    if(evTitle){
+      new MutationObserver(updateEventDetails).observe(evTitle, { childList:true, characterData:true, subtree:true });
+    }
+    var fzTitle4 = fanzineSection ? fanzineSection.querySelector('.content-title') : null;
+    if(fzTitle4){
+      new MutationObserver(updateFanzineCounter).observe(fzTitle4, { childList:true, characterData:true, subtree:true });
+    }
+  }
+
+  // Menu da telefono: pannello nero a tutto schermo
+  var menuBtn = document.querySelector('.l4-menu-btn');
+  function setMenu(open){
+    body.classList.toggle('l4-menu-open', open);
+    if(menuBtn){
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menuBtn.setAttribute('aria-label', open ? 'Chiudi il menu' : 'Apri il menu');
+    }
+  }
+  if(menuBtn){
+    menuBtn.addEventListener('click', function(){ setMenu(!body.classList.contains('l4-menu-open')); });
+    Array.prototype.forEach.call(document.querySelectorAll('nav.mainnav a'), function(a){
+      a.addEventListener('click', function(){ setMenu(false); });
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && body.classList.contains('l4-menu-open')){ setMenu(false); menuBtn.focus(); }
+    });
+  }
+
   function resetLayoutState(){
     if(callSection){ callSection.classList.remove('l2-open'); }
     if(collaboraBtn){ collaboraBtn.classList.remove('open'); collaboraBtn.setAttribute('aria-expanded', 'false'); }
-    if(eventiSection){ eventiSection.classList.remove('l2-expanded'); }
+    if(eventiSection){ eventiSection.classList.remove('l2-expanded'); eventiSection.classList.remove('l4-open'); }
     if(scopriBtn){ scopriBtn.classList.remove('open'); scopriBtn.setAttribute('aria-expanded', 'false'); }
+    if(l4ScopriBtn){ l4ScopriBtn.setAttribute('aria-expanded', 'false'); l4ScopriBtn.textContent = 'Scopri'; }
+    setMenu(false);
   }
 
   function onLayoutApplied(){
-    if(current() === '2'){ updateFanzineNames(); }
+    if(current() === '2' || current() === '4'){ updateFanzineNames(); }
+    updateEventDetails();
+    updateFanzineCounter();
   }
 
   // stato iniziale (i caroselli vengono avviati dallo script principale
@@ -202,6 +338,8 @@
   if(scopriBtn){ scopriBtn.setAttribute('aria-expanded', 'false'); }
   window.addEventListener('load', function(){
     updateFanzineNames();
+    updateEventDetails();
+    updateFanzineCounter();
     if(current() !== '1'){ remeasureWhenFontsReady(); }
   });
 })();

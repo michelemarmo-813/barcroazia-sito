@@ -25,7 +25,7 @@ In basso a destra c'è un piccolo selettore `layout 1 2 3 4`. I contenuti sono s
 - `1` il layout attuale, invariato
 - `2` "scontrino" — `layout-2.css`
 - `3` ispirato al PDF "layout 3" — `layout-3.css`
-- `4` "il libro", proposta libera — `layout-4.css`
+- `4` fanzine punk/underground fotocopiata, dal wireframe — `layout-4.css` (e `layout-4-sub.css` per le sottopagine, attivo solo quando è scelto il layout 4)
 
 Il layout attivo è l'attributo `data-layout` sul `<body>`; ogni file CSS ha regole valide solo per il suo layout. La scelta resta salvata nel browser e si può passare via link: `index.html?layout=3`. Selettore e piccoli comportamenti dei layout 2–4 sono in `layouts.js` e `layouts.css`.
 

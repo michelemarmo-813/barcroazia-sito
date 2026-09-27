@@ -1326,6 +1326,13 @@
     padding-bottom:1.2rem;
   }
 
+  /* Chi siamo: niente sottotitolo "Bar Croazia" — il testo parte subito
+     sotto il titolo della sezione. */
+  #chi-siamo .content-title,
+  #chi-siamo .content-divider{
+    display:none;
+  }
+
   /* Chi siamo now has a single photo — no point showing a thumbnail
      strip with just one (non-interactive) dot underneath it. */
   #chi-siamo .photo-menu{
@@ -1558,6 +1565,7 @@
 
   <div class="masthead-marquee">
     <div class="masthead-line">
+      <span class="solo-l4 l4-motto">Bar Croazia &#10033; Poesia underground &#10033; Bologna &#10033; Luned&igrave; 20:30 &#10033; Piazza Santo Stefano &#10033;</span>
       <a class="m-cell m-quip js-weather" href="#" target="_blank" rel="noopener">&nbsp;</a>
       <a class="m-cell m-quip" href="https://www.corriere.it/oroscopo/oggi/" target="_blank" rel="noopener"><span class="m-emoji">&#128302;&#11088;</span> <span class="m-text">Oroscopo di Paolo Fox</span></a>
       <a class="m-cell m-quip js-wiki" href="https://it.wikipedia.org/wiki/Poesia" target="_blank" rel="noopener"><span class="m-emoji">&#10002;&#65039;</span> <span class="m-text">Scopri&hellip;</span></a>
@@ -1568,6 +1576,7 @@
       <a class="m-cell m-quip" href="https://www.giacomoleopardi.it/canti/l-infinito/#" target="_blank" rel="noopener"><span class="m-emoji">&#128218;</span> <span class="m-text">L&rsquo;infinito</span></a>
       <a class="m-cell m-quip" href="https://www.facebook.com/reel/27557790280562616" target="_blank" rel="noopener"><span class="m-emoji">&#127916;</span> <span class="m-text">Manifesto</span></a>
 
+      <span class="solo-l4 l4-motto" aria-hidden="true">Bar Croazia &#10033; Poesia underground &#10033; Bologna &#10033; Luned&igrave; 20:30 &#10033; Piazza Santo Stefano &#10033;</span>
       <a class="m-cell m-quip js-weather" href="#" target="_blank" rel="noopener">&nbsp;</a>
       <a class="m-cell m-quip" href="https://www.corriere.it/oroscopo/oggi/" target="_blank" rel="noopener"><span class="m-emoji">&#128302;&#11088;</span> <span class="m-text">Oroscopo di Paolo Fox</span></a>
       <a class="m-cell m-quip js-wiki" href="https://it.wikipedia.org/wiki/Poesia" target="_blank" rel="noopener"><span class="m-emoji">&#10002;&#65039;</span> <span class="m-text">Scopri&hellip;</span></a>
@@ -1880,6 +1889,23 @@
     </svg>
   </div>
 
+  <!-- Layout 4: testata "fanzine" e tasto del menu da telefono -->
+  <section class="solo-l4 l4-hero" aria-label="Bar Croazia">
+    <div class="l4-hero-text">
+      <h1 class="l4-hero-title">Bar Croazia</h1>
+      <p class="l4-hero-sub">Poesia / Bologna / Ogni luned&igrave;</p>
+      <p class="l4-hand">Raw Poetry</p>
+      <p class="l4-hero-when">Ogni luned&igrave; &middot; 20:30<br>Piazza Santo Stefano, Bologna</p>
+      <button type="button" class="l4-btn l4-btn-red" data-open-panel="dove">Vieni</button>
+      <span class="l4-deco l4-deco-asterisk" aria-hidden="true"></span>
+    </div>
+    <figure class="l4-hero-photo l4-photo">
+      <img src="assets/img/chi_siamo/1.jpg" alt="Il pubblico seduto in piazza durante Raw Poetry">
+      <span class="l4-deco l4-deco-crown" aria-hidden="true"></span>
+    </figure>
+  </section>
+  <button type="button" class="solo-l4 l4-menu-btn" aria-expanded="false" aria-label="Apri il menu"><span>Menu</span></button>
+
   <nav class="mainnav">
     <a href="#chi-siamo"><span>Chi siamo</span></a>
     <a href="#eventi"><span>Eventi</span></a>
@@ -1896,6 +1922,7 @@
       <p>A rose is a rose is a rose is a rose.</p>
       <span class="quote-note">Gertrude Stein &middot; <em>Sacred Emily</em>, 1913</span>
     </blockquote>
+    <img class="solo-l4 l4-quote-photo" src="assets/img/gertrude-stein.png" alt="Gertrude Stein">
   </div>
 
   <main>
@@ -2015,11 +2042,12 @@
             <img src="assets/img/eventi/raw-poetry.png" alt="Raw Poetry — nuova stagione, ottobre 2026 parte 1">
           </div>
           <div class="photo-menu">
-            <div class="thumb" data-name="Poetry Slam" data-title="Poetry Slam round I — Bar Croazia x Farm" data-date="6 Ottobre 2026" data-template="tpl-eventi-slam" style="background-image:url('assets/img/eventi/poetry-slam.png')"></div>
-            <div class="thumb" data-name="Raw Poetry" data-title="Raw Poetry — nuova stagione, ottobre 2026 parte 1" data-date="5 e 12 Ottobre 2026" data-template="tpl-eventi-raw" style="background-image:url('assets/img/eventi/raw-poetry.png')"></div>
+            <div class="thumb" data-name="Poetry Slam" data-title="Poetry Slam round I — Bar Croazia x Farm" data-date="6 Ottobre 2026" data-template="tpl-eventi-slam" data-l4-meta="6 performer &middot; 2 manches &middot; 1 finale" data-l4-time="20:30" data-l4-place="Farm &middot; Via Sant&rsquo;Isaia 57/D, Bologna" style="background-image:url('assets/img/eventi/poetry-slam.png')"></div>
+            <div class="thumb" data-name="Raw Poetry" data-title="Raw Poetry — nuova stagione, ottobre 2026 parte 1" data-date="5 e 12 Ottobre 2026" data-template="tpl-eventi-raw" data-l4-meta="gare e open mic &middot; ingresso libero" data-l4-time="20:30" data-l4-place="Piazza Santo Stefano, Bologna" style="background-image:url('assets/img/eventi/raw-poetry.png')"></div>
           </div>
         </div>
         <div class="text-col">
+          <p class="solo-l4 l4-kicker">Prossimo evento</p>
           <div class="content-title">Poetry Slam round I — Bar Croazia x Farm</div>
           <span class="content-date-badge">6 Ottobre 2026</span>
           <div class="content-divider"></div>
@@ -2052,6 +2080,16 @@
           </div>
           <button type="button" class="flow-more-btn">Continua a leggere</button>
           <button type="button" class="reveal-btn solo-l2 l2-scopri" aria-controls="eventi">Scopri</button>
+          <p class="solo-l4 l4-ev-meta"></p>
+          <button type="button" class="solo-l4 l4-btn l4-btn-black l4-scopri" aria-expanded="false">Scopri</button>
+          <div class="solo-l4 l4-ev-details">
+            <dl>
+              <dt>Data</dt><dd class="l4-ev-date"></dd>
+              <dt>Orario</dt><dd class="l4-ev-time"></dd>
+              <dt>Luogo</dt><dd class="l4-ev-place"></dd>
+            </dl>
+            <button type="button" class="l4-btn l4-btn-red l4-share">Condividi</button>
+          </div>
         </div>
       </div>
       <div class="solo-l3 l3-actions">
@@ -2128,7 +2166,7 @@
             <p>Ordinando qui la tua copia, riceverai le istruzioni per stamparla direttamente in casa con una normalissima fotocopiatrice - o nella tua copisteria di fiducia!</p>
           </div>
           <button type="button" class="flow-more-btn">Continua a leggere</button>
-          <div class="solo-l2 l2-names" aria-live="polite"></div>
+          <div class="solo-l2 solo-l4 l2-names" aria-live="polite"></div>
         </div>
         <div class="photo-col" data-autoplay="8000">
           <div class="photo-main" data-base="COPERTINA">
@@ -2147,6 +2185,7 @@
             <div class="thumb" data-name="Fanzine N.4" data-gender="f" data-title="Fanzine n.4" data-date="Lunedì 27 Aprile 2026 &middot; Bologna" data-template="tpl-fanzine-4" style="background-image:url('assets/img/fanzine/copertina.jpg')"></div>
             <div class="thumb" data-name="Fanzine N.5" data-gender="f" data-title="Fanzine n.5" data-date="Lunedì 22 Giugno 2026 &middot; Bologna" data-template="tpl-fanzine-5" style="background-image:url('assets/img/fanzine/copertina-azzurrino.jpg')"></div>
           </div>
+          <p class="solo-l4 l4-counter" aria-live="polite"></p>
           <div class="solo-l3 l3-stack">
             <button type="button" class="l3-btn" data-next-slide="fanzine">Prossimo numero &gt;</button>
             <a class="l3-btn" href="fanzine-elenco.html">Ottieni una copia</a>
@@ -2158,6 +2197,14 @@
         <a class="reveal-btn" href="fanzine-elenco.html">Leggi le fanzine</a>
       </div>
     </section>
+
+    <aside class="solo-l4 l4-bologna" aria-label="Bologna">
+      <figure class="l4-bo-photo l4-photo">
+        <img src="assets/img/archivio/3maggio-1.jpg" alt="Bologna, i portici di Piazza Santo Stefano di sera">
+        <figcaption>Bologna<br>44&deg;29&prime;N &middot; 11&deg;20&prime;E</figcaption>
+      </figure>
+      <button type="button" class="l4-map" data-open-panel="dove" aria-label="Dove trovarci: apri la mappa"><span>Via Santo Stefano 24</span></button>
+    </aside>
 
     <section id="call" class="zine-section alt zz-border">
       <div class="section-head">
@@ -2222,6 +2269,32 @@
           </div>
         </div>
       </div>
+      <div class="solo-l4 l4-timeline">
+        <div class="l4-tl-year">
+          <span class="l4-tl-n">2026</span>
+          <ol>
+            <li><a href="fanzine-elenco.html"><span class="l4-tl-date">22 giu</span> Fanzine n.5<small>Bologna</small></a></li>
+            <li><a href="fanzine-elenco.html"><span class="l4-tl-date">27 apr</span> Fanzine n.4<small>Bologna</small></a></li>
+            <li><a href="archivio-eventi.html"><span class="l4-tl-date">2 mar</span> Raw Poetry &mdash; Parole in strada<small>Bar Croazia, Bologna</small></a></li>
+            <li><a href="archivio-eventi.html"><span class="l4-tl-date">20 gen</span> Poetry Slam III Round<small>Elektrobau Bar, Bologna</small></a></li>
+            <li><a href="fanzine-elenco.html"><span class="l4-tl-date">20 gen</span> Fanzine n.3<small>Bologna</small></a></li>
+          </ol>
+        </div>
+        <div class="l4-tl-year">
+          <span class="l4-tl-n">2025</span>
+          <ol>
+            <li><a href="fanzine-elenco.html"><span class="l4-tl-date">24 nov</span> Fanzine n.2<small>Bologna</small></a></li>
+            <li><a href="fanzine-elenco.html"><span class="l4-tl-date">20 ott</span> Fanzine n.1<small>Bologna</small></a></li>
+            <li><a href="fanzine-elenco.html"><span class="l4-tl-date">22 set</span> Fanzine n.0<small>Bologna</small></a></li>
+          </ol>
+        </div>
+        <div class="l4-tl-year">
+          <span class="l4-tl-n">2024</span>
+          <ol>
+            <li><a href="#eventi"><span class="l4-tl-date">nov</span> Nasce Raw Poetry<small>Piazza Santo Stefano, Bologna</small></a></li>
+          </ol>
+        </div>
+      </div>
       <div class="solo-l2 l2-archive">
         <a class="l2-arch-row" href="archivio-eventi.html">
           <span class="l2-arch-photo" style="background-image:url('assets/img/archivio/3maggio-1.jpg')"></span>
@@ -2256,6 +2329,7 @@
               <span class="post-date">30 Maggio 2026</span>
               <span class="post-title">La poesia riempie la Piazza</span>
               <span class="post-author">Federico Taddia</span>
+              <span class="solo-l4 post-source">La Stampa</span>
             </div>
           </a>
           <a class="post-card" href="articolo-egidio.html">
@@ -2272,6 +2346,7 @@
               <span class="post-date">2 Dicembre 2025</span>
               <span class="post-title">Non Mi Capisci - Radio 24</span>
               <span class="post-author">Federico Taddia e Matteo Bussola</span>
+              <span class="solo-l4 post-source">Radio 24</span>
             </div>
           </a>
           <a class="post-card" href="https://corrieredibologna.corriere.it/notizie/cronaca/25_ottobre_22/bologna-il-rito-collettivo-della-poesia-in-piazza-santo-stefano-prima-un-salto-al-bar-vicino-e-poi-ci-si-siede-per-terra-1c55092d-7cce-44c4-9b37-92562f0a4xlk.shtml" target="_blank" rel="noopener">
@@ -2280,6 +2355,7 @@
               <span class="post-date">Ottobre 2025</span>
               <span class="post-title">Il rito collettivo della poesia in piazza Santo Stefano</span>
               <span class="post-author">Piero Di Domenico</span>
+              <span class="solo-l4 post-source">Corriere di Bologna</span>
             </div>
           </a>
         </div>
@@ -2300,7 +2376,18 @@
     <div class="foot-barcode-num">030472026 041125 &middot; BO</div>
     <div class="foot-thanks">grazie &middot; a presto &middot; bar croazia</div>
     <div>Bar Croazia &middot; sito in costruzione</div>
+    <div class="solo-l4 l4-foot">
+      <span>Bar Croazia &middot; Bologna &middot; Poesia &middot; Ogni luned&igrave;</span>
+      <nav aria-label="Sezioni">
+        <a href="#chi-siamo">Chi siamo</a> &middot; <a href="#eventi">Eventi</a> &middot; <a href="#fanzine">Fanzine</a> &middot; <a href="#call">Open call</a> &middot; <a href="#archivio">Archivio</a> &middot; <a href="#blog">Blog</a>
+      </nav>
+    </div>
   </footer>
+
+  <!-- Layout 4: filtro per la leggera distorsione delle foto al passaggio -->
+  <svg class="solo-l4 l4-defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="l4-wobble"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.03" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="9"/></filter>
+  </svg>
 
 </div>
 
@@ -2738,6 +2825,16 @@
     // the two columns end level.
     function measureFlowBudget(){
       if(!flowEl || !textCol) return 0;
+      // Aggancio per i layout alternativi (layouts.js): se il layout
+      // attivo misura lo spazio in modo diverso, restituisce un numero;
+      // nel layout 1 non restituisce nulla e vale il calcolo qui sotto.
+      if(typeof window.layoutFlowBudget === 'function'){
+        var customBudget = window.layoutFlowBudget({
+          col: col, textCol: textCol, flowEl: flowEl,
+          placeholderEl: placeholderEl, ctaEl: ctaEl, moreBtnEl: moreBtnEl
+        });
+        if(typeof customBudget === 'number') return customBudget;
+      }
       var mainEl = col.querySelector('.photo-main');
       // The dot menu now overlays the photo itself (position:absolute)
       // instead of sitting in its own strip below it, so it no longer

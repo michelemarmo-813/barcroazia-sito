@@ -262,8 +262,17 @@
     padding:0.4rem 0.6rem;
   }
 </style>
+<!-- Layout 4 (confronto layout): attivo solo se scelto nella home -->
+<link rel="stylesheet" href="layout-4-sub.css">
 </head>
 <body>
+<script>
+  (function(){
+    var v = null;
+    try{ v = new URLSearchParams(location.search).get('layout') || localStorage.getItem('barcroazia-layout'); }catch(e){}
+    if(v === '4'){ document.body.setAttribute('data-layout', '4'); }
+  })();
+</script>
 
 <div class="lightbox" id="lightbox">
   <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Chiudi">&times;</button>

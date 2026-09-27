@@ -1,13 +1,15 @@
 /* ==========================================================
    CONFRONTO LAYOUT — parti comuni
    - selettore "1 2 3 4" fisso in basso a destra (in tutti i layout)
-   - elementi aggiunti solo per il layout 2 o 3 (.solo-l2 / .solo-l3 / .solo-l4):
+   - elementi aggiunti solo per alcuni layout (.solo-l2 / .solo-l3 / .solo-l4):
      nel layout 1 sono sempre nascosti, quindi non lo toccano.
    ========================================================== */
 
-body:not([data-layout="2"]) .solo-l2,
-body:not([data-layout="3"]) .solo-l3,
-body:not([data-layout="4"]) .solo-l4{
+/* un elemento può valere per più layout (es. class="solo-l2 solo-l4") */
+body[data-layout="1"] [class*="solo-l"],
+body[data-layout="2"] [class*="solo-l"]:not(.solo-l2),
+body[data-layout="3"] [class*="solo-l"]:not(.solo-l3),
+body[data-layout="4"] [class*="solo-l"]:not(.solo-l4){
   display:none !important;
 }
 
