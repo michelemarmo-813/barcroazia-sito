@@ -116,9 +116,9 @@ body[data-layout="4"] .l4-defs{ position:absolute; width:0; height:0; overflow:h
 body[data-layout="4"] .masthead-marquee{ order:0; }
 body[data-layout="4"] nav.mainnav{ order:1; }
 body[data-layout="4"] .l4-hero{ order:2; }
-body[data-layout="4"] #eventi{ order:3; grid-column:1; grid-row:span 2; }
+body[data-layout="4"] #eventi{ order:3; grid-column:1; }
 body[data-layout="4"] #fanzine{ order:4; grid-column:2; }
-body[data-layout="4"] .l4-bologna{ order:5; grid-column:2; }
+
 body[data-layout="4"] #chi-siamo{ order:6; }
 body[data-layout="4"] #panel-contatti{ order:7; }
 body[data-layout="4"] #panel-dove{ order:8; }
@@ -362,7 +362,7 @@ body[data-layout="4"] .post-photo img{
   width:100%;
   height:100%;
   object-fit:cover;
-  filter:grayscale(1) contrast(1.45) brightness(1.06);
+  filter:none;
   transition:transform .35s ease, opacity .6s ease;
 }
 
@@ -400,7 +400,7 @@ body[data-layout="4"] .photo-main::after{
 
 body[data-layout="4"] .l4-photo:hover img,
 body[data-layout="4"] .photo-main:hover img.active{
-  filter:grayscale(1) contrast(1.55) brightness(1.04) url(#l4-wobble);
+  filter:url(#l4-wobble);
   transform:scale(1.025) skew(-0.8deg, 0.4deg);
 }
 
@@ -453,8 +453,7 @@ body[data-layout="4"] .l4-tape::after,
 body[data-layout="4"] #eventi .photo-col::before,
 body[data-layout="4"] #fanzine .photo-col::before,
 body[data-layout="4"] #call .photo-col::before,
-body[data-layout="4"] .pull-quote::before,
-body[data-layout="4"] .l4-bo-photo figcaption::before{
+body[data-layout="4"] .pull-quote::before{
   content:"";
   position:absolute;
   z-index:6;
@@ -619,8 +618,7 @@ body[data-layout="4"] .expand-inner .section-head h2{
 /* ---------- 3. fascia: prossimo evento | fanzine ---------- */
 
 body[data-layout="4"] #eventi,
-body[data-layout="4"] #fanzine,
-body[data-layout="4"] .l4-bologna{
+body[data-layout="4"] #fanzine{
   background-color:var(--k-xerox);
   background-image:var(--l4-svg-grain);
   background-size:220px 220px;
@@ -673,25 +671,26 @@ body[data-layout="4"] #eventi .content-title{
   margin:0;
   font-family:var(--f-display);
   font-weight:400;
-  font-size:clamp(2.8rem, 5vw, 4.6rem);
-  line-height:0.86;
+  font-size:clamp(2rem, 3.3vw, 3rem);
+  line-height:0.9;
   text-transform:uppercase;
   color:var(--k-black);
 }
 
 body[data-layout="4"] #eventi .content-title::first-letter{ text-transform:uppercase; }
 
+/* la data fa parte del titolo: stessa misura, subito sotto, in rosso */
 body[data-layout="4"] #eventi .content-date-badge{
   grid-column:1;
   grid-row:3;
   display:block !important;
-  margin:1rem 0 0.6rem;
+  margin:0.1rem 0 0.9rem;
   padding:0;
   border:none;
   opacity:1;
   font-family:var(--f-display);
   font-weight:400;
-  font-size:clamp(2.2rem, 3.6vw, 3.2rem);
+  font-size:clamp(2rem, 3.3vw, 3rem);
   line-height:0.9;
   letter-spacing:0.01em;
   color:var(--k-red);
@@ -888,7 +887,9 @@ body[data-layout="4"] #fanzine .photo-main{
   box-shadow:5px 5px 0 var(--k-black);
 }
 
-body[data-layout="4"] #fanzine .photo-main img{ filter:grayscale(1) contrast(1.3) brightness(1.08); }
+/* copertine con i loro colori veri: niente filtri né grana sopra */
+body[data-layout="4"] #fanzine .photo-main img{ filter:none; }
+body[data-layout="4"] #fanzine .photo-main::before{ display:none; }
 
 /* colonna delle copertine (le miniature del carosello) */
 body[data-layout="4"] #fanzine .photo-menu{
@@ -910,7 +911,7 @@ body[data-layout="4"] #fanzine .photo-menu .thumb.active{
   background-image:var(--thumb-img) !important;
   background-size:cover !important;
   background-position:top center !important;
-  filter:grayscale(1) contrast(1.2);
+  filter:none;
   opacity:0.7;
 }
 
@@ -933,97 +934,18 @@ body[data-layout="4"] .l4-counter{
 }
 
 /* Bologna: foto con coordinate cerchiate + frammento di mappa */
-body[data-layout="4"] .l4-bologna{
-  display:grid;
-  grid-template-columns:minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap:1.2rem;
-  align-items:start;
-  padding:0.8rem 1.5rem 2.8rem 2.2rem;
-  align-self:start;
-}
 
-body[data-layout="4"] .l4-bo-photo{
-  height:210px;
-  clip-path:var(--l4-torn-photo-a);
-  transform:rotate(-1deg);
-}
 
-body[data-layout="4"] .l4-bo-photo img{
-  position:absolute;
-  inset:0;
-  object-position:50% 0%;
-}
 
-body[data-layout="4"] .l4-bo-photo figcaption{
-  position:absolute;
-  left:1rem;
-  bottom:1.1rem;
-  z-index:5;
-  padding:0.5rem 0.9rem 0.45rem;
-  background:var(--k-paper);
-  border:1.5px solid var(--k-black);
-  font-size:0.78rem;
-  font-weight:700;
-  line-height:1.45;
-  letter-spacing:0.06em;
-  text-transform:uppercase;
-  transform:rotate(-2deg);
-}
 
-body[data-layout="4"] .l4-bo-photo figcaption::before{ top:-16px; left:30%; width:70px; height:24px; transform:rotate(8deg); }
+
 
 /* cerchio rosso disegnato intorno alle coordinate */
-body[data-layout="4"] .l4-bo-photo figcaption::after{
-  content:"";
-  position:absolute;
-  left:-12%;
-  right:-12%;
-  top:28%;
-  bottom:-30%;
-  background:var(--l4-svg-circle) center / 100% 100% no-repeat;
-  pointer-events:none;
-}
 
-body[data-layout="4"] .l4-map{
-  position:relative;
-  display:block;
-  width:100%;
-  height:210px;
-  margin:0;
-  padding:0;
-  border:none;
-  background-color:var(--k-thermal);
-  background-image:var(--l4-svg-box), var(--l4-svg-map), var(--l4-svg-grain);
-  background-size:100% 100%, cover, 220px 220px;
-  background-repeat:no-repeat, no-repeat, repeat;
-  transform:rotate(1.8deg);
-  transition:transform .15s ease;
-}
 
-body[data-layout="4"] .l4-map:hover{ transform:rotate(-0.5deg) scale(1.02); }
 
-body[data-layout="4"] .l4-map span{
-  position:absolute;
-  left:0.8rem;
-  bottom:0.7rem;
-  padding:0.15rem 0.4rem;
-  background:var(--k-black);
-  color:var(--k-paper);
-  font-size:0.66rem;
-  font-weight:700;
-  letter-spacing:0.08em;
-  text-transform:uppercase;
-}
 
-body[data-layout="4"] .l4-map::after{
-  content:"";
-  position:absolute;
-  right:0.6rem;
-  top:0.5rem;
-  width:44px;
-  height:18px;
-  background:var(--l4-svg-scribble-small) center / 100% 100% no-repeat;
-}
+
 
 /* ---------- Chi siamo ---------- */
 
@@ -1193,7 +1115,7 @@ body[data-layout="4"] .l4-quote-photo{
   margin-left:-1.6rem;
   align-self:flex-end;
   transform:rotate(5deg);
-  filter:grayscale(1) contrast(1.35);
+  filter:none;
   clip-path:var(--l4-torn-photo-b);
 }
 
@@ -1399,7 +1321,7 @@ body[data-layout="4"] .post-card:nth-child(odd) .post-photo{ transform:rotate(-2
 body[data-layout="4"] .post-card:nth-child(even) .post-photo{ transform:rotate(1.6deg) translateY(8px); }
 body[data-layout="4"] .post-card:hover .post-photo{ transform:rotate(0) scale(1.03); }
 
-body[data-layout="4"] .post-photo img{ filter:grayscale(1) contrast(1.25) brightness(1.05); }
+body[data-layout="4"] .post-photo img{ filter:none; }
 
 body[data-layout="4"] .post-info{
   grid-column:1 / -1;
@@ -1579,7 +1501,7 @@ body[data-layout="4"] #panel-dove .map-box{ flex:1.6 1 0; }
 
 /* --- Citazione: fascia nera, ritaglio di carta termica sopra --- */
 body[data-layout="4"] .hero-divider{
-  background-color:var(--k-black);
+  background-color:var(--k-red);
   clip-path:var(--l4-torn-both);
   padding:3.2rem 1.5rem 3.4rem;
 }
@@ -1601,7 +1523,7 @@ body[data-layout="4"] .section-head .tag{ font-size:clamp(4.4rem, 8.5vw, 7rem); 
 
 body[data-layout="4"] #eventi{ padding-top:2.4rem; padding-bottom:2.2rem; }
 body[data-layout="4"] #fanzine{ padding-top:2.4rem; }
-body[data-layout="4"] .l4-bologna{ padding-bottom:2.2rem; }
+
 
 /* --- Chi siamo: testo su tre colonne, largo quanto la pagina --- */
 body[data-layout="4"] #chi-siamo{ padding:2.8rem 1.5rem 2rem; }
@@ -1637,6 +1559,22 @@ body[data-layout="4"] #call .text-col{
   clip-path:var(--l4-torn-box);
   transform:rotate(0.8deg);
 }
+
+/* --- Archivio compatto: timeline su due colonne e foto più piccola
+   subito accanto; il pulsante sotto la timeline --- */
+body[data-layout="4"] #archivio{
+  grid-template-columns:minmax(0, 1fr) 250px !important;
+  column-gap:3.2rem !important;
+  padding:2.6rem 1.5rem 2.2rem !important;
+}
+body[data-layout="4"] #archivio .section-body{ grid-row:2 / 4; align-self:start; }
+body[data-layout="4"] #archivio .reveal-buttons{ grid-column:1 !important; grid-row:3 !important; margin-top:0.4rem !important; }
+body[data-layout="4"] .l4-tl-year{ grid-template-columns:5.2rem minmax(0, 1fr); column-gap:0.8rem; }
+body[data-layout="4"] .l4-tl-n{ font-size:2.8rem; }
+body[data-layout="4"] .l4-timeline ol{ padding:0.35rem 0 0.9rem 1.4rem; }
+body[data-layout="4"] .l4-timeline li{ margin-bottom:0.7rem; }
+body[data-layout="4"] .l4-timeline li::before{ left:calc(-1.4rem - 6px); }
+body[data-layout="4"] #archivio .section-body::before{ left:-4rem; top:38%; width:90px; height:52px; }
 
 /* --- Archivio: timeline su due colonne accanto al collage --- */
 body[data-layout="4"] #archivio{
@@ -1694,20 +1632,18 @@ body[data-layout="4"] #blog .reveal-buttons{ margin-top:1.4rem; }
 body[data-layout="4"] footer{ margin-top:-14px; }
 
 /* --- qualche bordo strappato in più --- */
-body[data-layout="4"] .l4-map{ clip-path:var(--l4-torn-box); }
+
 body[data-layout="4"] #fanzine .photo-main{ clip-path:var(--l4-torn-box); box-shadow:none; }
-body[data-layout="4"] .l4-bo-photo figcaption{ clip-path:var(--l4-torn-box); }
+
 
 /* ---------- tablet ---------- */
 
 @media(max-width:1000px){
   body[data-layout="4"] .page{ grid-template-columns:minmax(0, 1fr); }
   body[data-layout="4"] #eventi,
-  body[data-layout="4"] #fanzine,
-  body[data-layout="4"] .l4-bologna{ grid-column:1 / -1; grid-row:auto; }
+  body[data-layout="4"] #fanzine{ grid-column:1 / -1; grid-row:auto; }
   body[data-layout="4"] #eventi{ background-image:var(--l4-svg-grain); background-size:220px 220px; background-repeat:repeat; padding-right:1.5rem; }
-  body[data-layout="4"] #fanzine,
-  body[data-layout="4"] .l4-bologna{ padding-left:1.5rem; }
+  body[data-layout="4"] #fanzine{ padding-left:1.5rem; }
   body[data-layout="4"] #fanzine{ border-top:2px solid var(--k-black); }
   body[data-layout="4"] #chi-siamo .text-flow{ column-count:2; }
   body[data-layout="4"] .post-grid{ grid-template-columns:120px minmax(0, 1fr) 120px minmax(0, 1fr); }
@@ -1736,7 +1672,6 @@ body[data-layout="4"] .l4-bo-photo figcaption{ clip-path:var(--l4-torn-box); }
 
   body[data-layout="4"] #eventi,
   body[data-layout="4"] #fanzine,
-  body[data-layout="4"] .l4-bologna,
   body[data-layout="4"] #chi-siamo,
   body[data-layout="4"] #call,
   body[data-layout="4"] #archivio,
@@ -1757,7 +1692,6 @@ body[data-layout="4"] .l4-bo-photo figcaption{ clip-path:var(--l4-torn-box); }
   body[data-layout="4"] #fanzine .reveal-buttons{ grid-row:4; }
   body[data-layout="4"] #fanzine .photo-main{ height:min(52vh, 300px); }
 
-  body[data-layout="4"] .l4-bologna{ grid-template-columns:minmax(0, 1fr); gap:2.6rem; }
 
   body[data-layout="4"] #chi-siamo{ padding-top:3.6rem; }
   body[data-layout="4"] #chi-siamo .text-flow{ column-count:1; }
@@ -1771,7 +1705,9 @@ body[data-layout="4"] .l4-bo-photo figcaption{ clip-path:var(--l4-torn-box); }
   body[data-layout="4"] #call .photo-col{ align-self:center; }
   body[data-layout="4"] #call .photo-main{ height:min(56vh, 380px); }
 
-  body[data-layout="4"] #archivio{ grid-template-columns:minmax(0, 1fr); }
+  body[data-layout="4"] #archivio{ grid-template-columns:minmax(0, 1fr) !important; padding:2.4rem 1rem 2rem !important; }
+  body[data-layout="4"] #archivio .section-body{ grid-row:3 !important; width:70% !important; }
+  body[data-layout="4"] #archivio .reveal-buttons{ grid-row:4 !important; margin-top:1rem !important; }
   body[data-layout="4"] .l4-timeline{ grid-row:2; }
   body[data-layout="4"] #archivio .section-body{ grid-column:1; grid-row:3; width:78%; justify-self:center; margin-top:0.6rem; }
   body[data-layout="4"] #archivio .section-body::before{ left:-3.2rem; top:-2.6rem; width:80px; height:48px; transform:rotate(30deg); }
@@ -1845,7 +1781,7 @@ body[data-layout="4"] .l4-bo-photo figcaption{ clip-path:var(--l4-torn-box); }
       url('assets/img/chi_siamo/1.jpg');
     background-size:cover;
     background-position:center;
-    background-blend-mode:normal, luminosity;
+    background-blend-mode:normal, normal;
   }
 
   body[data-layout="4"].l4-menu-open nav.mainnav::before{

@@ -1537,13 +1537,12 @@
 <body data-layout="1">
 <script>
   /* Sceglie il layout prima che la pagina venga disegnata: ?layout=N
-     nell'URL, altrimenti l'ultima scelta salvata, altrimenti 1. */
+     nell'URL, altrimenti sempre il layout 1 (la scelta non viene
+     ricordata fra una visita e l'altra). */
   (function(){
-    var v = '1', p = null, s = null;
+    var v = '1', p = null;
     try{ p = new URLSearchParams(location.search).get('layout'); }catch(e){}
-    try{ s = localStorage.getItem('barcroazia-layout'); }catch(e){}
-    if(/^[1-4]$/.test(p)){ v = p; try{ localStorage.setItem('barcroazia-layout', v); }catch(e){} }
-    else if(/^[1-4]$/.test(s)){ v = s; }
+    if(/^[1-4]$/.test(p)){ v = p; }
     document.body.setAttribute('data-layout', v);
   })();
 </script>
@@ -2198,14 +2197,6 @@
         <a class="reveal-btn" href="fanzine-elenco.html">Leggi le fanzine</a>
       </div>
     </section>
-
-    <aside class="solo-l4 l4-bologna" aria-label="Bologna">
-      <figure class="l4-bo-photo l4-photo">
-        <img src="assets/img/archivio/3maggio-1.jpg" alt="Bologna, i portici di Piazza Santo Stefano di sera">
-        <figcaption>Bologna<br>44&deg;29&prime;N &middot; 11&deg;20&prime;E</figcaption>
-      </figure>
-      <button type="button" class="l4-map" data-open-panel="dove" aria-label="Dove trovarci: apri la mappa"><span>Via Santo Stefano 24</span></button>
-    </aside>
 
     <section id="call" class="zine-section alt zz-border">
       <div class="section-head">

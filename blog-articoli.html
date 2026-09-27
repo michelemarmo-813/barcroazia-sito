@@ -1442,8 +1442,18 @@
 <script>
   (function(){
     var v = null;
-    try{ v = new URLSearchParams(location.search).get('layout') || localStorage.getItem('barcroazia-layout'); }catch(e){}
+    try{ v = new URLSearchParams(location.search).get('layout'); }catch(e){}
+    if(!/^[1-4]$/.test(v) || v === '1') return;
     if(v === '4'){ document.body.setAttribute('data-layout', '4'); }
+    // i link interni (anche "Indietro") mantengono il layout scelto
+    document.addEventListener('click', function(e){
+      var a = e.target.closest ? e.target.closest('a[href]') : null;
+      if(!a) return;
+      var href = a.getAttribute('href');
+      if(!/^[\w-]+\.html(#.*)?$/.test(href)) return;
+      var parts = href.split('#');
+      a.setAttribute('href', parts[0] + '?layout=' + v + (parts[1] ? '#' + parts[1] : ''));
+    }, true);
   })();
 </script>
 

@@ -4,14 +4,14 @@
    impostato già all'apertura della pagina da uno script in cima al body.
    Questo file:
    - disegna il selettore 1 / 2 / 3 / 4 (fisso in basso a destra);
-   - al cambio salva la scelta (localStorage) e aggiorna ?layout=N nell'URL;
+   - al cambio aggiorna ?layout=N nell'URL (la scelta non viene ricordata:
+     il link normale del sito apre sempre il layout 1);
    - fa rimisurare testi e navbar dello script principale;
    - gestisce i tasti che esistono solo nei layout 2 e 3.
    Il layout 1 non viene toccato: nessuna delle funzioni qui sotto agisce
    finché data-layout vale "1".
    ========================================================== */
 (function(){
-  var KEY = 'barcroazia-layout';
   var body = document.body;
 
   function current(){ return body.getAttribute('data-layout') || '1'; }
@@ -24,6 +24,18 @@
   Array.prototype.forEach.call(document.querySelectorAll('.text-flow[data-static="1"]'), function(el){
     flowSnapshots.push({ el: el, html: el.innerHTML });
   });
+
+  // Quando i font finiscono di caricare, lo script principale rimisura i
+  // testi partendo da quello che c'è nella pagina: se nel frattempo il
+  // testo era già stato accorciato, la versione accorciata veniva presa
+  // per quella intera e "Continua a leggere" spariva. Questo aggancio
+  // (registrato prima di quello dello script principale) rimette prima
+  // il testo intero, in tutti i layout.
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(function(){
+      flowSnapshots.forEach(function(s){ s.el.innerHTML = s.html; });
+    });
+  }
 
   function remeasure(){
     flowSnapshots.forEach(function(s){
@@ -105,7 +117,6 @@
     if(!/^[1-4]$/.test(n) || n === current()) return;
     resetLayoutState();
     body.setAttribute('data-layout', n);
-    try{ localStorage.setItem(KEY, n); }catch(e){}
     try{
       var u = new URL(location.href);
       u.searchParams.set('layout', n);
@@ -117,6 +128,17 @@
   }
 
   syncSwitcher();
+
+  // Link alle sottopagine: senza memorizzazione, il layout scelto viene
+  // passato nell'indirizzo (?layout=N) così la sottopagina lo mantiene.
+  document.addEventListener('click', function(e){
+    var a = e.target.closest ? e.target.closest('a[href]') : null;
+    if(!a || current() === '1') return;
+    var href = a.getAttribute('href');
+    if(!/^[\w-]+\.html(#.*)?$/.test(href)) return;
+    var parts = href.split('#');
+    a.setAttribute('href', parts[0] + '?layout=' + current() + (parts[1] ? '#' + parts[1] : ''));
+  }, true);
 
   // ---------- layout 2: pannelli aperti dai tasti ----------
   // "Collabora con noi" (sotto Chi siamo) apre la sezione Open call, che
@@ -289,6 +311,10 @@
     var active = fanzineSection.querySelector('.thumb.active');
     var i = thumbs.indexOf(active);
     if(l4Counter){ l4Counter.textContent = (i < 0 ? 1 : i + 1) + ' / ' + thumbs.length; }
+    if(current() === '2'){
+      var badge = fanzineSection.querySelector('.content-date-badge');
+      if(badge){ badge.textContent = badge.textContent.replace(/\s*\u00B7\s*Bologna\s*$/i, ''); }
+    }
     if(l2FzNum){
       var t = (active || thumbs[0] || {}).dataset;
       var m = t && t.title ? t.title.match(/n\.\s*\d+/i) : null;

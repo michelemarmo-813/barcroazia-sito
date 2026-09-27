@@ -169,10 +169,9 @@ body[data-layout="4"] .zine-section{ border:none; }
 /* foto in bianco e nero, contrastate */
 body[data-layout="4"] .issue-cover img,
 body[data-layout="4"] .post-photo img{
-  filter:grayscale(1) contrast(1.35) brightness(1.05);
+  filter:none;
 }
 
-body[data-layout="4"] .event-tile-photo{ filter:grayscale(1) contrast(1.45) brightness(1.05); }
 
 /* ---------- fanzine: copertine storte col nastro ---------- */
 body[data-layout="4"] .issue-grid{
@@ -360,7 +359,7 @@ body[data-layout="4"] .article-photo::before{
 body[data-layout="4"] .article-photo img{
   border:1px solid rgba(0,0,0,0.3);
   box-shadow:6px 6px 0 var(--k-black);
-  filter:grayscale(1) contrast(1.15);
+  filter:none;
 }
 
 body[data-layout="4"] .article-photo-hint{ font-family:var(--f-mono); color:var(--k-grey); }
