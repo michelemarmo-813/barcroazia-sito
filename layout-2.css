@@ -10,6 +10,7 @@ body[data-layout="2"]{
   --l2-col: 980px;
   --l2-ticker-h: 44px;
   --l2-gray: #9b9b9b;
+  --l2-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.09  0 0 0 0 0.08  0 0 0 0 0.11  0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   --l2-plus: "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++";
 }
 
@@ -25,12 +26,14 @@ body[data-layout="2"],
 body[data-layout="2"] .page,
 body[data-layout="2"] nav.mainnav{
   background-color:#ffffff;
+  /* grana fine (come la carta termica) sopra la stessa texture di carta */
   background-image:
-    linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)),
+    var(--l2-grain),
+    linear-gradient(rgba(255,255,255,0.28), rgba(255,255,255,0.28)),
     url('assets/textures/paper-final.jpg');
-  background-repeat:repeat, repeat;
-  background-size:auto, 1000px 1000px;
-  background-blend-mode:normal, multiply;
+  background-repeat:repeat, repeat, repeat;
+  background-size:240px 240px, auto, 1000px 1000px;
+  background-blend-mode:normal, normal, multiply;
 }
 
 body[data-layout="2"] .logo-wrap,
@@ -176,26 +179,30 @@ body[data-layout="2"] .tear-line{ display:none; }
 body[data-layout="2"] .hero-divider{
   display:block;
   border-bottom:none;
-  padding:1.6rem 0 0.4rem;
+  padding:1.6rem 0 0;
 }
 
 body[data-layout="2"] .pull-quote{
   max-width:none;
   display:block;
-  padding:0 0.4rem 0.7rem;
-  border-bottom:2px dashed rgba(23,21,28,0.45);
+  padding:0 0.4rem;
+  border-bottom:none;
 }
 
 body[data-layout="2"] .quote-label{ display:none; }
 
 body[data-layout="2"] .pull-quote p{
-  font-size:clamp(1.25rem, 2.6vw, 1.8rem);
+  font-size:clamp(1.6rem, 3.6vw, 2.5rem);
   text-align:center;
 }
 
+/* poetessa e poesia: più grandi e in grassetto */
 body[data-layout="2"] .pull-quote .quote-note{
-  margin:0.6rem 0 0;
-  font-size:0.72rem;
+  margin:0.8rem 0 0;
+  font-size:0.95rem;
+  font-weight:700;
+  letter-spacing:0.06em;
+  -webkit-text-stroke:0.35px currentColor;
   text-align:right;
 }
 
@@ -281,6 +288,8 @@ body[data-layout="2"] .reveal-btn:last-child{
 
 /* ---------- 5. Chi siamo ---------- */
 
+body[data-layout="2"] #chi-siamo{ padding-top:0.9rem; }
+
 body[data-layout="2"] #chi-siamo .section-body{ align-items:center; }
 
 body[data-layout="2"] #chi-siamo .text-col{
@@ -288,7 +297,10 @@ body[data-layout="2"] #chi-siamo .text-col{
   padding-bottom:0;
 }
 
-body[data-layout="2"] #chi-siamo .photo-main{ height:min(62vh, 470px); }
+body[data-layout="2"] #chi-siamo .photo-main{
+  height:min(62vh, 470px);
+  box-shadow:0 0 0 1px rgba(23,21,28,0.22), 0 10px 18px -12px rgba(23,21,28,0.55);
+}
 
 body[data-layout="2"] #chi-siamo .reveal-btn[data-target="dove"]{ order:1; }
 body[data-layout="2"] #chi-siamo .reveal-btn[data-target="contatti"]{ order:2; }
@@ -453,6 +465,18 @@ body[data-layout="2"] #fanzine .content-date-badge{
   font-size:0.8rem;
 }
 
+/* Fanzine: al posto di "Fanzine n.2" solo il numero del fascicolo */
+body[data-layout="2"] #fanzine .content-title{ display:none; }
+
+body[data-layout="2"] .l2-fz-num{
+  grid-row:1;
+  align-self:end;
+  margin:0 0 0.3rem;
+  font-family:'Pixelcastle', 'Pixeled English', 'Silkscreen', 'Anton', sans-serif;
+  font-size:clamp(1.5rem, 2.8vw, 1.9rem);
+  line-height:1.1;
+}
+
 body[data-layout="2"] #eventi .content-divider,
 body[data-layout="2"] #eventi .flow-more-btn,
 body[data-layout="2"] #fanzine .content-divider,
@@ -482,6 +506,59 @@ body[data-layout="2"] #fanzine .photo-col{
   width:auto;
   align-items:center;
   padding:0;
+}
+
+/* Fanzine: menu delle copertine come nel layout 4 — miniature in
+   colonna a sinistra della copertina grande, frecce sulla copertina e
+   contatore "n / totale" sotto */
+body[data-layout="2"] #fanzine .photo-col{ position:relative; }
+
+body[data-layout="2"] #fanzine .photo-menu{
+  position:absolute;
+  top:0;
+  right:calc(100% + 0.6rem);
+  left:auto;
+  bottom:auto;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:stretch;
+  gap:0.45rem;
+  margin:0;
+}
+
+body[data-layout="2"] #fanzine .photo-menu .thumb,
+body[data-layout="2"] #fanzine .photo-menu .thumb.active{
+  width:40px;
+  height:52px;
+  border-radius:0;
+  border:1px solid var(--ink);
+  background-color:var(--violet) !important;
+  background-image:var(--thumb-img) !important;
+  background-size:cover !important;
+  background-position:top center !important;
+  box-shadow:0 4px 8px -6px rgba(23,21,28,0.6);
+  opacity:0.6;
+  transform:none;
+  transition:opacity .15s ease, transform .15s ease;
+}
+
+body[data-layout="2"] #fanzine .photo-menu .thumb:hover{
+  opacity:1;
+  transform:scale(1.07) rotate(-2.4deg);
+}
+
+body[data-layout="2"] #fanzine .photo-menu .thumb.active{
+  opacity:1;
+  outline:2px solid var(--receipt-red);
+  outline-offset:2px;
+}
+
+body[data-layout="2"] .l4-counter{
+  margin:0.8rem 0 0;
+  font-family:'Fake Receipt', monospace;
+  font-size:0.85rem;
+  font-weight:700;
+  letter-spacing:0.14em;
 }
 
 body[data-layout="2"] #eventi .photo-main,
@@ -635,19 +712,14 @@ body[data-layout="2"] footer::after{
 
 /* ---------- scritte verticali rosse ai lati ---------- */
 
-body[data-layout="2"] .side-tape{ width:2rem; z-index:3; top:var(--l2-ticker-h); }
+body[data-layout="2"] .side-tape{ width:2rem; z-index:3; top:var(--l2-tape-top, var(--l2-ticker-h)); }
 body[data-layout="2"] .side-tape.left{ left:0.9rem; }
 body[data-layout="2"] .side-tape.right{ right:0.9rem; }
 
 body[data-layout="2"] .side-tape span{
-  font-size:0;
+  font-size:0.95rem;
   opacity:1;
-  letter-spacing:0.12em;
-}
-
-body[data-layout="2"] .side-tape span::before{
-  content:"14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 ";
-  font-size:1.05rem;
+  letter-spacing:0.22em;
 }
 
 body[data-layout="2"] .side-tape.left span{ transform:rotate(180deg); }
@@ -682,6 +754,14 @@ body[data-layout="2"] .side-tape.left span{ transform:rotate(180deg); }
 }
 
 @media(max-width:700px){
+  /* da telefono le miniature delle fanzine vanno in riga sotto la copertina */
+  body[data-layout="2"] #fanzine .photo-menu{
+    position:static;
+    flex-direction:row;
+    justify-content:center;
+    margin-top:0.9rem;
+  }
+
   body[data-layout="2"] .logo-wrap{ padding-top:4.6rem; }
   body[data-layout="2"] .masthead-topline{ top:calc(var(--l2-ticker-h) + 1.1rem); font-size:0.78rem; }
 

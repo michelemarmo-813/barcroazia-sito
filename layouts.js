@@ -278,14 +278,38 @@
     });
   }
 
-  // Fanzine: contatore "numero / totale" accanto alla copertina
+  // Fanzine: contatore "numero / totale" accanto alla copertina (layout 2
+  // e 4) e, nel layout 2, il solo numero del fascicolo ("n.2") al posto
+  // del titolo "Fanzine n.2", per non ripetere la parola "Fanzine"
   var l4Counter = document.querySelector('.l4-counter');
+  var l2FzNum = document.querySelector('.l2-fz-num');
   function updateFanzineCounter(){
-    if(!fanzineSection || !l4Counter) return;
+    if(!fanzineSection) return;
     var thumbs = Array.prototype.slice.call(fanzineSection.querySelectorAll('.thumb'));
-    var i = thumbs.indexOf(fanzineSection.querySelector('.thumb.active'));
-    l4Counter.textContent = (i < 0 ? 1 : i + 1) + ' / ' + thumbs.length;
+    var active = fanzineSection.querySelector('.thumb.active');
+    var i = thumbs.indexOf(active);
+    if(l4Counter){ l4Counter.textContent = (i < 0 ? 1 : i + 1) + ' / ' + thumbs.length; }
+    if(l2FzNum){
+      var t = (active || thumbs[0] || {}).dataset;
+      var m = t && t.title ? t.title.match(/n\.\s*\d+/i) : null;
+      l2FzNum.textContent = m ? m[0].toLowerCase().replace(/\s+/g, '') : '';
+    }
   }
+
+  // Layout 2: le scritte verticali ai lati partono subito sotto la barra
+  // nera in alto e, quando la barra esce dallo schermo, salgono fino al
+  // bordo superiore.
+  var tickerEl = document.querySelector('.masthead-marquee');
+  var tapeRaf = null;
+  function updateTapeTop(){
+    tapeRaf = null;
+    if(current() !== '2' || !tickerEl) return;
+    var bottom = Math.max(0, Math.round(tickerEl.getBoundingClientRect().bottom));
+    body.style.setProperty('--l2-tape-top', bottom + 'px');
+  }
+  function queueTapeTop(){ if(!tapeRaf){ tapeRaf = requestAnimationFrame(updateTapeTop); } }
+  window.addEventListener('scroll', queueTapeTop, { passive:true });
+  window.addEventListener('resize', queueTapeTop);
 
   if('MutationObserver' in window){
     var evTitle = eventiSection ? eventiSection.querySelector('.content-title') : null;
@@ -327,6 +351,7 @@
   }
 
   function onLayoutApplied(){
+    updateTapeTop();
     if(current() === '2' || current() === '4'){ updateFanzineNames(); }
     updateEventDetails();
     updateFanzineCounter();
@@ -336,7 +361,9 @@
   // subito dopo questo file)
   if(collaboraBtn){ collaboraBtn.setAttribute('aria-expanded', 'false'); }
   if(scopriBtn){ scopriBtn.setAttribute('aria-expanded', 'false'); }
+  updateTapeTop();
   window.addEventListener('load', function(){
+    updateTapeTop();
     updateFanzineNames();
     updateEventDetails();
     updateFanzineCounter();
