@@ -1,0 +1,672 @@
+/* ==========================================================
+   LAYOUT 4 — "IL LIBRO"
+   Proposta libera: il sito sfogliato come un libro di poesia.
+   - frontespizio (logo + sottotitolo), indice con i capitoli al posto
+     della barra dei tasti, citazione del giorno come epigrafe;
+   - ogni sezione è un capitolo numerato in romano, con capolettera,
+     foto come "tavole" con didascalia, fregi ❦ fra i capitoli;
+   - un solo carattere da libro (EB Garamond, OFL, in assets/fonts),
+     righe di lunghezza comoda, testo scuro su carta avorio, un solo
+     colore d'accento (bordeaux) per link e pulsanti.
+   Tutte le regole valgono solo con body[data-layout="4"].
+   ========================================================== */
+
+@font-face{
+  font-family:'L4 Garamond';
+  src:url('assets/fonts/ebgaramond-400-normal.woff2') format('woff2');
+  font-weight:400; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:'L4 Garamond';
+  src:url('assets/fonts/ebgaramond-400-italic.woff2') format('woff2');
+  font-weight:400; font-style:italic; font-display:swap;
+}
+@font-face{
+  font-family:'L4 Garamond';
+  src:url('assets/fonts/ebgaramond-600-normal.woff2') format('woff2');
+  font-weight:600 700; font-style:normal; font-display:swap;
+}
+
+body[data-layout="4"]{
+  --l4-paper:#fbf7ef;
+  --l4-desk:#e7dfd0;
+  --l4-ink:#2b2622;
+  --l4-soft:#6d635a;
+  --l4-rule:#cfc4b3;
+  --l4-accent:#8a2425;
+  --l4-measure:36rem;
+  /* variabili del layout 1 riportate sulla palette del libro */
+  --receipt-red:var(--l4-accent);
+  --ink:var(--l4-ink);
+  --violet:var(--l4-paper);
+  --violet-dark:transparent;
+  --line:1px solid var(--l4-rule);
+  --line-thin:1px solid var(--l4-rule);
+  background:var(--l4-desk);
+  background-image:none;
+  color:var(--l4-ink);
+  counter-reset:l4toc l4chap;
+}
+
+body[data-layout="4"],
+body[data-layout="4"] .page *,
+body[data-layout="4"] .masthead-topline{
+  font-family:'L4 Garamond', Garamond, 'Times New Roman', serif !important;
+}
+
+/* ---------- la pagina ---------- */
+
+body[data-layout="4"] .page{
+  max-width:60rem;
+  margin:0 auto 3rem;
+  border:none;
+  background:var(--l4-paper);
+  box-shadow:0 1px 0 var(--l4-rule), 0 18px 40px -24px rgba(43,38,34,0.45);
+  padding:0 clamp(1.2rem, 5vw, 4.5rem) 3rem;
+}
+
+body[data-layout="4"] .side-tape{ display:none !important; }
+
+/* testatina corrente: data a sinistra, Bologna a destra */
+body[data-layout="4"] .masthead-topline{
+  max-width:60rem;
+  padding:1.1rem clamp(1.2rem, 5vw, 4.5rem) 0.9rem;
+  font-size:0.95rem;
+  font-weight:400;
+  font-variant-caps:all-small-caps;
+  letter-spacing:0.12em;
+  color:var(--l4-soft);
+  background:var(--l4-paper);
+  border-bottom:1px solid var(--l4-rule);
+}
+
+/* i link del ticker diventano "segnalibri": una riga ferma, a capo */
+body[data-layout="4"] .masthead-marquee{
+  border:none;
+  overflow:visible;
+  padding:1rem 0 0;
+}
+
+body[data-layout="4"] .masthead-marquee::before{
+  content:"segnalibri";
+  display:block;
+  text-align:center;
+  font-style:italic;
+  font-size:0.95rem;
+  color:var(--l4-soft);
+  margin-bottom:0.35rem;
+}
+
+body[data-layout="4"] .masthead-line{
+  width:auto;
+  flex-wrap:wrap;
+  justify-content:center;
+  animation:none;
+  font-size:1rem;
+  letter-spacing:0.02em;
+  text-transform:none;
+}
+
+body[data-layout="4"] .masthead-line .m-cell:nth-child(n+10){ display:none; }
+
+body[data-layout="4"] .masthead-line .m-cell{
+  padding:0.15rem 0.2rem;
+  border:none;
+  background:transparent;
+  color:var(--l4-ink);
+  font-weight:400;
+  gap:0.3rem;
+}
+
+body[data-layout="4"] .masthead-line .m-cell:not(:nth-child(9))::after{
+  content:"\00B7";
+  margin-left:0.55rem;
+  color:var(--l4-rule);
+}
+
+body[data-layout="4"] .masthead-line .m-cell .m-emoji{ font-size:0.9rem; opacity:0.8; }
+
+body[data-layout="4"] .masthead-line .m-cell:hover .m-text{
+  color:var(--l4-accent);
+  text-decoration:underline;
+  text-underline-offset:0.18em;
+}
+
+body[data-layout="4"] .masthead-line .m-cell:hover{ background:transparent; color:inherit; }
+
+/* ---------- frontespizio ---------- */
+
+body[data-layout="4"] .logo-wrap{
+  flex-direction:column;
+  align-items:center;
+  border:none;
+  padding:3.2rem 0 1.4rem;
+}
+
+body[data-layout="4"] .logo-wrap svg{ max-width:340px; }
+
+body[data-layout="4"] .logo-wrap::after{
+  content:"poesia viva in piazza \2014  Bologna";
+  display:block;
+  margin-top:1.3rem;
+  font-style:italic;
+  font-size:1.25rem;
+  color:var(--l4-soft);
+}
+
+/* ---------- indice (al posto dei tasti) ---------- */
+
+body[data-layout="4"] nav.mainnav{
+  position:static;
+  display:block;
+  max-width:26rem;
+  margin:0.8rem auto 0;
+  padding:1.4rem 0 0;
+  background:none;
+  border:none;
+  border-top:1px solid var(--l4-rule);
+  box-shadow:none;
+}
+
+body[data-layout="4"] nav.mainnav::before{
+  content:"Indice";
+  display:block;
+  text-align:center;
+  font-variant-caps:all-small-caps;
+  letter-spacing:0.2em;
+  font-size:1.05rem;
+  color:var(--l4-soft);
+  margin-bottom:0.6rem;
+}
+
+body[data-layout="4"] nav.mainnav::after{ display:none; }
+
+body[data-layout="4"] nav.mainnav a,
+body[data-layout="4"] nav.mainnav a:last-child,
+body[data-layout="4"].scrolled nav.mainnav a{
+  counter-increment:l4toc;
+  display:flex;
+  align-items:baseline;
+  gap:0.5rem;
+  padding:0.28rem 0.2rem;
+  border:none;
+  background:transparent;
+  font-size:1.2rem;
+  text-transform:none;
+  white-space:normal;
+  text-align:left;
+  transform:none;
+  box-shadow:none;
+}
+
+body[data-layout="4"] nav.mainnav a span{
+  display:flex;
+  flex:1;
+  align-items:baseline;
+  gap:0.5rem;
+}
+
+body[data-layout="4"] nav.mainnav a span::after{
+  content:"";
+  flex:1;
+  border-bottom:1px dotted var(--l4-soft);
+  transform:translateY(-0.3em);
+  opacity:0.7;
+}
+
+body[data-layout="4"] nav.mainnav a::after{
+  content:counter(l4toc, upper-roman);
+  min-width:2.2em;
+  text-align:right;
+  font-variant-caps:all-small-caps;
+  letter-spacing:0.08em;
+  color:var(--l4-soft);
+}
+
+body[data-layout="4"] nav.mainnav a:hover,
+body[data-layout="4"] nav.mainnav a:focus-visible,
+body[data-layout="4"] nav.mainnav a:nth-child(odd):hover,
+body[data-layout="4"] nav.mainnav a:nth-child(even):hover{
+  background:transparent;
+  color:var(--l4-accent);
+  transform:none;
+  box-shadow:none;
+  outline:none;
+}
+
+body[data-layout="4"] nav.mainnav a:hover span{ text-decoration:underline; text-underline-offset:0.2em; }
+body[data-layout="4"].inking nav.mainnav a:hover{ color:var(--l4-ink); }
+
+/* ---------- epigrafe (citazione del giorno) ---------- */
+
+body[data-layout="4"] .hero-divider{
+  border:none;
+  padding:3.4rem 0 1rem;
+  justify-content:flex-end;
+}
+
+body[data-layout="4"] .pull-quote{
+  max-width:24rem;
+  margin-right:clamp(0rem, 6vw, 4rem);
+  text-align:right;
+}
+
+body[data-layout="4"] .quote-label{ display:none; }
+
+body[data-layout="4"] .pull-quote p{
+  font-style:italic;
+  text-transform:none;
+  font-size:clamp(1.35rem, 2.6vw, 1.65rem);
+  line-height:1.35;
+  letter-spacing:0;
+}
+
+body[data-layout="4"] .pull-quote p::before,
+body[data-layout="4"] .pull-quote p::after{
+  font-style:italic;
+  font-weight:400;
+  font-size:1em;
+  opacity:0.6;
+}
+
+body[data-layout="4"] .pull-quote .quote-note{
+  font-weight:400;
+  font-size:1rem;
+  letter-spacing:0.02em;
+  color:var(--l4-soft);
+  margin-top:0.6rem;
+}
+
+body[data-layout="4"] .pull-quote .quote-note::before{ content:"\2014  "; }
+
+/* ---------- capitoli ---------- */
+
+body[data-layout="4"] main{ counter-reset:l4chap; }
+
+body[data-layout="4"] .tear-line,
+body[data-layout="4"] .zz-border::after{ display:none; }
+
+body[data-layout="4"] .zine-section{
+  counter-increment:l4chap;
+  border:none;
+  padding-top:1rem;
+  scroll-margin-top:1.5rem;
+}
+
+/* fregio fra un capitolo e l'altro */
+body[data-layout="4"] .zine-section::before{
+  content:"\2766";
+  display:block;
+  text-align:center;
+  font-size:1.5rem;
+  line-height:1;
+  color:var(--l4-accent);
+  opacity:0.75;
+  margin:3.4rem 0 2.2rem;
+}
+
+body[data-layout="4"] .section-head,
+body[data-layout="4"] .zine-section.alt .section-head{
+  display:block;
+  text-align:center;
+  background:none;
+  border:none;
+  padding:0 0 2rem;
+}
+
+body[data-layout="4"] .section-head .tag{ display:none; }
+
+body[data-layout="4"] .section-head h2{
+  color:var(--l4-ink);
+  text-transform:none;
+  font-style:italic;
+  font-weight:400;
+  font-size:clamp(2.2rem, 5vw, 3.1rem);
+  line-height:1.1;
+  letter-spacing:0;
+}
+
+body[data-layout="4"] .zine-section > .section-head h2::before{
+  content:"Capitolo " counter(l4chap, upper-roman);
+  display:block;
+  font-style:normal;
+  font-size:0.95rem;
+  font-variant-caps:all-small-caps;
+  letter-spacing:0.25em;
+  color:var(--l4-accent);
+  margin-bottom:0.7rem;
+}
+
+/* testo a sinistra, tavola a destra (e viceversa) */
+body[data-layout="4"] .section-body{
+  gap:clamp(1.4rem, 4vw, 3rem);
+  align-items:flex-start;
+}
+
+body[data-layout="4"] .text-col,
+body[data-layout="4"] .zine-section.alt .text-col{
+  border:none;
+  padding:0;
+  max-width:var(--l4-measure);
+}
+
+body[data-layout="4"] .content-title{
+  text-transform:none;
+  font-weight:600;
+  font-size:1.35rem;
+  line-height:1.3;
+  margin-bottom:0.3rem;
+}
+
+body[data-layout="4"] .content-divider{ display:none; }
+
+body[data-layout="4"] .content-date-badge,
+body[data-layout="4"] #eventi .content-date-badge{
+  margin:0 0 1.2rem;
+  padding:0;
+  border:none;
+  font-weight:400;
+  font-size:1.05rem;
+  text-transform:none;
+  font-variant-caps:all-small-caps;
+  letter-spacing:0.12em;
+  color:var(--l4-accent);
+  opacity:1;
+}
+
+body[data-layout="4"] .text-col p{
+  font-size:1.14rem;
+  line-height:1.62;
+  letter-spacing:0;
+  text-align:justify;
+  -webkit-hyphens:auto;
+  hyphens:auto;
+  margin:0;
+  text-indent:1.4em;
+}
+
+body[data-layout="4"] .text-col p:first-child{ text-indent:0; }
+
+/* capolettera */
+body[data-layout="4"] .text-flow p:first-child::first-letter{
+  float:left;
+  font-size:3.55em;
+  line-height:0.82;
+  padding:0.06em 0.09em 0 0;
+  color:var(--l4-accent);
+  font-weight:400;
+}
+
+body[data-layout="4"] .text-flow strong{
+  font-weight:600;
+  -webkit-text-stroke:0;
+}
+
+body[data-layout="4"] .flow-ellipsis{ opacity:1; }
+
+body[data-layout="4"] .flow-more-btn,
+body[data-layout="4"] .placeholder-note{
+  font-weight:400;
+  font-size:1rem;
+  text-transform:none;
+  font-style:italic;
+  letter-spacing:0;
+  margin-top:0.8rem;
+}
+
+body[data-layout="4"] .flow-more-btn{ color:var(--l4-accent); }
+body[data-layout="4"] .flow-more-btn::after{ content:" \2192"; }
+body[data-layout="4"] .placeholder-note{ color:var(--l4-soft); opacity:1; }
+
+/* le foto come tavole, con didascalia */
+body[data-layout="4"] .photo-col,
+body[data-layout="4"] .zine-section.alt .photo-col{
+  border:none;
+  padding:0;
+}
+
+body[data-layout="4"] .photo-main{
+  height:min(62vh, 440px);
+  border:1px solid var(--l4-rule);
+  outline:6px solid var(--l4-paper);
+  box-shadow:0 0 0 7px var(--l4-rule);
+  background:#efe8da;
+}
+
+body[data-layout="4"] .photo-col::after{
+  content:"Tav. " counter(l4chap, upper-roman);
+  display:block;
+  margin-top:1.1rem;
+  text-align:center;
+  font-style:italic;
+  font-size:0.98rem;
+  color:var(--l4-soft);
+}
+
+body[data-layout="4"] .photo-menu{ bottom:3rem; }
+
+body[data-layout="4"] .photo-nav-arrow{
+  border:1px solid var(--l4-rule);
+  background:var(--l4-paper);
+  color:var(--l4-ink);
+  border-radius:50%;
+  font-size:1.2rem;
+}
+
+body[data-layout="4"] .photo-nav-arrow:hover{ background:var(--l4-accent); color:var(--l4-paper); }
+
+body[data-layout="4"] .photo-menu .thumb{ box-shadow:0 0 0 1px rgba(43,38,34,0.45); }
+
+/* pulsanti: sobri, in maiuscoletto, con freccia */
+body[data-layout="4"] .reveal-buttons{
+  border:none;
+  justify-content:center;
+  gap:0.8rem 1.2rem;
+  margin-top:2.2rem;
+}
+
+body[data-layout="4"] .reveal-btn,
+body[data-layout="4"] .reveal-btn:last-child,
+body[data-layout="4"] .call-cta{
+  flex:0 1 auto;
+  padding:0.55rem 1.3rem 0.6rem;
+  border:1px solid var(--l4-accent);
+  border-radius:2px;
+  background:transparent;
+  color:var(--l4-accent);
+  font-size:1.08rem;
+  font-weight:400;
+  text-transform:none;
+  font-variant-caps:all-small-caps;
+  letter-spacing:0.12em;
+  line-height:1.3;
+}
+
+body[data-layout="4"] .reveal-btn::before{ content:none; }
+body[data-layout="4"] a.reveal-btn::after,
+body[data-layout="4"] .call-cta::after{ content:" \2192"; font-variant-caps:normal; }
+body[data-layout="4"] button.reveal-btn::after{ content:" \25BE"; font-variant-caps:normal; }
+body[data-layout="4"] button.reveal-btn.open::after{ content:" \25B4"; }
+
+body[data-layout="4"] .reveal-btn:hover,
+body[data-layout="4"] .reveal-btn:focus-visible,
+body[data-layout="4"] .reveal-btn.open,
+body[data-layout="4"] .call-cta:hover,
+body[data-layout="4"] .call-cta:focus-visible{
+  background:var(--l4-accent);
+  color:var(--l4-paper);
+  outline:none;
+}
+
+body[data-layout="4"] .reveal-btn:focus-visible,
+body[data-layout="4"] .call-cta:focus-visible,
+body[data-layout="4"] nav.mainnav a:focus-visible,
+body[data-layout="4"] .m-cell:focus-visible{
+  outline:2px solid var(--l4-accent);
+  outline-offset:3px;
+}
+
+body[data-layout="4"] .call-cta{ margin-top:1.6rem; }
+
+/* ---------- appendici: Contatti, Dove trovarci ---------- */
+
+body[data-layout="4"] .expand-inner{
+  border:none;
+  margin:2rem auto 0;
+  max-width:44rem;
+  padding:1.6rem 0 0.4rem;
+  border-top:1px solid var(--l4-rule);
+}
+
+body[data-layout="4"] .expand-inner .section-head{ padding-bottom:1.2rem; }
+body[data-layout="4"] .expand-inner .section-head h2{
+  font-size:1.7rem;
+  opacity:1;
+}
+
+body[data-layout="4"] .contact-links{ gap:0; border-top:1px solid var(--l4-rule); }
+
+body[data-layout="4"] .contact-link,
+body[data-layout="4"] .contact-link:last-child{
+  flex:1 1 100%;
+  padding:0.8rem 0.3rem;
+  background:transparent;
+  color:var(--l4-ink);
+  border:none;
+  border-bottom:1px solid var(--l4-rule);
+}
+
+body[data-layout="4"] .contact-link:hover,
+body[data-layout="4"] .contact-link:focus-visible{
+  background:rgba(138,36,37,0.06);
+  color:var(--l4-accent);
+}
+
+body[data-layout="4"] .contact-emoji{ font-size:1.3rem; }
+body[data-layout="4"] .contact-label{ text-transform:none; font-size:1.25rem; }
+body[data-layout="4"] .contact-handle{ font-size:1rem; font-style:italic; opacity:0.8; }
+
+body[data-layout="4"] .expand-body-split{ gap:1.4rem; }
+body[data-layout="4"] .expand-body{ padding:0; font-size:1.14rem; line-height:1.6; }
+body[data-layout="4"] .map-box{
+  border:1px solid var(--l4-rule);
+  min-height:240px;
+}
+
+/* ---------- Blog: rassegna stampa ---------- */
+
+body[data-layout="4"] #blog .section-body{ display:block; }
+
+body[data-layout="4"] .post-grid{
+  grid-template-columns:1fr 1fr;
+  gap:2rem 2.4rem;
+  border:none;
+}
+
+body[data-layout="4"] .post-card{
+  border:none;
+  border-top:1px solid var(--l4-rule);
+  padding-top:1rem;
+}
+
+body[data-layout="4"] .post-card:hover{
+  background:transparent;
+  color:var(--l4-accent);
+}
+
+body[data-layout="4"] .post-photo{
+  aspect-ratio:16 / 8;
+  border:1px solid var(--l4-rule);
+  background:#efe8da;
+}
+
+body[data-layout="4"] .post-info{ padding:0.8rem 0 0; gap:0.25rem; }
+
+body[data-layout="4"] .post-info .post-title{
+  font-weight:400;
+  font-style:italic;
+  font-size:1.35rem;
+  text-transform:none;
+  letter-spacing:0;
+  line-height:1.25;
+}
+
+body[data-layout="4"] .post-info .post-author,
+body[data-layout="4"] .post-info .post-date{
+  font-size:1rem;
+  font-weight:400;
+  text-transform:none;
+  font-variant-caps:all-small-caps;
+  letter-spacing:0.1em;
+  border:none;
+  padding:0;
+  opacity:1;
+  color:var(--l4-soft);
+}
+
+body[data-layout="4"] .post-card:hover .post-info .post-author,
+body[data-layout="4"] .post-card:hover .post-info .post-date{ color:var(--l4-accent); }
+
+/* ---------- colophon ---------- */
+
+body[data-layout="4"] footer{
+  margin-top:4rem;
+  padding:2.2rem 0 0;
+  border:none;
+  border-top:1px solid var(--l4-rule);
+  opacity:1;
+  text-transform:none;
+  font-size:0.98rem;
+  letter-spacing:0.02em;
+  color:var(--l4-soft);
+}
+
+body[data-layout="4"] footer::before{
+  content:"Colophon";
+  display:block;
+  font-variant-caps:all-small-caps;
+  letter-spacing:0.25em;
+  font-size:1.05rem;
+  margin-bottom:1rem;
+}
+
+body[data-layout="4"] .foot-barcode{ height:2.3rem; max-width:13rem; opacity:0.8; }
+body[data-layout="4"] .foot-barcode-num{ font-size:0.85rem; letter-spacing:0.25em; }
+body[data-layout="4"] .foot-barcode-num::before{ content:"ISBN "; letter-spacing:0.05em; }
+body[data-layout="4"] .foot-thanks{
+  font-style:italic;
+  font-size:1.35rem;
+  letter-spacing:0;
+  color:var(--l4-ink);
+}
+
+/* ---------- mobile ---------- */
+
+@media(max-width:700px){
+  body[data-layout="4"] .page{ margin-bottom:0; padding-bottom:2rem; box-shadow:none; }
+
+  body[data-layout="4"] nav.mainnav{ display:block; }
+  body[data-layout="4"] nav.mainnav a,
+  body[data-layout="4"] nav.mainnav a:nth-child(even),
+  body[data-layout="4"] nav.mainnav a:nth-last-child(-n+2){ border:none; }
+
+  body[data-layout="4"] .section-body,
+  body[data-layout="4"] .zine-section.alt .section-body{ flex-direction:column; }
+
+  /* su telefono la tavola viene prima del testo */
+  body[data-layout="4"] .photo-col{ order:-1; align-self:center; }
+
+  body[data-layout="4"] .text-col,
+  body[data-layout="4"] .zine-section.alt .text-col{ border:none; max-width:none; }
+
+  body[data-layout="4"] .photo-main{ height:min(56vh, 380px); }
+
+  body[data-layout="4"] .text-col p{ font-size:1.1rem; text-align:left; }
+
+  body[data-layout="4"] .hero-divider{ justify-content:center; padding-top:2.6rem; }
+  body[data-layout="4"] .pull-quote{ margin-right:0; }
+
+  body[data-layout="4"] .post-grid{ grid-template-columns:1fr; }
+
+  body[data-layout="4"] .reveal-buttons{ flex-direction:column; align-items:stretch; }
+}

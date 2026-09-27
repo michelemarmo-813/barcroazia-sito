@@ -1,0 +1,661 @@
+/* ==========================================================
+   LAYOUT 2 — "SCONTRINO"
+   Stessi font, carta, colori, pulsanti e "finta penna" del layout 1:
+   cambia solo l'organizzazione dello spazio. Via la gabbia, una colonna
+   centrale lunga come uno scontrino, separatori a "+", scritte verticali
+   rosse ai lati. Tutte le regole valgono solo con body[data-layout="2"].
+   ========================================================== */
+
+body[data-layout="2"]{
+  --l2-col: 980px;
+  --l2-ticker-h: 44px;
+  --l2-gray: #9b9b9b;
+  --l2-plus: "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++";
+}
+
+/* ---------- via la gabbia ---------- */
+
+body[data-layout="2"] .page{
+  max-width:none;
+  border:none;
+}
+
+body[data-layout="2"] .logo-wrap,
+body[data-layout="2"] nav.mainnav,
+body[data-layout="2"] .hero-divider,
+body[data-layout="2"] main,
+body[data-layout="2"] footer,
+body[data-layout="2"] .masthead-topline{
+  width:min(var(--l2-col), calc(100% - 7rem));
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* ---------- 1. barra nera con il ticker ---------- */
+
+body[data-layout="2"] .masthead-marquee{
+  background:#141216;
+  border:none;
+  height:var(--l2-ticker-h);
+  display:flex;
+  align-items:center;
+}
+
+body[data-layout="2"] .masthead-line{
+  font-size:0.78rem;
+  letter-spacing:0.1em;
+}
+
+body[data-layout="2"] .masthead-line .m-cell{
+  background:transparent;
+  color:#f4f1ea;
+  border-right:none;
+  padding:0.45rem 0.75rem;
+}
+
+body[data-layout="2"] .masthead-line .m-cell::after{
+  content:"\2217\2217";
+  margin-left:1.1rem;
+  opacity:0.7;
+}
+
+body[data-layout="2"] .masthead-line .m-cell:hover{
+  background:var(--receipt-red);
+  color:var(--violet);
+}
+
+body[data-layout="2"] .m-cell .m-emoji{ font-size:1.05rem; }
+
+/* ---------- 2. intestazione: Bologna a sinistra, data a destra ---------- */
+
+body[data-layout="2"] .masthead-topline{
+  position:absolute;
+  top:calc(var(--l2-ticker-h) + 1.9rem);
+  left:0;
+  right:0;
+  z-index:2;
+  flex-direction:row-reverse;
+  padding:0 2.2rem;
+  font-size:clamp(0.85rem, 1.6vw, 1.15rem);
+  letter-spacing:0.06em;
+}
+
+body[data-layout="2"] .logo-wrap{
+  border:none;
+  padding:6.2rem 1.5rem 1.4rem;
+}
+
+body[data-layout="2"] .logo-wrap svg{ max-width:480px; }
+
+/* ---------- 3. riga di tasti ---------- */
+
+body[data-layout="2"] nav.mainnav{
+  justify-content:center;
+  gap:0.9rem 1.1rem;
+  padding:0.9rem 0.4rem;
+  border-bottom:none;
+}
+
+body[data-layout="2"] nav.mainnav::after{ display:none; }
+
+body[data-layout="2"] nav.mainnav a[href="#call"]{ display:none; }
+
+body[data-layout="2"] nav.mainnav a,
+body[data-layout="2"] nav.mainnav a:last-child{
+  flex:0 1 11rem;
+  border:2px solid var(--receipt-red);
+  outline:1px solid var(--receipt-red);
+  outline-offset:-6px;
+  color:var(--receipt-red);
+  background-color:rgba(255,255,255,0.7);
+  padding:0.55em 0.9em;
+  font-size:clamp(0.8rem, 1.5vw, 1.05rem);
+}
+
+body[data-layout="2"] nav.mainnav a:hover{
+  background:var(--receipt-red);
+  color:var(--violet);
+  outline-color:var(--violet);
+}
+
+body[data-layout="2"].inking nav.mainnav a:hover{
+  transform:none;
+  background:rgba(255,255,255,0.7);
+  color:var(--receipt-red);
+  outline-color:var(--receipt-red);
+  box-shadow:none;
+}
+
+/* la barra resta attaccata in alto scorrendo, come nel layout 1 */
+body[data-layout="2"].scrolled nav.mainnav{
+  box-shadow:0 6px 10px -8px rgba(23,21,28,0.35);
+}
+
+body[data-layout="2"].scrolled nav.mainnav a{
+  font-size:0.8rem;
+  padding:0.4em 0.8em;
+}
+
+/* ---------- separatori a "+" ---------- */
+
+body[data-layout="2"] .hero-divider::before,
+body[data-layout="2"] .zine-section::before,
+body[data-layout="2"] footer::before{
+  content:var(--l2-plus);
+  display:block;
+  overflow:hidden;
+  white-space:nowrap;
+  text-align:center;
+  font-family:'Fake Receipt', monospace;
+  font-weight:700;
+  font-size:1.05rem;
+  line-height:1;
+  letter-spacing:0.08em;
+  color:var(--ink);
+  margin-bottom:1.6rem;
+}
+
+body[data-layout="2"] .tear-line{ display:none; }
+
+/* ---------- 4. citazione come riga di scontrino ---------- */
+
+body[data-layout="2"] .hero-divider{
+  display:block;
+  border-bottom:none;
+  padding:1.6rem 0 0.4rem;
+}
+
+body[data-layout="2"] .pull-quote{
+  max-width:none;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:0.3rem 1.2rem;
+  padding:0 0.4rem 0.6rem;
+  border-bottom:2px dashed rgba(23,21,28,0.45);
+}
+
+body[data-layout="2"] .quote-label{
+  margin:0;
+  font-size:0.8rem;
+  text-transform:uppercase;
+  font-weight:700;
+}
+
+body[data-layout="2"] .pull-quote p{
+  flex:1 1 20rem;
+  font-size:clamp(1.25rem, 2.6vw, 1.8rem);
+  text-align:center;
+}
+
+body[data-layout="2"] .pull-quote .quote-note{
+  margin:0;
+  font-size:0.72rem;
+}
+
+/* ---------- sezioni: niente riquadri ---------- */
+
+body[data-layout="2"] main{
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);
+  padding-bottom:1rem;
+}
+
+body[data-layout="2"] main > *{ grid-column:1 / -1; min-width:0; }
+
+body[data-layout="2"] #chi-siamo{ order:1; }
+body[data-layout="2"] #panel-contatti{ order:2; }
+body[data-layout="2"] #panel-dove{ order:3; }
+body[data-layout="2"] #call{ order:4; }
+body[data-layout="2"] #eventi{ order:5; grid-column:1; }
+body[data-layout="2"] #fanzine{ order:6; grid-column:2; }
+body[data-layout="2"] #archivio{ order:7; }
+body[data-layout="2"] #blog{ order:8; }
+
+body[data-layout="2"] .zine-section{
+  border:none;
+  padding:1.6rem 0 1.4rem;
+  scroll-margin-top:calc(var(--nav-compact-h, 64px) + 0.5rem);
+}
+
+body[data-layout="2"] .zz-border::after{ display:none; }
+
+body[data-layout="2"] .section-head,
+body[data-layout="2"] .zine-section.alt .section-head{
+  justify-content:center;
+  flex-direction:row;
+  background:none;
+  border:none;
+  padding:0 0 1.4rem;
+}
+
+body[data-layout="2"] .section-head .tag{ display:none; }
+
+body[data-layout="2"] #chi-siamo .section-head h2{ color:var(--ink); }
+
+body[data-layout="2"] .section-body{ gap:2rem; }
+
+body[data-layout="2"] .text-col,
+body[data-layout="2"] .zine-section.alt .text-col{
+  border:none;
+  padding:0.4rem 0.4rem;
+}
+
+body[data-layout="2"] .photo-col,
+body[data-layout="2"] .zine-section.alt .photo-col{
+  border:none;
+  padding:0;
+}
+
+body[data-layout="2"] .photo-main{ border-bottom:none; }
+
+/* pulsanti rossi pieni, stessa dinamica del layout 1 */
+body[data-layout="2"] .reveal-buttons{
+  border-top:none;
+  justify-content:center;
+  gap:1rem 2rem;
+  margin-top:1.8rem;
+}
+
+body[data-layout="2"] .reveal-btn,
+body[data-layout="2"] .reveal-btn:last-child{
+  flex:1 1 0;
+  max-width:18rem;
+  border-right:none;
+  padding:0.95rem 1rem;
+}
+
+/* ---------- 5. Chi siamo ---------- */
+
+body[data-layout="2"] #chi-siamo .section-body{ align-items:center; }
+
+body[data-layout="2"] #chi-siamo .text-col{
+  padding-top:0;
+  padding-bottom:0;
+}
+
+body[data-layout="2"] #chi-siamo .photo-main{ height:min(62vh, 470px); }
+
+body[data-layout="2"] #chi-siamo .reveal-btn[data-target="dove"]{ order:1; }
+body[data-layout="2"] #chi-siamo .reveal-btn[data-target="contatti"]{ order:2; }
+body[data-layout="2"] #chi-siamo .l2-collabora{ order:3; }
+
+/* "Contatti" diventa "Contattaci" */
+body[data-layout="2"] #chi-siamo .reveal-btn[data-target="contatti"]{ font-size:0; }
+body[data-layout="2"] #chi-siamo .reveal-btn[data-target="contatti"]::before{ font-size:0.92rem; }
+body[data-layout="2"] #chi-siamo .reveal-btn[data-target="contatti"]::after{
+  content:"Contattaci";
+  font-size:0.92rem;
+}
+
+/* pannelli che si aprono sotto i tre tasti: ritagli di scontrino */
+body[data-layout="2"] .expand-inner{
+  border:none;
+  margin:0.6rem 0 0.2rem;
+  padding:1.1rem 0 0.4rem;
+  border-top:2px dashed rgba(23,21,28,0.45);
+}
+
+body[data-layout="2"] .expand-inner .section-head{
+  justify-content:center;
+  flex-direction:row;
+  background:none;
+  border:none;
+  padding:0 0 1rem;
+}
+
+body[data-layout="2"] .expand-body-split{ gap:1.2rem; }
+body[data-layout="2"] .map-box{ border:none; min-height:240px; }
+
+body[data-layout="2"] .contact-links{ gap:0.8rem; }
+body[data-layout="2"] .contact-link{ border-right:none; }
+
+/* Open call: non è una sezione, si apre da "Collabora con noi" */
+body[data-layout="2"] #call{
+  max-height:0;
+  overflow:hidden;
+  padding:0;
+  transition:max-height .45s ease;
+}
+
+body[data-layout="2"] #call.l2-open{ max-height:1800px; }
+
+body[data-layout="2"] #call::before{ display:none; }
+
+body[data-layout="2"] #call .section-head{
+  margin-top:0.6rem;
+  padding-top:1.1rem;
+  border-top:2px dashed rgba(23,21,28,0.45);
+}
+
+body[data-layout="2"] #call .section-head h2{
+  font-size:clamp(1.5rem, 4.4vw, 2.3rem);
+  opacity:0.88;
+}
+
+body[data-layout="2"] #call .section-body{ padding-bottom:1.4rem; }
+body[data-layout="2"] #call .photo-main{ height:min(60vh, 440px); }
+
+/* ---------- 6. Prossimi eventi | Fanzine ---------- */
+
+body[data-layout="2"] #eventi,
+body[data-layout="2"] #fanzine{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+
+body[data-layout="2"] #eventi{ position:relative; padding-right:1.6rem; }
+body[data-layout="2"] #fanzine{ padding-left:1.6rem; }
+
+/* la linea verticale grigia fra le due colonne */
+body[data-layout="2"] #eventi.zz-border::after{
+  display:block;
+  content:'';
+  position:absolute;
+  right:-3px;
+  top:4.6rem;
+  bottom:1.4rem;
+  width:6px;
+  height:auto;
+  transform:none;
+  background:var(--l2-gray);
+  background-image:none;
+}
+
+/* Eventi: nome e data, poi la foto grande, poi "Scopri" (che apre il
+   testo completo sotto). Il titolo e il testo vivono nella stessa
+   colonna di testo del layout 1: con una subgrid la foto si infila fra
+   le loro righe senza spostare niente nell'HTML. */
+body[data-layout="2"] #eventi .section-body{
+  flex:1;
+  display:grid;
+  grid-template-columns:minmax(0, 1fr);
+  grid-template-rows:auto auto auto auto auto auto;
+  gap:0;
+  justify-items:center;
+}
+
+body[data-layout="2"] #eventi .text-col{
+  grid-column:1;
+  grid-row:1 / 7;
+  display:grid;
+  grid-template-rows:subgrid;
+  justify-items:center;
+  width:100%;
+  padding:0;
+  text-align:center;
+}
+
+body[data-layout="2"] #eventi .content-title{
+  grid-row:1;
+  margin-bottom:0.3rem;
+  font-size:clamp(1.05rem, 2vw, 1.35rem);
+}
+
+body[data-layout="2"] #eventi .content-date-badge{
+  grid-row:2;
+  align-self:start;
+  margin:0 0 1.1rem;
+  font-size:0.8rem;
+}
+
+body[data-layout="2"] #eventi .content-divider,
+body[data-layout="2"] #eventi .flow-more-btn{ display:none !important; }
+
+body[data-layout="2"] #eventi .photo-col{
+  grid-column:1;
+  grid-row:3;
+  z-index:2;
+  width:100%;
+  align-items:center;
+}
+
+body[data-layout="2"] #eventi .photo-main{ height:min(64vh, 470px); }
+
+body[data-layout="2"] #eventi .l2-scopri{
+  grid-row:4;
+  width:min(100%, 376px);
+  max-width:none;
+  margin-top:1.8rem;
+}
+
+body[data-layout="2"] #eventi .text-flow{
+  grid-row:5;
+  display:none;
+  text-align:left;
+  width:min(100%, 376px);
+  margin-top:1.2rem;
+}
+
+body[data-layout="2"] #eventi.l2-expanded .text-flow{ display:block; }
+
+/* Fanzine: numero, data e nomi a sinistra, copertina a destra, "Leggi" sotto */
+body[data-layout="2"] #fanzine .section-body{
+  flex:1;
+  align-items:center;
+  gap:1rem;
+}
+
+body[data-layout="2"] #fanzine .text-col{
+  flex:1 1 0;
+  min-width:0;
+  align-items:center;
+  text-align:center;
+  padding:0;
+}
+
+body[data-layout="2"] #fanzine .content-title{ margin-bottom:0.6rem; }
+
+body[data-layout="2"] #fanzine .content-date-badge{
+  align-self:center;
+  margin:0 0 1.2rem;
+}
+
+body[data-layout="2"] #fanzine .content-divider,
+body[data-layout="2"] #fanzine .text-flow,
+body[data-layout="2"] #fanzine .flow-more-btn{ display:none !important; }
+
+body[data-layout="2"] .l2-names{
+  display:flex;
+  flex-direction:column;
+  gap:0.55rem;
+  font-family:'Fake Receipt', monospace;
+  font-size:0.9rem;
+  line-height:1.3;
+}
+
+body[data-layout="2"] .l2-names-label{
+  margin-bottom:0.3rem;
+  opacity:0.75;
+}
+
+body[data-layout="2"] #fanzine .photo-col{ flex:0 1 auto; }
+body[data-layout="2"] #fanzine .photo-main{ height:min(46vh, 330px); }
+
+body[data-layout="2"] #eventi .reveal-buttons,
+body[data-layout="2"] #fanzine .reveal-buttons{ margin-top:1.8rem; }
+
+body[data-layout="2"] #fanzine .reveal-btn{
+  flex:0 1 auto;
+  width:min(100%, 376px);
+}
+
+/* ---------- 7. Archivio: righe orizzontali ---------- */
+
+body[data-layout="2"] #archivio .section-body{ display:none; }
+
+body[data-layout="2"] .l2-archive{
+  display:flex;
+  flex-direction:column;
+  gap:1.2rem;
+}
+
+body[data-layout="2"] .l2-arch-row{
+  display:grid;
+  grid-template-columns:minmax(120px, 22%) 1fr;
+  min-height:118px;
+  text-decoration:none;
+  color:inherit;
+  background:rgba(250,249,246,0.9);
+  transition:background-color .15s ease, color .15s ease;
+}
+
+body[data-layout="2"] .l2-arch-photo{
+  background-size:cover;
+  background-position:center;
+  background-color:var(--ink);
+}
+
+body[data-layout="2"] .l2-arch-info{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:0.9rem;
+  padding:1rem 1.2rem;
+  text-align:center;
+  font-family:'Fake Receipt', monospace;
+  text-transform:uppercase;
+  font-size:0.85rem;
+  letter-spacing:0.05em;
+}
+
+body[data-layout="2"] .l2-arch-date{ font-weight:700; }
+
+body[data-layout="2"] .l2-arch-row:hover{
+  background:var(--receipt-red);
+  color:var(--violet);
+}
+
+body[data-layout="2"] #archivio .reveal-buttons{ margin-top:1.8rem; }
+
+body[data-layout="2"] #archivio .reveal-btn{
+  max-width:none;
+  padding:1.05rem 1rem;
+}
+
+/* ---------- 8. Blog: com'è, dentro la colonna ---------- */
+
+body[data-layout="2"] #blog .section-body{ gap:0; }
+body[data-layout="2"] .post-grid{ border-right:none; }
+body[data-layout="2"] #blog .reveal-btn{ max-width:none; }
+
+/* ---------- 9. Footer: la fine dello scontrino ---------- */
+
+body[data-layout="2"] footer{
+  border-bottom:none;
+  opacity:1;
+  padding:1.6rem 0 0;
+}
+
+body[data-layout="2"] footer > *{ opacity:0.7; }
+body[data-layout="2"] footer .foot-thanks{ opacity:1; }
+body[data-layout="2"] footer > div:last-child{ margin-bottom:1.6rem; }
+
+/* bordo strappato in fondo, come uno scontrino staccato */
+body[data-layout="2"] footer::after{
+  content:'';
+  display:block;
+  height:12px;
+  margin:0 -1px;
+  background-image:
+    linear-gradient(135deg, transparent 50%, var(--ink) 50%),
+    linear-gradient(45deg, var(--ink) 50%, transparent 50%);
+  background-size:12px 12px;
+  background-repeat:repeat-x;
+  opacity:0.85;
+}
+
+/* ---------- scritte verticali rosse ai lati ---------- */
+
+body[data-layout="2"] .side-tape{ width:2rem; z-index:3; top:var(--l2-ticker-h); }
+body[data-layout="2"] .side-tape.left{ left:0.9rem; }
+body[data-layout="2"] .side-tape.right{ right:0.9rem; }
+
+body[data-layout="2"] .side-tape span{
+  font-size:0;
+  opacity:1;
+  letter-spacing:0.12em;
+}
+
+body[data-layout="2"] .side-tape span::before{
+  content:"14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 14.10.1998 \2217\2217 14.10.1009. \2217\2217 ";
+  font-size:1.05rem;
+}
+
+body[data-layout="2"] .side-tape.left span{ transform:rotate(180deg); }
+
+@media(min-width:1080px){
+  body[data-layout="2"] .side-tape{ display:flex; }
+}
+
+/* ---------- tablet e mobile ---------- */
+
+@media(max-width:1079px){
+  body[data-layout="2"] .logo-wrap,
+  body[data-layout="2"] nav.mainnav,
+  body[data-layout="2"] .hero-divider,
+  body[data-layout="2"] main,
+  body[data-layout="2"] footer,
+  body[data-layout="2"] .masthead-topline{
+    width:calc(100% - 2.4rem);
+  }
+  body[data-layout="2"] .masthead-topline{ padding:0 1.2rem; }
+}
+
+@media(max-width:760px){
+  body[data-layout="2"] main{ grid-template-columns:minmax(0, 1fr); }
+  body[data-layout="2"] #eventi,
+  body[data-layout="2"] #fanzine{
+    grid-column:1 / -1;
+    padding-left:0;
+    padding-right:0;
+  }
+  body[data-layout="2"] #eventi.zz-border::after{ display:none; }
+}
+
+@media(max-width:700px){
+  body[data-layout="2"] .logo-wrap{ padding-top:4.6rem; }
+  body[data-layout="2"] .masthead-topline{ top:calc(var(--l2-ticker-h) + 1.1rem); font-size:0.78rem; }
+
+  /* una sola riga di tasti, scorrevole, così la barra fissa resta bassa */
+  body[data-layout="2"] nav.mainnav{
+    display:flex;
+    flex-wrap:nowrap;
+    justify-content:flex-start;
+    overflow-x:auto;
+    gap:0.6rem;
+    padding:0.7rem 0.2rem;
+    scrollbar-width:none;
+  }
+  body[data-layout="2"] nav.mainnav::-webkit-scrollbar{ display:none; }
+  body[data-layout="2"] nav.mainnav a,
+  body[data-layout="2"] nav.mainnav a:nth-child(even),
+  body[data-layout="2"] nav.mainnav a:nth-last-child(-n+2){
+    flex:0 0 auto;
+    border:2px solid var(--receipt-red);
+  }
+
+  body[data-layout="2"] .section-body,
+  body[data-layout="2"] .zine-section.alt .section-body{ gap:1.2rem; }
+
+  body[data-layout="2"] #chi-siamo .photo-main,
+  body[data-layout="2"] #call .photo-main,
+  body[data-layout="2"] #eventi .photo-main{ height:min(58vh, 400px); }
+
+  body[data-layout="2"] .reveal-buttons{ flex-direction:column; align-items:stretch; }
+  body[data-layout="2"] .reveal-btn,
+  body[data-layout="2"] .reveal-btn:last-child,
+  body[data-layout="2"] #fanzine .reveal-btn{ max-width:none; width:auto; flex:0 0 auto; }
+
+  body[data-layout="2"] #fanzine .section-body{ align-items:center; }
+  body[data-layout="2"] #fanzine .text-col{ flex:0 0 auto; width:100%; }
+  body[data-layout="2"] #fanzine .photo-main{ height:min(50vh, 340px); }
+
+  body[data-layout="2"] .l2-arch-row{ grid-template-columns:96px 1fr; min-height:96px; }
+  body[data-layout="2"] .l2-arch-info{ font-size:0.75rem; gap:0.5rem; }
+
+  body[data-layout="2"] .pull-quote{ justify-content:center; text-align:center; }
+}
