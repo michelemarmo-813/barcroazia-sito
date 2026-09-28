@@ -1076,3 +1076,7 @@ body[data-layout="2"] .l2-slides img:not(:first-child){
   height:114%;
 }
 body[data-layout="2"] .l2-slides{ overflow:hidden; }
+
+/* un po' più d'aria fra logo, scritta sotto e pulsanti */
+body[data-layout="2"] .logo-wrap{ padding-bottom:1.1rem; }
+body[data-layout="2"] .l2-tagline{ margin-bottom:1.1rem; }
