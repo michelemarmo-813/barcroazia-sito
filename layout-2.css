@@ -1015,3 +1015,64 @@ body[data-layout="2"] #eventi .content-title{
   text-overflow:ellipsis;
   max-width:100%;
 }
+
+/* ==========================================================
+   TESTATA, DIVISORE DELL'ARCHIVIO, FOTO DI CHI SIAMO
+   ========================================================== */
+
+/* in alto a sinistra l'ora al secondo, al posto di "Bologna" */
+body[data-layout="2"] .masthead-topline .m-strong{ display:none; }
+body[data-layout="2"] .l2-clock{ font-variant-numeric:tabular-nums; min-width:8ch; }
+
+/* sotto il logo, come nell'intestazione di uno scontrino */
+body[data-layout="2"] .logo-wrap{ padding-bottom:0.6rem; }
+body[data-layout="2"] .l2-tagline{
+  width:min(var(--l2-col), calc(100% - 7rem));
+  margin:0 auto 0.6rem;
+  text-align:center;
+  font-family:'Fake Receipt', monospace;
+  font-size:clamp(0.8rem, 1.4vw, 1rem);
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+
+/* niente citazione del giorno */
+body[data-layout="2"] .hero-divider{ display:none; }
+body[data-layout="2"] #chi-siamo{ padding-top:1.6rem; }
+
+/* divisore a doppia riga prima dell'archivio */
+body[data-layout="2"] #archivio::before{
+  content:"= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =";
+  letter-spacing:0.12em;
+}
+
+/* Chi siamo: foto che si alternano da sole, lentamente */
+body[data-layout="2"] .l2-slides{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  cursor:zoom-in;
+}
+body[data-layout="2"] .l2-slides img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition:opacity 1.6s ease;
+}
+body[data-layout="2"] .l2-slides img.on{ opacity:1; }
+
+@media(max-width:1079px){
+  body[data-layout="2"] .l2-tagline{ width:calc(100% - 2.4rem); }
+}
+
+/* le foto degli eventi passati hanno freccette e pallini dentro
+   l'immagine: ingrandite un poco, restano fuori dalla cornice */
+body[data-layout="2"] .l2-slides img:not(:first-child){
+  inset:-7%;
+  width:114%;
+  height:114%;
+}
+body[data-layout="2"] .l2-slides{ overflow:hidden; }

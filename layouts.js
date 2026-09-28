@@ -390,6 +390,54 @@
     new MutationObserver(applyEventTitle).observe(evTitleEl, { childList:true, characterData:true, subtree:true });
   }
 
+  // Layout 2: ora aggiornata al secondo in alto a sinistra, come su uno
+  // scontrino (al posto di "Bologna", che è già sotto il logo)
+  var clockEl = document.querySelector('.l2-clock');
+  function tickClock(){
+    if(!clockEl) return;
+    var d = new Date();
+    var p = function(n){ return (n < 10 ? '0' : '') + n; };
+    clockEl.textContent = p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+  }
+  tickClock();
+  setInterval(tickClock, 1000);
+
+  // Layout 2: foto di Chi siamo a scorrimento automatico e lento. La
+  // prima è quella della sezione, le altre sono prese a caso fra le foto
+  // degli eventi passati. Non ci sono comandi: l'utente non le cambia.
+  var slidesEl = document.querySelector('.l2-slides');
+  if(slidesEl){
+    var pool = ['3maggio-1', '3maggio-2', '3maggio-3', '2luglio-1', '2luglio-2', '2luglio-3'];
+    for(var i = pool.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+    }
+    var srcs = ['assets/img/chi_siamo/2.jpg'].concat(pool.slice(0, 4).map(function(n){
+      return 'assets/img/archivio/' + n + '.jpg';
+    }));
+    var slideImgs = srcs.map(function(src, k){
+      var im = document.createElement('img');
+      im.src = src;
+      im.alt = '';
+      im.loading = k ? 'lazy' : 'eager';
+      if(!k) im.className = 'on';
+      slidesEl.appendChild(im);
+      return im;
+    });
+    var slideIdx = 0;
+    setInterval(function(){
+      if(current() !== '2' || document.hidden) return;
+      slideImgs[slideIdx].classList.remove('on');
+      slideIdx = (slideIdx + 1) % slideImgs.length;
+      slideImgs[slideIdx].classList.add('on');
+    }, 6500);
+    // clic sulla foto: si ingrandisce quella che si vede in quel momento
+    slidesEl.addEventListener('click', function(e){
+      e.stopPropagation();
+      if(typeof window.openLightbox === 'function'){ window.openLightbox(slideImgs[slideIdx].src); }
+    });
+  }
+
   function resetLayoutState(){
     if(callSection){ callSection.classList.remove('l2-open'); }
     if(collaboraBtn){ collaboraBtn.classList.remove('open'); collaboraBtn.setAttribute('aria-expanded', 'false'); }
