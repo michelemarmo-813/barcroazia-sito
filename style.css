@@ -256,8 +256,9 @@ main{
 .frame.fill img[data-zoom]{ width:100%; }
 .bw{ filter:grayscale(1) contrast(1.1); }
 
+/* contenitore della stella: posizione, misura ed eventuale rotazione fissa */
 .star{
-  animation:twinkle var(--tw, 6s) ease-in-out var(--tw-delay, 0s) infinite;
+  display:block;
   position:absolute;
   z-index:2;
   width:4.2rem;
@@ -658,24 +659,25 @@ main{
   .shot .frame{ height:22rem; }
 }
 
-/* ---------- stelle che scintillano piano ---------- */
-@keyframes twinkle{
-  0%, 100%{ scale:0.96; rotate:-4deg; }
-  50%{ scale:1.08; rotate:4deg; }
-  75%{ scale:0.94; rotate:1deg; }
+/* ---------- stelle nere a 4 punte che scintillano ----------
+   ritardo (--d) e durata (--t) diversi per ogni stella, impostati in
+   script.js al caricamento */
+.stella{
+  display:block;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  animation:scintilla var(--t, 3.2s) ease-in-out var(--d, 0s) infinite;
+  transform-origin:50% 50%;
 }
-.star{ --tw:3s; }
-#eventi .star.a{ --tw:2.8s; --tw-delay:-0.4s; }
-#eventi .star.b{ --tw:3.4s; --tw-delay:-1.7s; }
-#chi-siamo .star.a{ --tw:3.1s; --tw-delay:-0.9s; }
-#fanzine .star.a{ --tw:2.9s; --tw-delay:-2.2s; }
-#fanzine .star.b{ --tw:3.3s; --tw-delay:-0.6s; }
-#call .star.a{ --tw:3.2s; --tw-delay:-1.3s; }
-#call .star.b{ --tw:2.7s; --tw-delay:-2.5s; }
-.stack .star.a{ --tw:3.5s; --tw-delay:-1.1s; }
-.stack .star.b{ --tw:2.6s; --tw-delay:-1.9s; }
+.stella path{ fill:var(--ink); }
+@keyframes scintilla{
+  0%, 100%{ transform:rotate(0deg)  scale(1);    }
+  45%     { transform:rotate(8deg)  scale(1.08); }
+  55%     { transform:rotate(8deg)  scale(0.94); }
+}
 @media(prefers-reduced-motion:reduce){
-  .star{ animation:none; }
+  .stella{ animation:none; }
   .shot-crop img{ transition:none; }
 }
 
@@ -693,12 +695,11 @@ main{
 
 /* ---------- conto alla rovescia nel ticker (non cliccabile) ---------- */
 .ticker .t-static{ cursor:default; font-variant-numeric:tabular-nums; }
-.ticker .t-static:hover{ background:none; color:var(--orange); }
 
 /* ---------- citazione battuta a macchina ---------- */
 .quote{
   width:min(var(--col), calc(100% - 2rem));
-  margin:4.2rem auto 0;
+  margin:5.2rem auto 0;
   text-align:center;
 }
 .tw{ position:relative; margin:0; }
@@ -736,7 +737,7 @@ main{
 }
 .quote-note.on{ opacity:1; }
 .quote-note b{ font-weight:700; }
-main{ margin-top:3.6rem; }
+main{ margin-top:4.6rem; }
 
 /* ---------- verso nascosto nel codice a barre ---------- */
 .barcode{ cursor:pointer; }
@@ -749,19 +750,20 @@ main{ margin-top:3.6rem; }
   font-variant-numeric:tabular-nums;
 }
 
-/* ---------- scia di stelline ---------- */
-.sparkle-layer{
+/* ---------- scia di stelline dietro il cursore (sotto il lightbox) ---------- */
+.scia-stelle{
   position:fixed;
   inset:0;
-  width:100vw;
-  height:100vh;
-  z-index:400;
+  width:100%;
+  height:100%;
   pointer-events:none;
+  z-index:450;
 }
 
 @media(max-width:760px){
   .tw-text, .tw-vis{ font-size:1.45rem; }
-  .quote{ margin-top:3rem; }
+  .quote{ margin-top:3.8rem; }
+  main{ margin-top:4.4rem; }
 }
 @media(prefers-reduced-motion:reduce){
   .tw-cur{ animation:none; }

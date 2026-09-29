@@ -52,7 +52,7 @@
     var slug = encodeURIComponent(scelta.replace(/ /g, '_'));
     var setPoeta = function(nome, href){
       poetaEls.forEach(function(a){
-        a.textContent = 'Scopri poeta: ' + nome;
+        a.textContent = 'Scopri: ' + nome;
         a.href = href;
       });
     };
@@ -70,6 +70,33 @@
       }
     }).catch(function(){ /* resta la pagina inglese */ });
   }
+
+  // "Meteo città": una città italiana a caso con una temperatura a caso
+  // (come nella versione precedente del sito); porta alle previsioni
+  // di quella città
+  var meteoTemp = ['4°C', '39°C', '2°C', '31°C', '-9°C', '42°C', '-14°C', '17°C', '33°C', '-3°C', '44°C', '-6°C', '21°C', '12°C'];
+  var meteoLuoghi = [
+    'Torino', 'Milano', 'Bologna', 'Venezia', 'Genova', 'Trieste', 'Verona',
+    'Bergamo', 'Bolzano', 'Trento', 'Aosta', 'Cuneo', 'Ferrara', 'Parma',
+    'Modena', 'Reggio Emilia', 'Ravenna', 'Rimini', 'Cesenatico', 'Mantova',
+    'Sondrio', 'Como', 'Vicenza', 'Padova', 'Treviso', 'Udine', 'Gorizia',
+    'Piacenza', 'La Spezia', 'Portofino', 'Vernazza', 'Firenze', 'Siena',
+    'Pisa', 'Lucca', 'Arezzo', 'Perugia', 'Assisi', 'Gubbio', 'Orvieto',
+    'Urbino', 'Ancona', 'Ascoli Piceno', 'Roma', 'Viterbo', 'Rieti', 'Latina',
+    'Frosinone', 'L’Aquila', 'Pescara', 'Chieti', 'Teramo', 'Napoli',
+    'Salerno', 'Amalfi', 'Positano', 'Bari', 'Lecce', 'Taranto', 'Brindisi',
+    'Matera', 'Potenza', 'Reggio Calabria', 'Cosenza', 'Catanzaro', 'Crotone',
+    'Trapani', 'Palermo', 'Catania', 'Siracusa', 'Messina', 'Agrigento',
+    'Ragusa', 'Cagliari', 'Sassari', 'Nuoro', 'Oristano', 'Olbia', 'Alghero',
+    'Otranto', 'Gallipoli', 'Tropea', 'Alberobello', 'Polignano a Mare',
+    'Civita di Bagnoregio', 'San Gimignano'
+  ];
+  var citta = meteoLuoghi[Math.floor(Math.random() * meteoLuoghi.length)];
+  var gradi = meteoTemp[Math.floor(Math.random() * meteoTemp.length)];
+  document.querySelectorAll('.js-meteo').forEach(function(a){
+    a.textContent = citta + ' ' + gradi;
+    a.href = 'https://www.ilmeteo.it/meteo/' + encodeURIComponent(citta.replace(/’/g, "'"));
+  });
 
   // ---- conto alla rovescia al prossimo Raw Poetry ----
   // Lunedì alle 20:30, ora di Bologna, per chiunque visiti il sito.
@@ -192,55 +219,76 @@
     });
   }
 
-  // ---- scia di stelline dietro al cursore (solo computer) ----
-  var fine = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  if(fine && !reduce){
+  // ---- stelle: ritardo e durata diversi per ognuna ----
+  document.querySelectorAll('.stella').forEach(function(st){
+    st.style.setProperty('--d', (-Math.random() * 3).toFixed(2) + 's');
+    st.style.setProperty('--t', (2.8 + Math.random() * 0.8).toFixed(2) + 's');
+  });
+
+  // ---- scia di stelline dietro il cursore (solo con il mouse) ----
+  (function(){
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if(!matchMedia('(pointer: fine)').matches) return;
+
     var cv = document.createElement('canvas');
-    cv.className = 'sparkle-layer';
+    cv.className = 'scia-stelle';
     cv.setAttribute('aria-hidden', 'true');
     document.body.appendChild(cv);
     var ctx = cv.getContext('2d');
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var size = function(){
-      cv.width = window.innerWidth * dpr; cv.height = window.innerHeight * dpr;
+    var ROSSO = getComputedStyle(document.documentElement).getPropertyValue('--orange').trim() || '#e83d0f';
+    var parts = [];
+    var running = false;
+
+    function size(){
+      var dpr = window.devicePixelRatio || 1;
+      cv.width = innerWidth * dpr;
+      cv.height = innerHeight * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
+    }
     size();
-    window.addEventListener('resize', size);
-    var parts = [], running = false, lastX = -99, lastY = -99;
-    var star4 = function(x, y, r, a){
-      ctx.save();
-      ctx.translate(x, y); ctx.rotate(a);
-      ctx.beginPath();
-      for(var i = 0; i < 8; i++){
-        var rr = i % 2 ? r * 0.28 : r;
-        var ang = i * Math.PI / 4;
-        ctx[i ? 'lineTo' : 'moveTo'](Math.cos(ang) * rr, Math.sin(ang) * rr);
+    addEventListener('resize', size);
+
+    addEventListener('pointermove', function(e){
+      if(e.pointerType && e.pointerType !== 'mouse') return;
+      for(var i = 0; i < 2; i++){
+        parts.push({ x:e.clientX, y:e.clientY,
+                     vx:(Math.random() - .5) * 1.6,
+                     vy:(Math.random() - .5) * 1.6,
+                     l:1 });
       }
-      ctx.closePath(); ctx.fill(); ctx.restore();
-    };
-    var loop = function(t){
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      parts = parts.filter(function(p){ return t - p.t0 < 800; });
-      parts.forEach(function(p){
-        var k = (t - p.t0) / 800;
-        ctx.globalAlpha = 1 - k;
-        ctx.fillStyle = '#e83d0f';
-        star4(p.x, p.y, p.r * (0.7 + k * 0.6), p.a);
-      });
-      ctx.globalAlpha = 1;
-      if(parts.length){ requestAnimationFrame(loop); } else { running = false; }
-    };
-    window.addEventListener('pointermove', function(e){
-      if(e.pointerType !== 'mouse') return;
-      var dx = e.clientX - lastX, dy = e.clientY - lastY;
-      if(dx * dx + dy * dy < 400) return;     // una stellina ogni ~20px
-      lastX = e.clientX; lastY = e.clientY;
-      if(parts.length > 24) parts.shift();
-      parts.push({ x:e.clientX, y:e.clientY, r:3 + Math.random() * 3, a:Math.random() * Math.PI, t0:performance.now() });
       if(!running){ running = true; requestAnimationFrame(loop); }
     }, { passive:true });
-  }
+
+    function stella(x, y, r){
+      ctx.beginPath();
+      ctx.moveTo(x, y - r);
+      ctx.lineTo(x + r * .25, y - r * .25);
+      ctx.lineTo(x + r, y);
+      ctx.lineTo(x + r * .25, y + r * .25);
+      ctx.lineTo(x, y + r);
+      ctx.lineTo(x - r * .25, y + r * .25);
+      ctx.lineTo(x - r, y);
+      ctx.lineTo(x - r * .25, y - r * .25);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // il ciclo gira solo finché ci sono stelline da disegnare
+    function loop(){
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      parts = parts.filter(function(p){ return p.l > 0; });
+      ctx.fillStyle = ROSSO;
+      for(var i = 0; i < parts.length; i++){
+        var p = parts[i];
+        p.x += p.vx; p.y += p.vy; p.l -= .025;
+        ctx.globalAlpha = Math.max(p.l, 0);
+        stella(p.x, p.y, 5 * p.l + 1);
+      }
+      ctx.globalAlpha = 1;
+      if(parts.length){ requestAnimationFrame(loop); }
+      else { ctx.clearRect(0, 0, innerWidth, innerHeight); running = false; }
+    }
+  })();
 
   // "Prossimo evento / numero / call": passa all'elemento successivo
   function current(sel){
