@@ -81,9 +81,20 @@ body{ position:relative; }
 }
 
 .ticker{
+  position:relative;
   overflow:hidden;
   border:1px solid var(--orange);
   border-left:0;
+}
+/* asticella fissa a sinistra, come quella che chiude la fila a destra */
+.ticker::before{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  z-index:1;
+  border-left:1px solid var(--orange);
 }
 .ticker-track{
   display:flex;
@@ -154,8 +165,8 @@ body{ position:relative; }
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
-  gap:0.9rem 1.55rem;
-  width:min(var(--col), calc(100% - 2rem));
+  gap:0.9rem 1.1rem;
+  width:min(var(--head), calc(100% - 2rem));
   margin:0 auto;
 }
 
@@ -239,6 +250,7 @@ main{
 .bw{ filter:grayscale(1) contrast(1.1); }
 
 .star{
+  animation:twinkle var(--tw, 6s) ease-in-out var(--tw-delay, 0s) infinite;
   position:absolute;
   z-index:2;
   width:4.2rem;
@@ -326,7 +338,20 @@ main{
 
 .shot figcaption{ margin-top:0.7rem; }
 .shot-crop{ width:100%; height:100%; overflow:hidden; border:2px solid var(--ink); cursor:zoom-in; }
-.shot-crop img{ width:100%; height:100%; object-fit:cover; border:0; transform:scale(1.16); }
+.shot-crop{ position:relative; }
+.shot-crop img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border:0;
+  transform:scale(1.16);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 1.2s ease;
+}
+.shot-crop img.on{ opacity:1; pointer-events:auto; }
 
 /* ---------- su di noi (blog) ---------- */
 .cards{
@@ -436,18 +461,34 @@ main{
   inset:0;
   z-index:500;
   display:none;
+  background:rgba(0,0,0,0.9);
+  overflow:hidden;
+}
+.lightbox.open{ display:block; }
+.lb-stage{
+  position:absolute;
+  inset:0;
+  display:flex;
   align-items:center;
   justify-content:center;
-  gap:1rem;
-  padding:4vh 4vw;
-  background:rgba(0,0,0,0.88);
+  padding:4vh 4.5rem;
 }
-.lightbox.open{ display:flex; }
-.lightbox img{ max-width:100%; max-height:90vh; border:2px solid var(--paper); }
-.lightbox.zoomed{ overflow:auto; align-items:flex-start; justify-content:flex-start; }
-.lightbox.zoomed img{ max-width:none; max-height:none; width:180vw; }
+.lb-img{
+  max-width:100%;
+  max-height:92vh;
+  border:2px solid var(--paper);
+  cursor:zoom-in;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  transition:transform .25s ease;
+}
+.lightbox.zoomed .lb-img{ cursor:grab; }
+.lightbox.dragging .lb-img{ transition:none; }
+.lightbox.zoomed .lb-img:active{ cursor:grabbing; }
 .lightbox button{
   position:absolute;
+  z-index:2;
   border:1px solid var(--paper);
   background:var(--orange);
   color:var(--paper);
@@ -457,11 +498,12 @@ main{
   padding:0.4rem 0.7rem 0.3rem;
   cursor:pointer;
 }
-.lightbox .lb-close,
-.lightbox .lightbox-close{ top:1rem; right:1rem; }
-.lightbox .lb-prev{ left:1rem; top:50%; }
-.lightbox .lb-next{ right:1rem; top:50%; }
-.lightbox .lb-prev[hidden], .lightbox .lb-next[hidden]{ display:none; }
+.lightbox button:hover{ background:var(--paper); color:var(--orange); }
+.lightbox .lb-close{ top:1rem; right:1rem; }
+.lightbox .lb-prev{ left:1rem; top:50%; transform:translateY(-50%); }
+.lightbox .lb-next{ right:1rem; top:50%; transform:translateY(-50%); }
+.lightbox button[hidden]{ display:none; }
+@media(max-width:760px){ .lb-stage{ padding:4rem 0.6rem; } }
 
 /* ==========================================================
    SOTTOPAGINE (elenco fanzine, archivio, articoli)
@@ -606,4 +648,37 @@ main{
   .leader > span:first-child{ flex-basis:100%; }
   .claim .star{ top:-1.6rem !important; }
   .shot-crop img{ transform:scale(1.12); }
+  .shot .frame{ height:22rem; }
 }
+
+/* ---------- stelle che scintillano piano ---------- */
+@keyframes twinkle{
+  0%, 100%{ scale:1; rotate:0deg; }
+  30%{ scale:1.07; rotate:-7deg; }
+  60%{ scale:0.96; rotate:5deg; }
+}
+#eventi .star.a{ --tw:5.8s; }
+#eventi .star.b{ --tw:7.4s; --tw-delay:-2.1s; }
+#chi-siamo .star.a{ --tw:6.6s; --tw-delay:-1.2s; }
+#fanzine .star.a{ --tw:6.2s; --tw-delay:-3.3s; }
+#fanzine .star.b{ --tw:8.1s; --tw-delay:-0.7s; }
+#call .star.a{ --tw:7s; --tw-delay:-4.4s; }
+#call .star.b{ --tw:5.4s; --tw-delay:-2.8s; }
+.stack .star.a{ --tw:6.9s; --tw-delay:-1.9s; }
+.stack .star.b{ --tw:7.7s; --tw-delay:-3.6s; }
+@media(prefers-reduced-motion:reduce){
+  .star{ animation:none; }
+  .shot-crop img{ transition:none; }
+}
+
+/* ---------- numeri sotto il codice a barre ---------- */
+.barcode-num{
+  margin-top:0.35rem;
+  font-size:0.78rem;
+  letter-spacing:0.55em;
+  padding-left:0.55em;
+}
+
+.panel .mail{ margin-top:1.2rem; }
+.panel .mail a{ color:var(--orange); }
+.panel .mail a:hover{ color:var(--ink); }

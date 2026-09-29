@@ -7,11 +7,6 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="subpage">
-<div class="lightbox" id="lightbox">
-  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Chiudi">&times;</button>
-  <img id="lightboxImg" src="" alt="">
-</div>
-
 <div class="sub-topline">
   <a class="back-btn" href="blog-articoli.html">&larr; Indietro</a>
   <span>Bar Croazia &middot; Bologna</span>
@@ -32,7 +27,7 @@
     <div class="article-photo-wrap">
       <div>
         <div class="article-photo" id="articlePhoto">
-          <img src="assets/img/blog/egidio-1.png" alt="La setta dei poeti che rinasce a Primavera — foto dell'articolo di Giovanni Egidio">
+          <img data-zoom src="assets/img/blog/egidio-1.png" alt="La setta dei poeti che rinasce a Primavera — foto dell'articolo di Giovanni Egidio">
         </div>
         <span class="article-photo-hint">Tocca la foto per ingrandirla</span>
       </div>
@@ -43,40 +38,6 @@
 
 </div>
 
-<script>
-  var lightboxEl = document.getElementById('lightbox');
-  var lightboxImgEl = document.getElementById('lightboxImg');
-
-  function openLightbox(src){
-    lightboxImgEl.src = src;
-    lightboxEl.classList.remove('zoomed');
-    lightboxEl.classList.add('open');
-  }
-  function closeLightbox(){
-    lightboxEl.classList.remove('open');
-    lightboxEl.classList.remove('zoomed');
-    lightboxEl.scrollTop = 0;
-    lightboxEl.scrollLeft = 0;
-    lightboxImgEl.src = '';
-  }
-  lightboxEl.addEventListener('click', closeLightbox);
-  lightboxImgEl.addEventListener('click', function(e){
-    e.stopPropagation();
-    lightboxEl.classList.toggle('zoomed');
-  });
-  document.getElementById('lightboxClose').addEventListener('click', function(e){
-    e.stopPropagation();
-    closeLightbox();
-  });
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape') closeLightbox();
-  });
-
-  document.getElementById('articlePhoto').addEventListener('click', function(){
-    var img = this.querySelector('img');
-    openLightbox(img.src);
-  });
-</script>
-
+<script src="lightbox.js"></script>
 </body>
 </html>

@@ -158,27 +158,34 @@
     });
   });
 
-  // ingrandimento delle foto (con frecce se ce n'è più d'una)
-  var lb = document.getElementById('lightbox');
-  var lbImg = document.getElementById('lightboxImg');
-  var prev = lb.querySelector('.lb-prev'), next = lb.querySelector('.lb-next');
-  var list = [], pos = 0;
-  function show(){ lbImg.src = list[pos]; prev.hidden = next.hidden = list.length < 2; }
-  function openLightbox(srcs, i){ list = srcs; pos = i || 0; show(); lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); }
-  function closeLightbox(){ lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); lbImg.src = ''; }
-  window.openLightbox = openLightbox;
-  document.addEventListener('click', function(e){
-    var img = e.target.closest('[data-zoom]');
-    if(img){ openLightbox([img.currentSrc || img.src], 0); }
-  });
-  lb.addEventListener('click', function(e){ if(e.target === lb){ closeLightbox(); } });
-  lb.querySelector('.lb-close').addEventListener('click', closeLightbox);
-  prev.addEventListener('click', function(){ pos = (pos - 1 + list.length) % list.length; show(); });
-  next.addEventListener('click', function(){ pos = (pos + 1) % list.length; show(); });
-  document.addEventListener('keydown', function(e){
-    if(!lb.classList.contains('open')) return;
-    if(e.key === 'Escape') closeLightbox();
-    if(e.key === 'ArrowRight' && list.length > 1) next.click();
-    if(e.key === 'ArrowLeft' && list.length > 1) prev.click();
-  });
+  // ---- archivio: un carosello per evento (dati in archivio-dati.js) ----
+  var gallery = document.getElementById('archivio-gallery');
+  var eventi = (window.ARCHIVIO || []).slice(0, 3);
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  if(gallery){
+    eventi.forEach(function(ev, k){
+      var fig = document.createElement('figure');
+      fig.className = 'shot';
+      var imgs = (ev.foto || []).map(function(src, i){
+        return '<img class="bw' + (i === 0 ? ' on' : '') + '" src="' + esc(src) + '" alt="' + esc(ev.titolo + ' ' + ev.data + ', foto ' + (i + 1) + ' di ' + ev.foto.length + ', di ' + ev.fotografo) + '" data-zoom' + (i ? ' loading="lazy"' : '') + '>';
+      }).join('');
+      fig.innerHTML =
+        '<div class="cap">' + esc(ev.titolo + ' ' + ev.data) + '</div>' +
+        '<div class="frame"><div class="shot-crop" data-gallery>' + imgs + '</div></div>' +
+        '<figcaption>\uD83D\uDCF7 ' + esc(ev.fotografo) + '</figcaption>';
+      gallery.appendChild(fig);
+      var slides = fig.querySelectorAll('.shot-crop img');
+      if(slides.length > 1 && !reduce){
+        var n = 0;
+        // ritmi un po' diversi, così i tre caroselli non cambiano insieme
+        setInterval(function(){
+          if(document.hidden) return;
+          slides[n].classList.remove('on');
+          n = (n + 1) % slides.length;
+          slides[n].classList.add('on');
+        }, 5200 + k * 900);
+      }
+    });
+  }
 })();
