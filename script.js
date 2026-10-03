@@ -250,6 +250,7 @@
     var c = current('.call-item');
     var it = c.items[c.i];
     if(!it) return;
+    syncDots();
     if(more){ more.href = it.dataset.page; }
     if(apply){
       apply.href = it.dataset.apply;
@@ -258,6 +259,24 @@
       else { apply.removeAttribute('target'); apply.removeAttribute('rel'); }
     }
   }
+  // pallini sotto "Open call": quante call ci sono e quale si vede
+  function syncDots(){
+    var dots = document.querySelectorAll('.call-dot');
+    var c = current('.call-item');
+    dots.forEach(function(d, i){
+      d.classList.toggle('on', i === c.i);
+      if(i === c.i){ d.setAttribute('aria-current', 'true'); } else { d.removeAttribute('aria-current'); }
+    });
+  }
+  document.querySelectorAll('.call-dot').forEach(function(d, i){
+    d.addEventListener('click', function(){
+      var c = current('.call-item');
+      if(!c.items[i] || i === c.i) return;
+      c.items[c.i].hidden = true;
+      c.items[i].hidden = false;
+      syncCall();
+    });
+  });
   syncCall();
 
   // ultime cose: ogni pulsante apre il suo pannello

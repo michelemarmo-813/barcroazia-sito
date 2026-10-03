@@ -662,6 +662,13 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 .post-author{ color:var(--orange); margin-top:0.2rem; }
 .post-card:hover .post-title{ color:var(--orange); }
 
+.call-dots{ display:flex; justify-content:center; gap:0.55rem; margin:-1.3rem 0 1.5rem; }
+.call-dot{ width:0.6rem; height:0.6rem; padding:0; border:1px solid var(--ink); border-radius:50%; background:var(--paper); cursor:pointer; transition:background-color .2s ease; }
+.call-dot.on{ background:var(--orange); border-color:var(--orange); }
+.call-dot:hover{ background:var(--ink); }
+.call-dot.on:hover{ background:var(--orange); }
+.call-dot:focus-visible{ outline:2px dashed var(--ink); outline-offset:3px; }
+
 /* open call: locandina e testo completo */
 .oc-meta{ flex-direction:column; align-items:center; gap:0.15rem; text-align:center; }
 .oc-layout{ display:grid; grid-template-columns:minmax(0, 21rem) minmax(0, 1fr); gap:2.6rem; align-items:start; }
