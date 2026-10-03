@@ -56,6 +56,46 @@
     function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
     // miniatura: la stessa foto nella sottocartella "mini"
     function mini(src){ return /\/\d{3}\.jpg$/.test(src) ? src.replace(/\/(\d{3}\.jpg)$/, '/mini/$1') : src; }
+    // anteprima della scheda: le foto dell'evento passano a caso,
+    // mescolate, senza ripetersi finché non sono uscite tutte
+    var ferme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var visibili = new Set();
+    var io = 'IntersectionObserver' in window ? new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ en.isIntersecting ? visibili.add(en.target) : visibili.delete(en.target); });
+    }, { rootMargin:'100px' }) : null;
+    function anteprima(tile, foto, k){
+      var lastre = tile.querySelectorAll('.event-tile-photo .ph');
+      var mazzo = [], cur = -1, vis = 0, attesa = false;
+      function pesca(){
+        if(!mazzo.length){
+          mazzo = foto.map(function(_, i){ return i; });
+          for(var j = mazzo.length - 1; j > 0; j--){
+            var r = Math.floor(Math.random() * (j + 1)), t = mazzo[j]; mazzo[j] = mazzo[r]; mazzo[r] = t;
+          }
+          if(mazzo.length > 1 && mazzo[mazzo.length - 1] === cur){ mazzo.unshift(mazzo.pop()); }
+        }
+        return mazzo.pop();
+      }
+      cur = pesca();
+      lastre[0].style.backgroundImage = "url('" + foto[cur] + "')";
+      if(ferme || foto.length < 2) return;
+      var btn = tile.querySelector('.event-tile-photo');
+      if(io){ io.observe(btn); } else { visibili.add(btn); }
+      // ritmi diversi per ogni scheda, e solo per quelle sullo schermo
+      setInterval(function(){
+        if(document.hidden || attesa || !visibili.has(btn)) return;
+        var i = pesca(), dopo = lastre[1 - vis], img = new Image();
+        attesa = true;
+        img.onload = function(){
+          dopo.style.backgroundImage = "url('" + foto[i] + "')";
+          dopo.classList.add('on');
+          lastre[vis].classList.remove('on');
+          vis = 1 - vis; cur = i; attesa = false;
+        };
+        img.onerror = function(){ attesa = false; };
+        img.src = foto[i];
+      }, 4200 + (k % 5) * 700 + Math.round(Math.random() * 600));
+    }
     (window.ARCHIVIO || []).forEach(function(ev, k){
       var foto = ev.foto || [];
       var quando = [ev.luogo, ev.data].filter(Boolean).join(' — ');
@@ -64,7 +104,7 @@
       tile.className = 'event-tile' + (foto.length ? '' : ' no-foto');
       tile.innerHTML =
         (foto.length
-          ? '<button type="button" class="event-tile-photo js-apri" aria-expanded="false" aria-controls="foto-' + k + '" aria-label="' + esc('Mostra le ' + foto.length + ' foto di ' + nome) + '"><span class="ph" style="background-image:url(\'' + esc(foto[0]) + '\')"></span></button>'
+          ? '<button type="button" class="event-tile-photo js-apri" aria-expanded="false" aria-controls="foto-' + k + '" aria-label="' + esc('Mostra le ' + foto.length + ' foto di ' + nome) + '"><span class="ph on"></span><span class="ph"></span></button>'
           : '<div class="event-tile-photo"><span>foto in arrivo</span></div>') +
         '<div class="event-tile-info">' +
           '<span class="event-tile-title">' + esc(ev.titolo) + '</span>' +
@@ -99,6 +139,7 @@
           if(t && window.openLightbox) window.openLightbox(foto, +t.dataset.i);
         });
       }
+      if(foto.length){ anteprima(tile, foto, k); }
       lista.appendChild(tile);
     });
   })();

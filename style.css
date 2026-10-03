@@ -613,7 +613,10 @@ main{
   background-size:cover;
   background-position:center;
   filter:grayscale(1) contrast(1.1);
+  opacity:0;
+  transition:opacity 1.2s ease;
 }
+.event-tile-photo .ph.on{ opacity:1; }
 .event-tile-info{ padding:0.9rem 1rem; display:flex; flex-direction:column; justify-content:center; gap:0.4rem; }
 .event-tile-title{ font-size:var(--fs-big); }
 .event-tile-date{ color:var(--orange); }
@@ -759,6 +762,7 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 }
 @media(prefers-reduced-motion:reduce){
   .stella{ animation:none; }
+  .event-tile-photo .ph{ transition:none; }
   .shot-crop img{ transition:none; }
 }
 
