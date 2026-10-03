@@ -587,6 +587,10 @@ main{
 .issue-card.open .issue-more{ max-height:120rem; margin-top:0.6rem; }
 .issue-more p{ margin:0 0 0.9em; text-align:justify; }
 .issue-more strong{ font-weight:400; color:var(--orange); }
+.issue-credits{ margin:0; }
+.issue-credits dt{ margin-top:0.55rem; }
+.issue-credits dt:first-child{ margin-top:0; }
+.issue-credits dd{ margin:0; color:var(--orange); }
 .buy-btn{
   margin-top:0.8rem;
   padding:0.08rem 0.8rem 0;
