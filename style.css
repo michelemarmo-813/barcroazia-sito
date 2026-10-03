@@ -619,6 +619,35 @@ main{
 .event-tile-date{ color:var(--orange); }
 button.event-tile-photo{ display:block; width:100%; padding:0; border:0; border-right:1.5px solid var(--ink); cursor:zoom-in; font:inherit; }
 button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-offset:-6px; }
+.event-tile-more{
+  align-self:flex-start;
+  margin-top:0.4rem;
+  padding:0.15rem 0.6rem 0;
+  border:1px solid var(--ink);
+  background:var(--paper);
+  color:var(--ink);
+  font:inherit;
+  cursor:pointer;
+  transition:background-color .15s ease, color .15s ease;
+}
+.event-tile-more:hover, .event-tile.open .event-tile-more{ background:var(--ink); color:var(--paper); }
+.event-tile-more:focus-visible{ outline:2px dashed var(--ink); outline-offset:3px; }
+/* elenco delle foto di un evento */
+.event-grid{ grid-column:1 / -1; border-top:1.5px solid var(--ink); padding:0.9rem 1rem 1rem; }
+.event-grid[hidden]{ display:none; }
+.event-grid-hint{ margin:0 0 0.7rem; color:var(--orange); }
+.event-grid-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(6.4rem, 1fr));
+  gap:0.5rem;
+  max-height:27rem;
+  overflow-y:auto;
+  padding:0.25rem;
+}
+.event-thumb{ display:block; padding:0; border:2px solid var(--ink); background:var(--orange); cursor:zoom-in; aspect-ratio:1; overflow:hidden; }
+.event-thumb img{ width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.1); transition:filter .2s ease; }
+.event-thumb:hover img, .event-thumb:focus-visible img{ filter:none; }
+.event-thumb:hover, .event-thumb:focus-visible{ border-color:var(--orange); outline:2px solid var(--ink); outline-offset:0; }
 .no-foto .event-tile-photo{ display:flex; align-items:center; justify-content:center; }
 .no-foto .event-tile-photo span{ padding:0.15rem 0.5rem 0; background:var(--paper); border:1px solid var(--ink); font-size:0.85rem; }
 
@@ -670,6 +699,7 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
   main{ margin-top:4rem; }
   .event-tile{ grid-template-columns:minmax(0, 1fr); }
   .event-tile-photo, button.event-tile-photo{ border-right:0; border-bottom:1.5px solid var(--ink); }
+  .event-grid-list{ grid-template-columns:repeat(auto-fill, minmax(4.6rem, 1fr)); max-height:22rem; }
   .leader{ flex-wrap:wrap; }
   #chi-siamo .star.a{ left:0.4rem; }
   .names .line{ flex-direction:column; gap:0; margin-bottom:0.3rem; }

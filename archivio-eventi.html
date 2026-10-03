@@ -17,7 +17,7 @@
   <div class="sub-hero">
     <span class="tag mono">05a</span>
     <h1>Eventi passati</h1>
-    <p>Le serate organizzate finora, con foto e informazioni. Clicca su una foto per sfogliare tutte quelle della serata.</p>
+    <p>Le serate organizzate finora, con foto e informazioni. Clicca su un evento per vedere tutte le foto della serata e scegli da quale partire.</p>
   </div>
 
   <main class="sub-main">
@@ -48,28 +48,55 @@
     revealEls.forEach(function(el){ el.classList.add('revealed'); });
   }
 
-  // una scheda per ogni evento di archivio-dati.js
+  // una scheda per ogni evento di archivio-dati.js;
+  // cliccando sulla scheda si apre l'elenco delle foto da cui scegliere
   (function(){
     var lista = document.getElementById('archivio-lista');
     if(!lista) return;
     function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-    (window.ARCHIVIO || []).forEach(function(ev){
+    // miniatura: la stessa foto nella sottocartella "mini"
+    function mini(src){ return /\/\d{3}\.jpg$/.test(src) ? src.replace(/\/(\d{3}\.jpg)$/, '/mini/$1') : src; }
+    (window.ARCHIVIO || []).forEach(function(ev, k){
       var foto = ev.foto || [];
       var quando = [ev.luogo, ev.data].filter(Boolean).join(' — ');
+      var nome = ev.titolo + (ev.data ? ' ' + ev.data : '');
       var tile = document.createElement('div');
       tile.className = 'event-tile' + (foto.length ? '' : ' no-foto');
       tile.innerHTML =
         (foto.length
-          ? '<button type="button" class="event-tile-photo" aria-label="' + esc('Sfoglia le ' + foto.length + ' foto di ' + ev.titolo + (ev.data ? ' ' + ev.data : '')) + '"><span class="ph" style="background-image:url(\'' + esc(foto[0]) + '\')"></span></button>'
+          ? '<button type="button" class="event-tile-photo js-apri" aria-expanded="false" aria-controls="foto-' + k + '" aria-label="' + esc('Mostra le ' + foto.length + ' foto di ' + nome) + '"><span class="ph" style="background-image:url(\'' + esc(foto[0]) + '\')"></span></button>'
           : '<div class="event-tile-photo"><span>foto in arrivo</span></div>') +
         '<div class="event-tile-info">' +
           '<span class="event-tile-title">' + esc(ev.titolo) + '</span>' +
           (quando ? '<span class="event-tile-date">' + esc(quando) + '</span>' : '') +
-          (ev.fotografo ? '<span class="event-tile-by">\uD83D\uDCF7 ' + esc(ev.fotografo) + (foto.length ? ' · ' + foto.length + ' foto' : '') + '</span>' : '') +
-        '</div>';
+          (ev.fotografo ? '<span class="event-tile-by">📷 ' + esc(ev.fotografo) + '</span>' : '') +
+          (foto.length ? '<button type="button" class="event-tile-more js-apri" aria-expanded="false" aria-controls="foto-' + k + '">Guarda le ' + foto.length + ' foto <span aria-hidden="true">&darr;</span></button>' : '') +
+        '</div>' +
+        (foto.length ? '<div class="event-grid" id="foto-' + k + '" hidden><p class="event-grid-hint">Scegli la foto da cui partire</p><div class="event-grid-list"></div></div>' : '');
       if(foto.length){
-        tile.querySelector('.event-tile-photo').addEventListener('click', function(){
-          if(window.openLightbox) window.openLightbox(foto, 0);
+        var griglia = tile.querySelector('.event-grid');
+        var elenco = griglia.querySelector('.event-grid-list');
+        var bottoni = tile.querySelectorAll('.js-apri');
+        var pronta = false;
+        function apriChiudi(){
+          var apri = griglia.hidden;
+          // le miniature si caricano solo la prima volta che si apre
+          if(apri && !pronta){
+            elenco.innerHTML = foto.map(function(src, i){
+              return '<button type="button" class="event-thumb" data-i="' + i + '" aria-label="' + esc('Foto ' + (i + 1) + ' di ' + foto.length) + '"><img src="' + esc(mini(src)) + '" alt="" loading="lazy"></button>';
+            }).join('');
+            pronta = true;
+          }
+          griglia.hidden = !apri;
+          tile.classList.toggle('open', apri);
+          bottoni.forEach(function(b){ b.setAttribute('aria-expanded', apri); });
+          var freccia = tile.querySelector('.event-tile-more span');
+          if(freccia) freccia.innerHTML = apri ? '&uarr;' : '&darr;';
+        }
+        bottoni.forEach(function(b){ b.addEventListener('click', apriChiudi); });
+        elenco.addEventListener('click', function(e){
+          var t = e.target.closest('.event-thumb');
+          if(t && window.openLightbox) window.openLightbox(foto, +t.dataset.i);
         });
       }
       lista.appendChild(tile);
@@ -79,5 +106,6 @@
 </script>
 
 <script src="lightbox.js"></script>
+<script src="stelle.js"></script>
 </body>
 </html>

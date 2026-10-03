@@ -21,10 +21,14 @@
    serie("2026-03-02", 50) vuol dire: le foto da 001.jpg a
    050.jpg di quella cartella.
 
+   Nella sottocartella "mini" ci sono le stesse foto in piccolo
+   (360 px), usate nell'elenco da cui si sceglie la foto nella
+   pagina "Eventi passati". Se mancano, si usano quelle grandi.
+
    Per AGGIUNGERE LE FOTO a un evento: crea la cartella con la
    data, mettici le foto numerate (larghe al massimo 1280 px,
-   così il sito resta leggero) e al posto di [] scrivi
-   serie("aaaa-mm-gg", quante sono).
+   così il sito resta leggero), se puoi anche le miniature in
+   "mini", e al posto di [] scrivi serie("aaaa-mm-gg", quante sono).
 
    Per AGGIUNGERE UN EVENTO: copia un blocco { ... } intero,
    incollalo in cima all'elenco (gli eventi vanno dal più
