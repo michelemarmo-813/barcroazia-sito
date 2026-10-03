@@ -70,7 +70,7 @@
           '<span class="event-tile-title">' + esc(ev.titolo) + '</span>' +
           (quando ? '<span class="event-tile-date">' + esc(quando) + '</span>' : '') +
           (ev.fotografo ? '<span class="event-tile-by">📷 ' + esc(ev.fotografo) + '</span>' : '') +
-          (foto.length ? '<button type="button" class="event-tile-more js-apri" aria-expanded="false" aria-controls="foto-' + k + '">Guarda le ' + foto.length + ' foto <span aria-hidden="true">&darr;</span></button>' : '') +
+          (foto.length ? '<button type="button" class="event-tile-more js-apri" aria-expanded="false" aria-controls="foto-' + k + '">Guarda tutte le foto <span aria-hidden="true">&darr;</span></button>' : '') +
         '</div>' +
         (foto.length ? '<div class="event-grid" id="foto-' + k + '" hidden><p class="event-grid-hint">Seleziona una foto</p><div class="event-grid-list"></div></div>' : '');
       if(foto.length){

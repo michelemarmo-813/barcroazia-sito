@@ -282,32 +282,52 @@
     eventi.forEach(function(ev, k){
       var fig = document.createElement('figure');
       fig.className = 'shot';
-      // nel carosello della home bastano le prime foto;
-      // al clic si sfogliano tutte quelle dell'evento
-      var imgs = ev.foto.slice(0, 10).map(function(src, i){
-        return '<img class="bw' + (i === 0 ? ' on' : '') + '" src="' + esc(src) + '" alt="' + esc(ev.titolo + ' ' + ev.data + ', foto ' + (i + 1) + ' di ' + ev.foto.length + ', di ' + ev.fotografo) + '"' + (i ? ' loading="lazy"' : '') + '>';
-      }).join('');
+      // le foto passano in ordine casuale e sempre diverso:
+      // si mescolano tutte quelle dell'evento e si pescano una alla volta
+      // (un nuovo giro rimescola, senza ripetere subito l'ultima uscita)
+      var mazzo = [];
+      function pesca(ultima){
+        if(!mazzo.length){
+          mazzo = ev.foto.map(function(_, i){ return i; });
+          for(var j = mazzo.length - 1; j > 0; j--){
+            var r = Math.floor(Math.random() * (j + 1)), t = mazzo[j]; mazzo[j] = mazzo[r]; mazzo[r] = t;
+          }
+          if(mazzo.length > 1 && mazzo[mazzo.length - 1] === ultima){ mazzo.unshift(mazzo.pop()); }
+        }
+        return mazzo.pop();
+      }
+      function alt(i){ return ev.titolo + ' ' + ev.data + ', foto ' + (i + 1) + ' di ' + ev.foto.length + ', di ' + ev.fotografo; }
+      var cur = pesca(-1);
       fig.innerHTML =
         '<div class="cap">' + esc(ev.titolo + ' ' + ev.data) + '</div>' +
-        '<div class="frame"><div class="shot-crop" role="button" tabindex="0" aria-label="' + esc('Sfoglia le ' + ev.foto.length + ' foto di ' + ev.titolo + ' ' + ev.data) + '">' + imgs + '</div></div>' +
-        '<figcaption>\uD83D\uDCF7 ' + esc(ev.fotografo) + '</figcaption>';
+        '<div class="frame"><div class="shot-crop" role="button" tabindex="0" aria-label="' + esc('Sfoglia le ' + ev.foto.length + ' foto di ' + ev.titolo + ' ' + ev.data) + '">' +
+          '<img class="bw on" src="' + esc(ev.foto[cur]) + '" alt="' + esc(alt(cur)) + '"><img class="bw" alt="">' +
+        '</div></div>' +
+        '<figcaption>📷 ' + esc(ev.fotografo) + '</figcaption>';
       gallery.appendChild(fig);
       var crop = fig.querySelector('.shot-crop');
-      function apri(){
-        var on = [].indexOf.call(crop.querySelectorAll('img'), crop.querySelector('img.on'));
-        if(window.openLightbox) window.openLightbox(ev.foto, Math.max(0, on));
-      }
+      var lastre = crop.querySelectorAll('img');
+      // al clic si sfogliano tutte le foto, partendo da quella che si vede
+      function apri(){ if(window.openLightbox) window.openLightbox(ev.foto, cur); }
       crop.addEventListener('click', apri);
       crop.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); apri(); } });
-      var slides = fig.querySelectorAll('.shot-crop img');
-      if(slides.length > 1 && !reduce){
-        var n = 0;
+      if(ev.foto.length > 1 && !reduce){
+        var vis = 0, attesa = false;
         // ritmi un po' diversi, così i tre caroselli non cambiano insieme
         setInterval(function(){
-          if(document.hidden) return;
-          slides[n].classList.remove('on');
-          n = (n + 1) % slides.length;
-          slides[n].classList.add('on');
+          if(document.hidden || attesa) return;
+          var i = pesca(cur), dopo = lastre[1 - vis];
+          attesa = true;
+          // la nuova foto entra solo quando è già caricata
+          dopo.onload = function(){
+            dopo.alt = alt(i);
+            dopo.classList.add('on');
+            lastre[vis].classList.remove('on');
+            lastre[vis].alt = '';
+            vis = 1 - vis; cur = i; attesa = false;
+          };
+          dopo.onerror = function(){ attesa = false; };
+          dopo.src = ev.foto[i];
         }, 5200 + k * 900);
       }
     });
