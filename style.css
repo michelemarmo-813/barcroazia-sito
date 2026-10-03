@@ -414,12 +414,6 @@ main{
 .stack .star.a{ top:-0.9rem; left:-0.8rem; }
 .stack .star.b{ bottom:-1rem; right:-0.8rem; }
 
-.fz-mail{ margin-top:1.6rem; padding:1rem 1.2rem 1.1rem; border:1.5px dashed var(--ink); text-align:center; }
-.fz-mail[hidden]{ display:none; }
-.fz-mail p{ margin:0; }
-.fz-mail .fz-mail-addr{ margin:0.5rem 0; font-size:var(--fs-big); }
-.fz-mail a{ color:var(--orange); word-break:break-all; }
-.fz-mail a:hover{ color:var(--ink); }
 .panel{ margin-top:2rem; }
 .panel[hidden]{ display:none; }
 .panel-head{ color:var(--orange); text-align:center; font-size:var(--fs-big); margin-bottom:1.2rem; }
