@@ -346,14 +346,23 @@
     eventi.forEach(function(ev, k){
       var fig = document.createElement('figure');
       fig.className = 'shot';
-      var imgs = (ev.foto || []).map(function(src, i){
-        return '<img class="bw' + (i === 0 ? ' on' : '') + '" src="' + esc(src) + '" alt="' + esc(ev.titolo + ' ' + ev.data + ', foto ' + (i + 1) + ' di ' + ev.foto.length + ', di ' + ev.fotografo) + '" data-zoom' + (i ? ' loading="lazy"' : '') + '>';
+      // nel carosello della home bastano le prime foto;
+      // al clic si sfogliano tutte quelle dell'evento
+      var imgs = ev.foto.slice(0, 10).map(function(src, i){
+        return '<img class="bw' + (i === 0 ? ' on' : '') + '" src="' + esc(src) + '" alt="' + esc(ev.titolo + ' ' + ev.data + ', foto ' + (i + 1) + ' di ' + ev.foto.length + ', di ' + ev.fotografo) + '"' + (i ? ' loading="lazy"' : '') + '>';
       }).join('');
       fig.innerHTML =
         '<div class="cap">' + esc(ev.titolo + ' ' + ev.data) + '</div>' +
-        '<div class="frame"><div class="shot-crop" data-gallery>' + imgs + '</div></div>' +
+        '<div class="frame"><div class="shot-crop" role="button" tabindex="0" aria-label="' + esc('Sfoglia le ' + ev.foto.length + ' foto di ' + ev.titolo + ' ' + ev.data) + '">' + imgs + '</div></div>' +
         '<figcaption>\uD83D\uDCF7 ' + esc(ev.fotografo) + '</figcaption>';
       gallery.appendChild(fig);
+      var crop = fig.querySelector('.shot-crop');
+      function apri(){
+        var on = [].indexOf.call(crop.querySelectorAll('img'), crop.querySelector('img.on'));
+        if(window.openLightbox) window.openLightbox(ev.foto, Math.max(0, on));
+      }
+      crop.addEventListener('click', apri);
+      crop.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); apri(); } });
       var slides = fig.querySelectorAll('.shot-crop img');
       if(slides.length > 1 && !reduce){
         var n = 0;

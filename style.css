@@ -511,6 +511,20 @@ main{
 .lightbox .lb-prev{ left:1rem; top:50%; transform:translateY(-50%); }
 .lightbox .lb-next{ right:1rem; top:50%; transform:translateY(-50%); }
 .lightbox button[hidden]{ display:none; }
+.lightbox .lb-count{
+  position:absolute;
+  z-index:2;
+  left:50%;
+  bottom:1rem;
+  transform:translateX(-50%);
+  padding:0.15rem 0.6rem 0;
+  border:1px solid var(--paper);
+  background:var(--ink);
+  color:var(--paper);
+  font-variant-numeric:tabular-nums;
+}
+.lightbox .lb-count[hidden]{ display:none; }
+.shot-crop:focus-visible{ outline:2px dashed var(--ink); outline-offset:4px; }
 @media(max-width:760px){ .lb-stage{ padding:4rem 0.6rem; } }
 
 /* ==========================================================
@@ -586,20 +600,26 @@ main{
 .event-tile-list{ display:flex; flex-direction:column; gap:1.6rem; }
 .event-tile{ display:grid; grid-template-columns:12rem minmax(0, 1fr); border:1.5px solid var(--ink); }
 .event-tile-photo{
+  position:relative;
   min-height:13rem;
   border-right:1.5px solid var(--ink);
   background-color:var(--orange);
+  box-shadow:inset 0 0 0 0.9rem var(--orange), inset 0 0 0 calc(0.9rem + 2px) var(--ink);
+}
+/* la foto in bianco e nero dentro la cornice arancione */
+.event-tile-photo .ph{
+  position:absolute;
+  inset:calc(0.9rem + 2px);
   background-size:cover;
   background-position:center;
   filter:grayscale(1) contrast(1.1);
-  box-shadow:inset 0 0 0 0.9rem var(--orange), inset 0 0 0 calc(0.9rem + 2px) var(--ink);
 }
 .event-tile-info{ padding:0.9rem 1rem; display:flex; flex-direction:column; justify-content:center; gap:0.4rem; }
 .event-tile-title{ font-size:var(--fs-big); }
 .event-tile-date{ color:var(--orange); }
 button.event-tile-photo{ display:block; width:100%; padding:0; border:0; border-right:1.5px solid var(--ink); cursor:zoom-in; font:inherit; }
 button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-offset:-6px; }
-.no-foto .event-tile-photo{ display:flex; align-items:center; justify-content:center; filter:none; }
+.no-foto .event-tile-photo{ display:flex; align-items:center; justify-content:center; }
 .no-foto .event-tile-photo span{ padding:0.15rem 0.5rem 0; background:var(--paper); border:1px solid var(--ink); font-size:0.85rem; }
 
 /* elenco articoli: stesse schede della home */

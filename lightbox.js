@@ -20,7 +20,8 @@
     '<button type="button" class="lb-close" aria-label="Chiudi">&times;</button>' +
     '<button type="button" class="lb-prev" aria-label="Foto precedente" hidden>&lsaquo;</button>' +
     '<div class="lb-stage"><img class="lb-img" src="" alt=""></div>' +
-    '<button type="button" class="lb-next" aria-label="Foto successiva" hidden>&rsaquo;</button>';
+    '<button type="button" class="lb-next" aria-label="Foto successiva" hidden>&rsaquo;</button>' +
+    '<div class="lb-count" aria-live="polite" hidden></div>';
   lb.setAttribute('role', 'dialog');
   lb.setAttribute('aria-modal', 'true');
   lb.setAttribute('aria-hidden', 'true');
@@ -28,6 +29,8 @@
   var img = lb.querySelector('.lb-img');
   var prev = lb.querySelector('.lb-prev');
   var next = lb.querySelector('.lb-next');
+  var count = lb.querySelector('.lb-count');
+  var pre = new Image();
   var list = [], pos = 0;
   var zoomed = false, tx = 0, ty = 0;
   var lastFocus = null;
@@ -51,7 +54,10 @@
   function show(){
     zoomed = false; tx = ty = 0; apply();
     img.src = list[pos];
-    prev.hidden = next.hidden = list.length < 2;
+    prev.hidden = next.hidden = count.hidden = list.length < 2;
+    count.textContent = (pos + 1) + ' / ' + list.length;
+    // carica in anticipo la foto successiva
+    if(list.length > 1){ pre.src = list[(pos + 1) % list.length]; }
   }
 
   function open(srcs, i){
@@ -122,6 +128,10 @@
   });
   function up(e){
     if(!down) return;
+    // senza zoom, un trascinamento in orizzontale cambia foto
+    if(moved && !zoomed && list.length > 1 && Math.abs(e.clientX - down.x) > 50 && Math.abs(e.clientX - down.x) > Math.abs(e.clientY - down.y)){
+      (e.clientX < down.x ? next : prev).click();
+    }
     if(!moved){
       if(zoomed){
         zoomed = false; tx = ty = 0;

@@ -60,7 +60,7 @@
       tile.className = 'event-tile' + (foto.length ? '' : ' no-foto');
       tile.innerHTML =
         (foto.length
-          ? '<button type="button" class="event-tile-photo" style="background-image:url(\'' + esc(foto[0]) + '\')" aria-label="' + esc('Foto di ' + ev.titolo + (ev.data ? ' ' + ev.data : '') + ' (' + foto.length + ')') + '"></button>'
+          ? '<button type="button" class="event-tile-photo" aria-label="' + esc('Sfoglia le ' + foto.length + ' foto di ' + ev.titolo + (ev.data ? ' ' + ev.data : '')) + '"><span class="ph" style="background-image:url(\'' + esc(foto[0]) + '\')"></span></button>'
           : '<div class="event-tile-photo"><span>foto in arrivo</span></div>') +
         '<div class="event-tile-info">' +
           '<span class="event-tile-title">' + esc(ev.titolo) + '</span>' +
