@@ -64,6 +64,9 @@ body{ position:relative; }
   writing-mode:vertical-rl;
 }
 .side-tape.left{ left:calc(50% - var(--col) / 2 - 4.4rem); transform:rotate(180deg); }
+/* la scritta di sinistra è capovolta: la si spinge in fondo, così dopo la rotazione parte dall'alto */
+.side-tape.left{ flex-direction:row; justify-content:flex-end; }
+@media(min-width:1200px){ .side-tape.left{ display:flex; } }
 .side-tape.right{ right:calc(50% - var(--col) / 2 - 4.4rem); }
 @media(min-width:1200px){ .side-tape{ display:block; } }
 
@@ -301,7 +304,7 @@ main{
 .names-label{ margin-bottom:0; }
 .after-names{ margin-top:0; }
 .names .line{ display:flex; align-items:baseline; gap:0.3rem; color:var(--orange); }
-.names .line .fill{ flex:1; border-bottom:1.5px dotted var(--orange); transform:translateY(-0.3em); min-width:1.5rem; }
+.names .line .fill{ flex:1; border-bottom:1.5px dotted var(--orange); transform:translateY(-0.1em); min-width:1.5rem; }
 .names .line.single{ justify-content:flex-start; }
 
 .ev-item[hidden], .fz-item[hidden], .call-item[hidden]{ display:none; }
@@ -568,7 +571,7 @@ main{
 .sub-hero h1::after{ content:" ***"; }
 .sub-hero p{ margin:0; text-align:center; }
 .article-meta{ display:flex; justify-content:center; gap:0.4rem 2rem; flex-wrap:wrap; color:var(--orange); }
-.article-meta .article-outlet{ color:var(--ink); }
+.article-meta .article-outlet{ flex-basis:100%; text-align:center; color:var(--ink); }
 
 .zine-section{ margin:0; }
 
@@ -672,6 +675,21 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 .call-dot:hover{ background:var(--ink); }
 .call-dot.on:hover{ background:var(--orange); }
 .call-dot:focus-visible{ outline:2px dashed var(--ink); outline-offset:3px; }
+
+/* riquadro con l'indirizzo email (tasti che mandano una mail) */
+.mail-pop{ position:fixed; inset:0; z-index:520; display:flex; align-items:center; justify-content:center; padding:1rem; background:rgba(0,0,0,.55); }
+.mail-pop[hidden]{ display:none; }
+.mail-pop-box{ position:relative; width:min(34rem, 100%); padding:2.2rem 1.6rem 1.6rem; background:var(--paper); border:1.5px solid var(--ink); box-shadow:6px 6px 0 var(--ink); text-align:center; }
+.mail-pop-title{ margin:0 0 0.8rem; color:var(--orange); }
+.mail-pop-title::before{ content:"*** "; }
+.mail-pop-title::after{ content:" ***"; }
+.mail-pop-addr{ margin:0; font-size:var(--fs-big); word-break:break-all; user-select:all; }
+.mail-pop-subj{ margin:0.5rem 0 0; }
+.mail-pop-subj:empty{ display:none; }
+.mail-pop-btns{ display:flex; flex-wrap:wrap; justify-content:center; gap:1rem; margin-top:1.4rem; }
+.mail-pop-close{ position:absolute; top:0.4rem; right:0.5rem; border:0; background:none; font:inherit; font-size:1.6rem; line-height:1; cursor:pointer; color:var(--ink); }
+.mail-pop-close:hover{ color:var(--orange); }
+.mail-pop-open-page{ overflow:hidden; }
 
 /* open call: locandina e testo completo */
 .oc-meta{ flex-direction:column; align-items:center; gap:0.15rem; text-align:center; }

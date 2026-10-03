@@ -7,19 +7,42 @@
   var today = document.getElementById('today');
   if(today){ today.textContent = d.getDate() + ' ' + mesi[d.getMonth()] + ' ' + d.getFullYear(); }
 
-  // scritte verticali ai lati: "BOLOGNA–giorno.mese.anno *** "
-  var stamp = 'BOLOGNA–' + d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear() + ' *** ';
-  var tape = new Array(40).join(stamp);
-  document.querySelectorAll('.side-tape').forEach(function(t){ t.textContent = tape; });
-
-  // le scritte ai lati partono sotto l'intestazione e arrivano in fondo
-  function tapeTop(){
-    var nav = document.querySelector('.main-nav');
-    if(nav){ document.body.style.setProperty('--tape-top', (nav.getBoundingClientRect().bottom + window.scrollY + 24) + 'px'); }
+  // scritte verticali ai lati: "BOLOGNA–giorno.mese.anno * " ripetuto;
+  // partono sotto la barra a scorrimento e contengono solo ripetizioni
+  // intere, così in cima non resta mai una data tagliata
+  var stamp = 'BOLOGNA–' + d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear() + ' * ';
+  var tapes = document.querySelectorAll('.side-tape');
+  function sistemaTape(){
+    if(!tapes.length) return;
+    var su = document.querySelector('.ticker') || document.querySelector('.main-nav');
+    if(su){ document.body.style.setProperty('--tape-top', (su.getBoundingClientRect().bottom + window.scrollY + 30) + 'px'); }
+    tapes.forEach(function(t){
+      if(getComputedStyle(t).display === 'none') return;
+      t.innerHTML = '<span></span>';
+      t.firstChild.textContent = stamp;
+      var una = t.firstChild.getBoundingClientRect().height;   // altezza di una ripetizione
+      var n = una ? Math.floor(t.clientHeight / una) : 0;
+      var testo = t.firstChild;
+      testo.textContent = new Array(Math.max(n, 0) + 1).join(stamp);
+      // arrotondamenti: se sborda anche di poco, una ripetizione in meno
+      while(n > 0 && t.scrollHeight > t.clientHeight + 1){
+        n--; testo.textContent = new Array(n + 1).join(stamp);
+      }
+    });
   }
-  tapeTop();
-  window.addEventListener('load', tapeTop);
-  window.addEventListener('resize', tapeTop);
+  sistemaTape();
+  window.addEventListener('load', sistemaTape);
+  window.addEventListener('resize', sistemaTape);
+  // se la pagina si allunga (foto caricate, pannelli aperti) si ricalcola
+  if('ResizeObserver' in window){
+    var tapeTimer, ultimaAltezza = 0;
+    new ResizeObserver(function(){
+      var h = document.body.scrollHeight;
+      if(Math.abs(h - ultimaAltezza) < 40) return;
+      ultimaAltezza = h;
+      clearTimeout(tapeTimer); tapeTimer = setTimeout(sistemaTape, 200);
+    }).observe(document.body);
+  }
 
   // ticker: il contenuto viene duplicato per scorrere senza interruzioni
   var track = document.querySelector('.ticker-track');
