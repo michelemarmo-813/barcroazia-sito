@@ -341,7 +341,7 @@ main{
   gap:1.2rem 3.1rem;
 }
 .shot{ margin:0; text-align:center; }
-.shot .cap{ color:var(--orange); font-size:0.88rem; line-height:1.3; margin-bottom:0.5rem; white-space:nowrap; }
+.shot .cap{ display:flex; align-items:flex-end; justify-content:center; min-height:2.6em; color:var(--orange); font-size:0.88rem; line-height:1.3; margin-bottom:0.5rem; }
 .shot .frame{ width:100%; height:19.9rem; padding:0.9rem; }
 
 .shot figcaption{ margin-top:0.7rem; }
@@ -584,7 +584,7 @@ main{
 
 /* archivio eventi */
 .event-tile-list{ display:flex; flex-direction:column; gap:1.6rem; }
-.event-tile{ display:grid; grid-template-columns:12rem minmax(0, 1fr); border:1.5px solid var(--ink); cursor:pointer; }
+.event-tile{ display:grid; grid-template-columns:12rem minmax(0, 1fr); border:1.5px solid var(--ink); }
 .event-tile-photo{
   min-height:13rem;
   border-right:1.5px solid var(--ink);
@@ -597,8 +597,10 @@ main{
 .event-tile-info{ padding:0.9rem 1rem; display:flex; flex-direction:column; justify-content:center; gap:0.4rem; }
 .event-tile-title{ font-size:var(--fs-big); }
 .event-tile-date{ color:var(--orange); }
-.event-more{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
-.event-tile.open .event-more{ max-height:20rem; }
+button.event-tile-photo{ display:block; width:100%; padding:0; border:0; border-right:1.5px solid var(--ink); cursor:zoom-in; font:inherit; }
+button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-offset:-6px; }
+.no-foto .event-tile-photo{ display:flex; align-items:center; justify-content:center; filter:none; }
+.no-foto .event-tile-photo span{ padding:0.15rem 0.5rem 0; background:var(--paper); border:1px solid var(--ink); font-size:0.85rem; }
 
 /* elenco articoli: stesse schede della home */
 .subpage .post-grid{ display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:2.6rem; }
@@ -647,7 +649,7 @@ main{
   .justify{ text-align:left; }
   main{ margin-top:4rem; }
   .event-tile{ grid-template-columns:minmax(0, 1fr); }
-  .event-tile-photo{ border-right:0; border-bottom:1.5px solid var(--ink); }
+  .event-tile-photo, button.event-tile-photo{ border-right:0; border-bottom:1.5px solid var(--ink); }
   .leader{ flex-wrap:wrap; }
   #chi-siamo .star.a{ left:0.4rem; }
   .names .line{ flex-direction:column; gap:0; margin-bottom:0.3rem; }

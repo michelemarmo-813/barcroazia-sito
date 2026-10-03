@@ -339,7 +339,8 @@
 
   // ---- archivio: un carosello per evento (dati in archivio-dati.js) ----
   var gallery = document.getElementById('archivio-gallery');
-  var eventi = (window.ARCHIVIO || []).slice(0, 3);
+  // i tre eventi più recenti che hanno almeno una foto
+  var eventi = (window.ARCHIVIO || []).filter(function(ev){ return ev.foto && ev.foto.length; }).slice(0, 3);
   function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   if(gallery){
     eventi.forEach(function(ev, k){

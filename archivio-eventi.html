@@ -17,29 +17,13 @@
   <div class="sub-hero">
     <span class="tag mono">05a</span>
     <h1>Eventi passati</h1>
-    <p>Le serate organizzate finora, con foto e informazioni. Clicca su un evento per leggere qualche riga in pi&ugrave;.</p>
+    <p>Le serate organizzate finora, con foto e informazioni. Clicca su una foto per sfogliare tutte quelle della serata.</p>
   </div>
 
   <main class="sub-main">
     <section class="zine-section revealed">
-      <div class="event-tile-list">
-          <div class="event-tile">
-            <div class="event-tile-photo" style="background-image:url('assets/img/archivio/3maggio-1.jpg')"></div>
-            <div class="event-tile-info">
-              <span class="event-tile-title">Raw Poetry — Parole in strada</span>
-              <span class="event-tile-date">Bar Croazia, Bologna — lunedì 2 marzo 2026</span>
-              <div class="event-more"><p>Testo di prova — in attesa del resoconto vero di questa serata. Clicca ancora per richiudere.</p></div>
-            </div>
-          </div>
-          <div class="event-tile">
-            <div class="event-tile-photo" style="background-image:url('assets/img/archivio/2luglio-1.jpg')"></div>
-            <div class="event-tile-info">
-              <span class="event-tile-title">Poetry Slam III Round</span>
-              <span class="event-tile-date">Elektrobau Bar, Bologna — martedì 20 gennaio 2026</span>
-              <div class="event-more"><p>Testo di prova — in attesa del resoconto vero di questa serata. Clicca ancora per richiudere.</p></div>
-            </div>
-          </div>
-      </div>
+      <!-- gli eventi si modificano nel file archivio-dati.js -->
+      <div class="event-tile-list" id="archivio-lista"></div>
     </section>
   </main>
 
@@ -47,6 +31,7 @@
 
 </div>
 
+<script src="archivio-dati.js"></script>
 <script>
   var revealEls = document.querySelectorAll('.zine-section');
   if('IntersectionObserver' in window){
@@ -63,11 +48,33 @@
     revealEls.forEach(function(el){ el.classList.add('revealed'); });
   }
 
-  document.querySelectorAll('.event-tile').forEach(function(tile){
-    tile.addEventListener('click', function(){
-      tile.classList.toggle('open');
+  // una scheda per ogni evento di archivio-dati.js
+  (function(){
+    var lista = document.getElementById('archivio-lista');
+    if(!lista) return;
+    function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    (window.ARCHIVIO || []).forEach(function(ev){
+      var foto = ev.foto || [];
+      var quando = [ev.luogo, ev.data].filter(Boolean).join(' — ');
+      var tile = document.createElement('div');
+      tile.className = 'event-tile' + (foto.length ? '' : ' no-foto');
+      tile.innerHTML =
+        (foto.length
+          ? '<button type="button" class="event-tile-photo" style="background-image:url(\'' + esc(foto[0]) + '\')" aria-label="' + esc('Foto di ' + ev.titolo + (ev.data ? ' ' + ev.data : '') + ' (' + foto.length + ')') + '"></button>'
+          : '<div class="event-tile-photo"><span>foto in arrivo</span></div>') +
+        '<div class="event-tile-info">' +
+          '<span class="event-tile-title">' + esc(ev.titolo) + '</span>' +
+          (quando ? '<span class="event-tile-date">' + esc(quando) + '</span>' : '') +
+          (ev.fotografo ? '<span class="event-tile-by">\uD83D\uDCF7 ' + esc(ev.fotografo) + (foto.length ? ' · ' + foto.length + ' foto' : '') + '</span>' : '') +
+        '</div>';
+      if(foto.length){
+        tile.querySelector('.event-tile-photo').addEventListener('click', function(){
+          if(window.openLightbox) window.openLightbox(foto, 0);
+        });
+      }
+      lista.appendChild(tile);
     });
-  });
+  })();
 
 </script>
 
