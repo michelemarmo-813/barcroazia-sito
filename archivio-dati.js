@@ -61,13 +61,6 @@ window.ARCHIVIO = [
     foto: []
   },
   {
-    titolo: "Segreti e Ritratti",
-    luogo: "",
-    data: "",
-    fotografo: "Chiara Pinesi",
-    foto: []
-  },
-  {
     titolo: "Finale regionale Poetry Slam",
     luogo: "Casalone Ritmolento",
     data: "15 luglio 2026",

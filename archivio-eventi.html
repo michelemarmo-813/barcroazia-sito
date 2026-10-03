@@ -72,7 +72,7 @@
           (ev.fotografo ? '<span class="event-tile-by">📷 ' + esc(ev.fotografo) + '</span>' : '') +
           (foto.length ? '<button type="button" class="event-tile-more js-apri" aria-expanded="false" aria-controls="foto-' + k + '">Guarda le ' + foto.length + ' foto <span aria-hidden="true">&darr;</span></button>' : '') +
         '</div>' +
-        (foto.length ? '<div class="event-grid" id="foto-' + k + '" hidden><p class="event-grid-hint">Scegli la foto da cui partire</p><div class="event-grid-list"></div></div>' : '');
+        (foto.length ? '<div class="event-grid" id="foto-' + k + '" hidden><p class="event-grid-hint">Seleziona una foto</p><div class="event-grid-list"></div></div>' : '');
       if(foto.length){
         var griglia = tile.querySelector('.event-grid');
         var elenco = griglia.querySelector('.event-grid-list');
@@ -83,7 +83,7 @@
           // le miniature si caricano solo la prima volta che si apre
           if(apri && !pronta){
             elenco.innerHTML = foto.map(function(src, i){
-              return '<button type="button" class="event-thumb" data-i="' + i + '" aria-label="' + esc('Foto ' + (i + 1) + ' di ' + foto.length) + '"><img src="' + esc(mini(src)) + '" alt="" loading="lazy"></button>';
+              return '<button type="button" class="event-thumb" data-i="' + i + '" aria-label="' + esc('Foto ' + (i + 1) + ' di ' + foto.length) + '"><img src="' + esc(mini(src)) + '" data-full="' + esc(src) + '" alt="" loading="lazy" onerror="if(this.dataset.full){this.src=this.dataset.full;this.dataset.full=\'\';}"></button>';
             }).join('');
             pronta = true;
           }
