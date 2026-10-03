@@ -255,16 +255,43 @@
     var i = items.findIndex(function(x){ return !x.hidden; });
     return { items: items, i: i < 0 ? 0 : i };
   }
+  // pallini sotto i titoli: quanti elementi ci sono e quale si vede
+  function syncDots(sel){
+    var c = current(sel);
+    document.querySelectorAll('.call-dots[data-items="' + sel + '"] .call-dot').forEach(function(d, i){
+      d.classList.toggle('on', i === c.i);
+      if(i === c.i){ d.setAttribute('aria-current', 'true'); } else { d.removeAttribute('aria-current'); }
+    });
+  }
+  // mostra l'elemento n dell'elenco e aggiorna tasti e pallini collegati
+  function mostra(sel, n){
+    var c = current(sel);
+    if(!c.items[n] || n === c.i) return;
+    c.items[c.i].hidden = true;
+    c.items[n].hidden = false;
+    syncDots(sel);
+    if(sel === '.call-item'){ syncCall(); }
+    if(sel === '.ev-item'){ syncEvento(); }
+  }
   document.querySelectorAll('.js-next').forEach(function(btn){
     btn.addEventListener('click', function(){
       var c = current(btn.dataset.items);
       if(c.items.length < 2) return;
-      c.items[c.i].hidden = true;
-      var n = (c.i + 1) % c.items.length;
-      c.items[n].hidden = false;
-      if(btn.dataset.items === '.call-item'){ syncCall(); }
+      mostra(btn.dataset.items, (c.i + 1) % c.items.length);
     });
   });
+  document.querySelectorAll('.call-dots').forEach(function(box){
+    box.querySelectorAll('.call-dot').forEach(function(d, i){
+      d.addEventListener('click', function(){ mostra(box.dataset.items, i); });
+    });
+  });
+
+  // eventi: "scopri di più su Instagram" porta al post dell'evento mostrato
+  var ig = document.querySelector('.js-ig');
+  function syncEvento(){
+    var c = current('.ev-item');
+    if(ig && c.items[c.i] && c.items[c.i].dataset.ig){ ig.href = c.items[c.i].dataset.ig; }
+  }
 
   // open call: "invia la candidatura" e "scopri di più" seguono la call mostrata
   var apply = document.querySelector('.js-apply');
@@ -273,7 +300,6 @@
     var c = current('.call-item');
     var it = c.items[c.i];
     if(!it) return;
-    syncDots();
     if(more){ more.href = it.dataset.page; }
     if(apply){
       apply.href = it.dataset.apply;
@@ -282,25 +308,8 @@
       else { apply.removeAttribute('target'); apply.removeAttribute('rel'); }
     }
   }
-  // pallini sotto "Open call": quante call ci sono e quale si vede
-  function syncDots(){
-    var dots = document.querySelectorAll('.call-dot');
-    var c = current('.call-item');
-    dots.forEach(function(d, i){
-      d.classList.toggle('on', i === c.i);
-      if(i === c.i){ d.setAttribute('aria-current', 'true'); } else { d.removeAttribute('aria-current'); }
-    });
-  }
-  document.querySelectorAll('.call-dot').forEach(function(d, i){
-    d.addEventListener('click', function(){
-      var c = current('.call-item');
-      if(!c.items[i] || i === c.i) return;
-      c.items[c.i].hidden = true;
-      c.items[i].hidden = false;
-      syncCall();
-    });
-  });
-  syncCall();
+  syncCall(); syncEvento();
+  syncDots('.call-item'); syncDots('.ev-item');
 
   // ultime cose: ogni pulsante apre il suo pannello
   document.querySelectorAll('.stack .btn').forEach(function(btn){
