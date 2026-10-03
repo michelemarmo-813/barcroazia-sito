@@ -52,7 +52,6 @@ body{ position:relative; }
 .side-tape{
   position:absolute;
   top:var(--tape-top, 29rem);
-  bottom:0;
   z-index:1;
   display:none;
   overflow:hidden;
@@ -64,9 +63,6 @@ body{ position:relative; }
   writing-mode:vertical-rl;
 }
 .side-tape.left{ left:calc(50% - var(--col) / 2 - 4.4rem); transform:rotate(180deg); }
-/* la scritta di sinistra è capovolta: la si spinge in fondo, così dopo la rotazione parte dall'alto */
-.side-tape.left{ flex-direction:row; justify-content:flex-end; }
-@media(min-width:1200px){ .side-tape.left{ display:flex; } }
 .side-tape.right{ right:calc(50% - var(--col) / 2 - 4.4rem); }
 @media(min-width:1200px){ .side-tape{ display:block; } }
 
