@@ -694,6 +694,17 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 .mail-pop-close:hover{ color:var(--orange); }
 .mail-pop-open-page{ overflow:hidden; }
 
+/* chi siamo: foto che si alternano */
+.cs-frame{ display:block; }
+.cs-crop{ position:relative; width:100%; height:100%; overflow:hidden; border:2px solid var(--ink); background:var(--ink); }
+.frame .cs-crop img[data-zoom]{ position:absolute; inset:0; width:100%; height:100%; max-width:none; border:0; object-fit:cover; opacity:0; pointer-events:none; transition:opacity 1.2s ease; }
+.frame .cs-crop img.on{ opacity:1; pointer-events:auto; }
+.cs-frame .call-dots{ position:absolute; left:0; right:0; bottom:0.35rem; margin:0; z-index:3; }
+.cs-frame .call-dot{ border-color:var(--ink); background:var(--orange); }
+.cs-frame .call-dot.on{ background:var(--ink); border-color:var(--ink); }
+.cs-frame .call-dot:hover{ background:var(--paper); }
+.cs-frame .call-dot.on:hover{ background:var(--ink); }
+
 /* open call: locandina e testo completo */
 .oc-meta{ flex-direction:column; align-items:center; gap:0.15rem; text-align:center; }
 .oc-layout{ display:grid; grid-template-columns:minmax(0, 21rem) minmax(0, 1fr); gap:2.6rem; align-items:start; }
@@ -740,6 +751,7 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
   .frame img{ height:auto; max-height:26rem; width:auto; }
   .frame.fill img{ width:100%; max-height:none; }
   #chi-siamo .frame{ height:auto; }
+  #chi-siamo .cs-crop{ height:auto; aspect-ratio:3 / 2; }
   .meta{ padding:0; justify-content:center; text-align:center; }
   .row-btns{ justify-content:center; }
   .gallery{ grid-template-columns:minmax(0, 18rem); }
@@ -784,6 +796,7 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 }
 @media(prefers-reduced-motion:reduce){
   .stella{ animation:none; }
+  .frame .cs-crop img[data-zoom]{ transition:none; }
   .event-tile-photo .ph{ transition:none; }
   .shot-crop img{ transition:none; }
 }
