@@ -303,37 +303,22 @@
     });
   });
   document.querySelectorAll('.call-dots').forEach(function(box){
-    if(box.closest('.cs-frame')) return;   // i pallini delle foto di Chi siamo hanno il loro codice
     box.querySelectorAll('.call-dot').forEach(function(d, i){
       d.addEventListener('click', function(){ mostra(box.dataset.items, i); });
     });
   });
 
-  // chi siamo: le foto si alternano da sole; i pallini dicono quale si vede
+  // chi siamo: le foto si alternano da sole
   (function(){
-    var box = document.querySelector('.cs-frame');
-    if(!box) return;
-    var foto = box.querySelectorAll('.cs-crop img');
-    var dots = box.querySelectorAll('.call-dot');
-    var cur = 0, timer = null;
-    function vai(n){
+    var foto = document.querySelectorAll('.cs-frame .cs-crop img');
+    if(reduce || foto.length < 2) return;
+    var cur = 0;
+    setInterval(function(){
+      if(document.hidden) return;
       foto[cur].classList.remove('on');
-      cur = (n + foto.length) % foto.length;
+      cur = (cur + 1) % foto.length;
       foto[cur].classList.add('on');
-      dots.forEach(function(d, i){
-        d.classList.toggle('on', i === cur);
-        if(i === cur){ d.setAttribute('aria-current', 'true'); } else { d.removeAttribute('aria-current'); }
-      });
-    }
-    function parti(){
-      if(reduce || foto.length < 2) return;
-      clearInterval(timer);
-      timer = setInterval(function(){ if(!document.hidden){ vai(cur + 1); } }, 5000);
-    }
-    dots.forEach(function(d, i){
-      d.addEventListener('click', function(e){ e.stopPropagation(); vai(i); parti(); });
-    });
-    parti();
+    }, 5000);
   })();
 
   // eventi: "scopri di più su Instagram" porta al post dell'evento mostrato
