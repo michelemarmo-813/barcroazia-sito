@@ -245,18 +245,20 @@
 
   // open call: "invia la candidatura" e "scopri di più" seguono la call mostrata
   var apply = document.querySelector('.js-apply');
+  var more = document.querySelector('.js-more');
   function syncCall(){
     var c = current('.call-item');
-    if(apply && c.items[c.i]){ apply.href = c.items[c.i].dataset.mail; }
+    var it = c.items[c.i];
+    if(!it) return;
+    if(more){ more.href = it.dataset.page; }
+    if(apply){
+      apply.href = it.dataset.apply;
+      // il form si apre in una nuova scheda, la mail no
+      if(it.dataset.newtab){ apply.target = '_blank'; apply.rel = 'noopener'; }
+      else { apply.removeAttribute('target'); apply.removeAttribute('rel'); }
+    }
   }
-  var postersBtn = document.querySelector('.js-posters');
-  if(postersBtn){
-    postersBtn.addEventListener('click', function(){
-      var c = current('.call-item');
-      var list = (c.items[c.i].dataset.posters || '').split(',');
-      openLightbox(list, 0);
-    });
-  }
+  syncCall();
 
   // ultime cose: ogni pulsante apre il suo pannello
   document.querySelectorAll('.stack .btn').forEach(function(btn){

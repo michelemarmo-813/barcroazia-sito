@@ -662,6 +662,24 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 .post-author{ color:var(--orange); margin-top:0.2rem; }
 .post-card:hover .post-title{ color:var(--orange); }
 
+/* open call: locandina e testo completo */
+.oc-meta{ flex-direction:column; align-items:center; gap:0.15rem; text-align:center; }
+.oc-layout{ display:grid; grid-template-columns:minmax(0, 21rem) minmax(0, 1fr); gap:2.6rem; align-items:start; }
+.oc-posters{ display:flex; flex-direction:column; gap:1.2rem; position:sticky; top:1.5rem; }
+.oc-posters .article-photo{ padding:1rem; }
+.oc-text{ line-height:1.6; }
+.oc-text p{ margin:0 0 1rem; }
+.oc-text ul{ margin:-0.4rem 0 1rem; padding-left:1.4rem; }
+.oc-text li{ margin-bottom:0.25rem; }
+.oc-text a:not(.btn){ color:var(--orange); }
+.oc-text .oc-lead{ color:var(--orange); font-size:var(--fs-big); line-height:1.35; }
+.oc-actions{ margin-top:1.8rem; }
+@media(max-width:760px){
+  .oc-layout{ grid-template-columns:minmax(0, 1fr); gap:1.8rem; }
+  .oc-posters{ position:static; max-width:22rem; margin:0 auto; }
+  .oc-actions{ text-align:center; }
+}
+
 /* articolo */
 .article-photo-wrap{ display:flex; flex-direction:column; align-items:center; }
 .article-photo{ padding:1.45rem; background:var(--orange); border:1px solid var(--ink); cursor:zoom-in; max-width:44rem; }
