@@ -279,6 +279,18 @@
   });
   syncCall();
 
+  // fanzine: "invia un articolo" mostra l'indirizzo email a cui scrivere
+  var fzBtn = document.querySelector('.js-fz-mail');
+  var fzBox = document.getElementById('fz-mail');
+  if(fzBtn && fzBox){
+    fzBtn.addEventListener('click', function(){
+      var open = fzBox.hidden;
+      fzBox.hidden = !open;
+      fzBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if(open){ fzBox.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+    });
+  }
+
   // ultime cose: ogni pulsante apre il suo pannello
   document.querySelectorAll('.stack .btn').forEach(function(btn){
     btn.addEventListener('click', function(){
