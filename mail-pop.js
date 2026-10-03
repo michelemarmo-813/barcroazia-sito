@@ -1,8 +1,8 @@
 /* ==========================================================
    Tasti che mandano una mail (Invia un articolo, Invia la
    candidatura...): invece di aprire subito il programma di posta,
-   mostrano in un riquadro l'indirizzo a cui scrivere, da copiare,
-   con l'oggetto da usare e il link per aprire la mail.
+   mostrano in un riquadro l'indirizzo a cui scrivere, con l'oggetto
+   da usare e un tasto per copiarlo.
    ========================================================== */
 (function(){
   var pop = document.createElement('div');
@@ -18,8 +18,7 @@
       '<p class="mail-pop-addr"></p>' +
       '<p class="mail-pop-subj"></p>' +
       '<div class="mail-pop-btns">' +
-        '<button type="button" class="btn mail-pop-copy">Copia l&rsquo;indirizzo</button>' +
-        '<a class="btn mail-pop-open" href="#">Apri la mail</a>' +
+        '<button type="button" class="btn mail-pop-copy">Copia la mail</button>' +
       '</div>' +
     '</div>';
   document.body.appendChild(pop);
@@ -27,7 +26,6 @@
   var addr = pop.querySelector('.mail-pop-addr');
   var subj = pop.querySelector('.mail-pop-subj');
   var copy = pop.querySelector('.mail-pop-copy');
-  var openLink = pop.querySelector('.mail-pop-open');
   var last = null;
 
   function show(href, from){
@@ -41,8 +39,7 @@
     addr.textContent = email;
     subj.innerHTML = oggetto ? 'con oggetto &ldquo;<span></span>&rdquo;' : '';
     if(oggetto){ subj.querySelector('span').textContent = oggetto; }
-    openLink.href = href;
-    copy.textContent = 'Copia l’indirizzo';
+    copy.textContent = 'Copia la mail';
     last = from;
     pop.hidden = false;
     document.documentElement.classList.add('mail-pop-open-page');
