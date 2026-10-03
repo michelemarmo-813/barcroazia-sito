@@ -571,7 +571,7 @@ main{
 .sub-hero h1::after{ content:" ***"; }
 .sub-hero p{ margin:0; text-align:center; }
 .article-meta{ display:flex; justify-content:center; gap:0.4rem 2rem; flex-wrap:wrap; color:var(--orange); }
-.article-meta .article-outlet{ flex-basis:100%; text-align:center; color:var(--ink); }
+.article-meta .article-outlet{ order:1; flex-basis:100%; text-align:center; color:var(--ink); }
 
 .zine-section{ margin:0; }
 
