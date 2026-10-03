@@ -222,7 +222,7 @@
   // ---- stelle: ritardo e durata diversi per ognuna ----
   document.querySelectorAll('.stella').forEach(function(st){
     st.style.setProperty('--d', (-Math.random() * 3).toFixed(2) + 's');
-    st.style.setProperty('--t', (2.8 + Math.random() * 0.8).toFixed(2) + 's');
+    st.style.setProperty('--t', (2.2 + Math.random() * 0.9).toFixed(2) + 's');
   });
 
 

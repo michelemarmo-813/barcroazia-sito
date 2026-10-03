@@ -736,22 +736,26 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
   .shot .frame{ height:22rem; }
 }
 
-/* ---------- stelle nere a 4 punte che scintillano ----------
+/* ---------- stelle nere (la "pazza stellina") che ballano ----------
    ritardo (--d) e durata (--t) diversi per ogni stella, impostati in
    script.js al caricamento */
 .stella{
   display:block;
   width:100%;
   height:100%;
-  overflow:visible;
-  animation:scintilla var(--t, 3.2s) ease-in-out var(--d, 0s) infinite;
+  object-fit:contain;
+  animation:pazza var(--t, 2.6s) cubic-bezier(.45,.05,.35,1) var(--d, 0s) infinite;
   transform-origin:50% 50%;
+  user-select:none;
+  -webkit-user-drag:none;
 }
-.stella path{ fill:var(--ink); }
-@keyframes scintilla{
-  0%, 100%{ transform:rotate(0deg)  scale(1);    }
-  45%     { transform:rotate(8deg)  scale(1.08); }
-  55%     { transform:rotate(8deg)  scale(0.94); }
+@keyframes pazza{
+  0%, 100%{ transform:rotate(0deg)   scale(1)    translate(0, 0); }
+  18%     { transform:rotate(16deg)  scale(1.14) translate(2%, -4%); }
+  32%     { transform:rotate(-9deg)  scale(0.9)  translate(-2%, 2%); }
+  50%     { transform:rotate(7deg)   scale(1.07) translate(1%, -2%); }
+  68%     { transform:rotate(-4deg)  scale(0.96) translate(-1%, 1%); }
+  84%     { transform:rotate(2deg)   scale(1.02) translate(0, 0); }
 }
 @media(prefers-reduced-motion:reduce){
   .stella{ animation:none; }
