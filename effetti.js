@@ -1,7 +1,7 @@
 /* ==========================================================
    Piccoli effetti (usato da tutte le pagine)
    - titoli delle sezioni battuti a macchina quando entrano nello schermo
-   - linea rossa da lettore di cassa sul codice a barre, con un "bip" al clic
+   - linea rossa da lettore di cassa sul codice a barre (il "bip" è in script.js)
    - tasti arancioni che ondeggiano, con le lettere che saltano
    - eventi: il testo esce a scatti da una fessura, come uno scontrino
    - stelline che schizzano dai tasti "importanti" e dal codice a barre
@@ -47,7 +47,7 @@
     });
   }
 
-  // ---- codice a barre: linea del lettore e "bip" al clic ----
+  // ---- codice a barre: linea del lettore ----
   var codice = document.querySelector('.barcode');
   if(codice){
     if(!ferme){
@@ -56,21 +56,6 @@
       laser.setAttribute('aria-hidden', 'true');
       codice.appendChild(laser);
     }
-    var bip = function(){
-      try{
-        var A = window.AudioContext || window.webkitAudioContext;
-        if(!A) return;
-        var a = bip.ctx || (bip.ctx = new A());
-        var o = a.createOscillator(), g = a.createGain();
-        o.type = 'square'; o.frequency.value = 1750;
-        g.gain.setValueAtTime(0.035, a.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + 0.09);
-        o.connect(g); g.connect(a.destination);
-        o.start(); o.stop(a.currentTime + 0.1);
-      }catch(e){}
-    };
-    codice.addEventListener('click', bip);
-    codice.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ bip(); } });
   }
 
   // ---- tasti: le lettere diventano singoli pezzi che possono saltare ----

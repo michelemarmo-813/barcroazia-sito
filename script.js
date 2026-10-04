@@ -248,23 +248,53 @@
   if(bc && verseEl && versi.length){
     var vIdx = -1, decoding = null;
     var CH = '0123456789*#';
+    // il "bip" registrato: finché suona, i caratteri si rimescolano;
+    // quando finisce, si fissano da sinistra a destra sul verso
+    var bip = new Audio('assets/audio/bip.mp3');
+    bip.preload = 'auto';
+    var rivela = function(target){
+      var k0 = 0;
+      decoding = setInterval(function(){
+        k0++;
+        var out = '';
+        for(var k = 0; k < target.length; k++){
+          var c = target[k];
+          out += (k < k0 || c === ' ') ? c : CH[Math.floor(Math.random() * CH.length)];
+        }
+        verseEl.textContent = out;
+        if(k0 >= target.length){ clearInterval(decoding); decoding = null; verseEl.textContent = target; }
+      }, 35);
+    };
     var decode = function(){
       vIdx = (vIdx + 1) % versi.length;
       var target = versi[vIdx];
       if(decoding) clearInterval(decoding);
-      if(reduce){ verseEl.textContent = target; return; }
-      var frame = 0, total = 8 + target.length;
-      decoding = setInterval(function(){
-        frame++;
-        var fixed = frame - 8;   // prima un istante di solo rimescolamento
-        var out = '';
-        for(var k = 0; k < target.length; k++){
-          var c = target[k];
-          out += (k < fixed || c === ' ') ? c : CH[Math.floor(Math.random() * CH.length)];
-        }
-        verseEl.textContent = out;
-        if(frame >= total){ clearInterval(decoding); decoding = null; verseEl.textContent = target; }
-      }, 35);
+      bip.onended = null;
+      try{ bip.pause(); bip.currentTime = 0; }catch(e){}
+      var fatto = false;
+      var fine = function(){
+        if(fatto) return; fatto = true;
+        if(decoding) clearInterval(decoding);
+        if(reduce){ decoding = null; verseEl.textContent = target; return; }
+        rivela(target);
+      };
+      // rimescolamento continuo finché l'audio va
+      if(!reduce){
+        decoding = setInterval(function(){
+          var out = '';
+          for(var k = 0; k < target.length; k++){
+            out += target[k] === ' ' ? ' ' : CH[Math.floor(Math.random() * CH.length)];
+          }
+          verseEl.textContent = out;
+        }, 35);
+      } else {
+        verseEl.textContent = '';
+      }
+      bip.onended = fine;
+      var p = bip.play();
+      // se l'audio non parte (bloccato o non trovato), il verso esce lo stesso
+      if(p && p.catch){ p.catch(function(){ setTimeout(fine, 300); }); }
+      bip.onerror = function(){ setTimeout(fine, 300); };
     };
     bc.addEventListener('click', decode);
     bc.addEventListener('keydown', function(e){
