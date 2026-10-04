@@ -78,18 +78,9 @@
     });
   }
 
-  // ---- eventi: il testo esce dalla fessura come uno scontrino ----
+  // ---- eventi: lo scontrino esce a scatti dalla fessura (markup in index.html) ----
   var eventi = document.querySelectorAll('.ev-item');
   if(!ferme && eventi.length){
-    eventi.forEach(function(ev){
-      var t = ev.querySelector('.pair > .text');
-      if(!t || t.querySelector('.carta')) return;
-      var carta = document.createElement('div');
-      carta.className = 'carta';
-      while(t.firstChild){ carta.appendChild(t.firstChild); }
-      t.appendChild(carta);
-      t.classList.add('scontrino');
-    });
     var stampa = function(ev){
       var t = ev.querySelector('.scontrino');
       if(!t) return;

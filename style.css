@@ -87,9 +87,12 @@ body{ position:relative; }
   padding-top:0.9rem;
 }
 
+.topline > span:first-child{ white-space:nowrap; }
 .topline{
   display:flex;
   justify-content:space-between;
+  align-items:center;
+  gap:0.6rem;
   font-size:1rem;
   margin-bottom:0.55rem;
 }
@@ -927,20 +930,40 @@ main{ margin-top:4.6rem; }
 @keyframes lettera-salta{ 40%{ transform:translateY(-6px); } }
 .btn:active{ animation:none; }
 .stellina-burst{ position:fixed; z-index:600; width:24px; height:24px; pointer-events:none; background:center / contain no-repeat; }
-/* eventi: il testo esce a scatti da una fessura nera, come uno scontrino */
+/* eventi: il testo è uno scontrino che pende da una fessura nera, con il
+   bordo strappato in fondo; entrando nello schermo (e al cambio evento)
+   esce a scatti dalla fessura (effetti.js) */
 .scontrino{ position:relative; }
-.scontrino .carta{ will-change:clip-path; }
-.scontrino.stampa .carta{ animation:scontrino 1.5s steps(14, end) both; }
-.scontrino::before{ content:""; position:absolute; left:-0.6rem; right:-0.6rem; top:-0.9rem; height:6px; border-radius:3px; background:var(--ink); opacity:0; pointer-events:none; }
-.scontrino.stampa::before{ animation:fessura 2.2s ease both; }
-@keyframes scontrino{ from{ clip-path:inset(0 0 100% 0); transform:translateY(-1.2rem); } to{ clip-path:inset(0 0 0 0); transform:translateY(0); } }
-@keyframes fessura{ 0%{ opacity:0; } 8%{ opacity:1; } 75%{ opacity:1; } 100%{ opacity:0; } }
+.scontrino .fessura{ display:block; position:relative; z-index:2; height:12px; margin:0 -0.7rem; border-radius:3px; background:var(--ink); }
+.scontrino .carta-box{ overflow:hidden; padding:0 1px 12px; margin:0 0 -12px; }
+.scontrino .carta{
+  position:relative;
+  padding:1.1rem 1.3rem 1.2rem;
+  background:var(--paper);
+  border:1px solid var(--ink);
+  border-top:0;
+  border-bottom:0;
+}
+/* bordo strappato: denti di carta con il filo nero sotto */
+.scontrino .carta::after{
+  content:""; position:absolute; left:-1px; right:-1px; top:100%; height:9px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M0 0L7 8L14 0Z' fill='%23fff'/%3E%3Cpath d='M0 0L7 8L14 0' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E") 0 0 / auto 9px round no-repeat;
+  background-repeat:round no-repeat;
+}
+.scontrino .carta > p:first-child{ margin-top:0; }
+.scontrino .carta > :last-child{ margin-bottom:0; }
+.scontrino .sc-head{ text-align:center; margin:0; }
+.scontrino .sc-foot{ text-align:center; }
+.scontrino .sc-hr{ border:0; border-top:1.5px dashed var(--ink); margin:0.9rem 0; }
+.scontrino .sc-hr + p{ margin-top:0; }
+.scontrino.stampa .carta{ animation:scontrino 2s steps(16, end) both; }
+@keyframes scontrino{ from{ transform:translateY(calc(-100% - 12px)); } to{ transform:translateY(0); } }
 /* scritte laterali che scorrono lentissime (script.js) */
 .side-tape span{ display:inline-block; }
 .side-tape span.scorre{ animation:nastro 60s linear infinite; }
 @keyframes nastro{ to{ transform:translateY(calc(-1 * var(--passo, 0px))); } }
 @media(prefers-reduced-motion:reduce){
-  .barcode-laser, .btn:hover, .btn:hover .ch, .side-tape span.scorre, .bar-cur, .scontrino .carta, .scontrino::before{ animation:none; }
+  .barcode-laser, .btn:hover, .btn:hover .ch, .side-tape span.scorre, .bar-cur, .scontrino .carta{ animation:none; }
 }
 
 /* ---------- selettore della lingua (lingue.js) ---------- */
@@ -956,3 +979,9 @@ main{ margin-top:4.6rem; }
 }
 .lingua select:hover{ background-color:var(--orange); color:var(--paper); }
 .lingua select:focus-visible{ outline:2px dashed var(--ink); outline-offset:2px; }
+/* telefono: data, Bologna e lingua stanno sulla stessa riga */
+@media(max-width:480px){
+  .topline{ font-size:0.85rem; }
+  .lingua{ margin-left:0; }
+  .lingua select{ max-width:9rem; text-overflow:ellipsis; }
+}
