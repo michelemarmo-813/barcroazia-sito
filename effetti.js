@@ -3,6 +3,8 @@
    - titoli delle sezioni battuti a macchina quando entrano nello schermo
    - linea rossa da lettore di cassa sul codice a barre, con un "bip" al clic
    - tasti arancioni che ondeggiano, con le lettere che saltano
+   - eventi: il testo esce a scatti da una fessura, come uno scontrino
+   - stelline che schizzano dai tasti "importanti" e dal codice a barre
    Con "riduci movimento" non si muove niente.
    ========================================================== */
 (function(){
@@ -82,6 +84,80 @@
       b.innerHTML = t.split('').map(function(c, i){
         return '<span class="ch" aria-hidden="true" style="--i:' + i + '">' + (c === ' ' ? '&nbsp;' : c.replace(/&/g, '&amp;').replace(/</g, '&lt;')) + '</span>';
       }).join('');
+    });
+  }
+
+  // ---- eventi: il testo esce dalla fessura come uno scontrino ----
+  var eventi = document.querySelectorAll('.ev-item');
+  if(!ferme && eventi.length){
+    eventi.forEach(function(ev){
+      var t = ev.querySelector('.pair > .text');
+      if(!t || t.querySelector('.carta')) return;
+      var carta = document.createElement('div');
+      carta.className = 'carta';
+      while(t.firstChild){ carta.appendChild(t.firstChild); }
+      t.appendChild(carta);
+      t.classList.add('scontrino');
+    });
+    var stampa = function(ev){
+      var t = ev.querySelector('.scontrino');
+      if(!t) return;
+      t.classList.remove('stampa'); void t.offsetWidth;
+      t.classList.add('stampa');
+      clearTimeout(t._fine);
+      t._fine = setTimeout(function(){ t.classList.remove('stampa'); }, 2300);
+    };
+    var visto = false, sez = document.getElementById('eventi');
+    if(sez && 'IntersectionObserver' in window){
+      var ioEv = new IntersectionObserver(function(en){
+        if(en[0].isIntersecting && !visto){
+          visto = true; ioEv.disconnect();
+          var v = [].filter.call(eventi, function(x){ return !x.hidden; })[0];
+          if(v){ stampa(v); }
+        }
+      }, { threshold:0.35 });
+      ioEv.observe(sez);
+    }
+    // quando si passa a un altro evento (tasto o pallini)
+    var mo = new MutationObserver(function(list){
+      list.forEach(function(m){ if(m.target.classList.contains('ev-item') && !m.target.hidden){ visto = true; stampa(m.target); } });
+    });
+    eventi.forEach(function(ev){ mo.observe(ev, { attributes:true, attributeFilter:['hidden'] }); });
+  }
+
+  // ---- stelline che schizzano dal punto del clic ----
+  var STELLA = 'assets/img/stella-pazza.png';
+  var esplodi = function(x, y){
+    for(var i = 0; i < 9; i++){
+      var s = document.createElement('span');
+      s.className = 'stellina-burst';
+      s.style.left = (x - 12) + 'px';
+      s.style.top = (y - 12) + 'px';
+      s.style.backgroundImage = 'url(' + STELLA + ')';
+      document.body.appendChild(s);
+      var ang = Math.random() * Math.PI * 2, v = 55 + Math.random() * 85;
+      var dx = Math.cos(ang) * v, dy = Math.sin(ang) * v - 35, rot = (Math.random() - .5) * 540, sc = .55 + Math.random() * .6;
+      var anim = s.animate([
+        { transform:'translate(0,0) rotate(0deg) scale(' + sc + ')', opacity:1 },
+        { transform:'translate(' + dx + 'px,' + (dy + 85) + 'px) rotate(' + rot + 'deg) scale(' + (sc * .5) + ')', opacity:0 }
+      ], { duration:850 + Math.random() * 300, easing:'cubic-bezier(.2,.6,.4,1)' });
+      anim.onfinish = (function(el){ return function(){ el.remove(); }; })(s);
+    }
+  };
+  if(!ferme){
+    var festa = /^(ottieni una copia|acquista|invia la candidatura|invia un articolo)$/i;
+    document.addEventListener('click', function(e){
+      var el = e.target.closest('a, button, .barcode');
+      if(!el) return;
+      var nome = (el.getAttribute('aria-label') || el.textContent || '').trim();
+      if(!el.classList.contains('barcode') && !festa.test(nome)) return;
+      esplodi(e.clientX, e.clientY);
+      // un link che cambia pagina aspetta un attimo, così le stelline si vedono
+      var href = el.tagName === 'A' ? el.getAttribute('href') : null;
+      if(href && !/^mailto:/i.test(href) && el.target !== '_blank' && !e.defaultPrevented && !e.metaKey && !e.ctrlKey){
+        e.preventDefault();
+        setTimeout(function(){ window.location.href = href; }, 420);
+      }
     });
   }
 })();

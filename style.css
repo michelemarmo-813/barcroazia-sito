@@ -912,10 +912,19 @@ main{ margin-top:4.6rem; }
 @keyframes tasto-ondeggia{ 25%{ transform:rotate(-3deg); } 50%{ transform:rotate(2.5deg); } 75%{ transform:rotate(-1deg); } }
 @keyframes lettera-salta{ 40%{ transform:translateY(-6px); } }
 .btn:active{ animation:none; }
+.stellina-burst{ position:fixed; z-index:600; width:24px; height:24px; pointer-events:none; background:center / contain no-repeat; }
+/* eventi: il testo esce a scatti da una fessura nera, come uno scontrino */
+.scontrino{ position:relative; }
+.scontrino .carta{ will-change:clip-path; }
+.scontrino.stampa .carta{ animation:scontrino 1.5s steps(14, end) both; }
+.scontrino::before{ content:""; position:absolute; left:-0.6rem; right:-0.6rem; top:-0.9rem; height:6px; border-radius:3px; background:var(--ink); opacity:0; pointer-events:none; }
+.scontrino.stampa::before{ animation:fessura 2.2s ease both; }
+@keyframes scontrino{ from{ clip-path:inset(0 0 100% 0); transform:translateY(-1.2rem); } to{ clip-path:inset(0 0 0 0); transform:translateY(0); } }
+@keyframes fessura{ 0%{ opacity:0; } 8%{ opacity:1; } 75%{ opacity:1; } 100%{ opacity:0; } }
 /* scritte laterali che scorrono lentissime (script.js) */
 .side-tape span{ display:inline-block; }
 .side-tape span.scorre{ animation:nastro 60s linear infinite; }
 @keyframes nastro{ to{ transform:translateY(calc(-1 * var(--passo, 0px))); } }
 @media(prefers-reduced-motion:reduce){
-  .barcode-laser, .btn:hover, .btn:hover .ch, .side-tape span.scorre, .bar-cur{ animation:none; }
+  .barcode-laser, .btn:hover, .btn:hover .ch, .side-tape span.scorre, .bar-cur, .scontrino .carta, .scontrino::before{ animation:none; }
 }
