@@ -218,7 +218,15 @@
     tw.classList.add('tw-on');
     var typed = vis.querySelector('.tw-typed'), rest = vis.querySelector('.tw-rest');
     var note = document.querySelector('.quote-note');
-    function render(i){ typed.textContent = full.slice(0, i); rest.textContent = full.slice(i); }
+    var cur = 0;
+    function render(i){ cur = i; typed.textContent = full.slice(0, i); rest.textContent = full.slice(i); }
+    // quando cambia la lingua (lingue.js) la copia visiva riprende il testo nuovo
+    window.bcTwAggiorna = function(){
+      var nuovo = tw.querySelector('.tw-text').textContent.trim();
+      var fin = cur >= full.length;
+      full = nuovo;
+      render(fin ? full.length : Math.min(cur, full.length));
+    };
     if(reduce){
       render(full.length);
       if(note) note.classList.add('on');

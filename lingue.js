@@ -157,6 +157,7 @@
     var anim = animato ? [] : null;
     applica(document.body, anim);
     if(anim){ decodifica(anim); }
+    if(window.bcTwAggiorna){ window.bcTwAggiorna(); setTimeout(window.bcTwAggiorna, 600); }
     pulisci();
     try{ localStorage.setItem('bc-lingua', modo); }catch(e){}
     document.querySelectorAll('.lingua select').forEach(function(s){ s.value = modo; });
