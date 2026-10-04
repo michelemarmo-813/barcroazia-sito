@@ -14,6 +14,7 @@
   // e finiscono alla pari, senza date tagliate né spazi vuoti
   var stamp = 'BOLOGNA–' + d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear() + ' * ';
   var tapes = document.querySelectorAll('.side-tape');
+  var reduceTape = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function sistemaTape(){
     if(!tapes.length) return;
     var su = document.querySelector('.ticker') || document.querySelector('.main-nav');
@@ -49,6 +50,13 @@
       if(h > fine - top + 1){ testo.style.letterSpacing = ''; h = testo.getBoundingClientRect().height; }
       // la scritta è alta esattamente quanto il suo testo
       t.style.height = Math.ceil(h) + 'px';
+      // scorre lentissima: si aggiunge una ripetizione in più e si sposta
+      // il testo di una ripetizione alla volta, così il giro non si vede
+      if(n > 0 && !reduceTape){
+        testo.style.setProperty('--passo', (h / n) + 'px');
+        testo.textContent += stamp;
+        testo.classList.add('scorre');
+      }
     });
   }
   sistemaTape();

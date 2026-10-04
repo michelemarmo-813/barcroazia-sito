@@ -195,6 +195,7 @@ main{
   line-height:1.75;
   text-align:center;
 }
+.bar{ position:relative; }
 .bar::before{ content:"*** "; }
 .bar::after{ content:" ***"; }
 
@@ -884,4 +885,37 @@ main{ margin-top:4.6rem; }
   .tw-cur{ animation:none; }
   .quote-note{ transition:none; }
   .btn, .back-btn{ transition:none; }
+}
+
+/* ---------- effetti (effetti.js) ---------- */
+/* titoli battuti a macchina */
+.bar.typing{ color:transparent; }
+.bar-tw{ position:absolute; inset:0; padding:0.1rem 0.5rem 0; color:var(--paper); text-align:center; white-space:nowrap; overflow:hidden; }
+.bar-rest{ visibility:hidden; }
+.bar-cur{ display:inline-block; width:0.55em; height:0.95em; margin-right:-0.55em; vertical-align:-0.12em; background:var(--paper); animation:cur-blink 1s steps(2, start) infinite; }
+/* linea rossa del lettore sul codice a barre: passa ogni tanto */
+.barcode{ position:relative; }
+.barcode .barcode-laser{ position:absolute; left:-6%; right:-6%; top:0; height:2px; background:var(--orange); box-shadow:0 0 0 1px rgba(232,61,15,.25); opacity:0; pointer-events:none; animation:lettore 7s ease-in-out 1.5s infinite; }
+@keyframes lettore{
+  0%   { top:0;    opacity:0; }
+  4%   { opacity:1; }
+  22%  { top:calc(100% - 2px); opacity:1; }
+  40%  { top:0;    opacity:1; }
+  44%  { opacity:0; }
+  100% { top:0;    opacity:0; }
+}
+.barcode:hover .barcode-laser{ animation-duration:2.4s; }
+/* tasti: ondeggiano e le lettere saltano una dopo l'altra */
+.btn .ch{ display:inline-block; }
+.btn:hover{ animation:tasto-ondeggia .45s ease-in-out; }
+.btn:hover .ch{ animation:lettera-salta .4s ease calc(var(--i) * 30ms); }
+@keyframes tasto-ondeggia{ 25%{ transform:rotate(-3deg); } 50%{ transform:rotate(2.5deg); } 75%{ transform:rotate(-1deg); } }
+@keyframes lettera-salta{ 40%{ transform:translateY(-6px); } }
+.btn:active{ animation:none; }
+/* scritte laterali che scorrono lentissime (script.js) */
+.side-tape span{ display:inline-block; }
+.side-tape span.scorre{ animation:nastro 60s linear infinite; }
+@keyframes nastro{ to{ transform:translateY(calc(-1 * var(--passo, 0px))); } }
+@media(prefers-reduced-motion:reduce){
+  .barcode-laser, .btn:hover, .btn:hover .ch, .side-tape span.scorre, .bar-cur{ animation:none; }
 }
