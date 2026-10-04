@@ -59,16 +59,22 @@
   }
 
   // ---- tasti: le lettere diventano singoli pezzi che possono saltare ----
+  // (window.bcLettere serve anche a lingue.js quando cambia il testo di un tasto)
+  var lettere = function(b){
+    if(ferme) return;
+    var t = b.textContent;
+    if(!t.trim()) return;
+    if(!b.hasAttribute('aria-label')){ b.setAttribute('aria-label', t.trim()); }
+    b.innerHTML = t.split('').map(function(c, i){
+      return '<span class="ch" aria-hidden="true" style="--i:' + i + '">' + (c === ' ' || c === '\u00a0' ? '&nbsp;' : c.replace(/&/g, '&amp;').replace(/</g, '&lt;')) + '</span>';
+    }).join('');
+  };
+  window.bcLettere = lettere;
   if(!ferme){
     document.querySelectorAll('.btn').forEach(function(b){
       if(b.closest('.mail-pop')) return;              // il suo testo cambia
       if(b.children.length) return;                    // solo tasti con testo semplice
-      var t = b.textContent;
-      if(!t.trim()) return;
-      if(!b.hasAttribute('aria-label')){ b.setAttribute('aria-label', t.trim()); }
-      b.innerHTML = t.split('').map(function(c, i){
-        return '<span class="ch" aria-hidden="true" style="--i:' + i + '">' + (c === ' ' ? '&nbsp;' : c.replace(/&/g, '&amp;').replace(/</g, '&lt;')) + '</span>';
-      }).join('');
+      lettere(b);
     });
   }
 
