@@ -26,8 +26,6 @@
   });
   // dove si cercano i testi interi da tradurre in esperanto
   var BLOCCHI = 'p, h1, h2, h3, li, dt, dd, a, button, figcaption, .leader > span, .meta > span, .cap, .issue-title, .issue-date, .post-title, .post-author, .post-date, .claim, .bar, .subtitle, .article-outlet, .article-author, .article-date, .oc-meta > span, .event-tile-title, .event-tile-date, .sub-topline > span, .topline > span, .fz-num';
-  // dove si aggiunge il punto interrogativo finale (Carmen Di Pietro)
-  var FRASE = 'p, li, dd, .btn, .buy-btn, button, .ticker .t, .event-tile-more, .names-label, .after-names, .event-tile-date, .issue-date, .post-author, .cap, figcaption';
   var SALTA = 'script, style, svg, noscript, iframe, textarea, select, option, .lingua, .side-tape, .bar-tw, .tw-vis, .mail-pop-addr';
   var ferme = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -37,6 +35,11 @@
   var mo = null;
 
   function norm(t){ return t.replace(/ /g, ' ').replace(/\s+/g, ' ').trim(); }
+  // figli da non toccare (es. la copia battuta a macchina .bar-tw di effetti.js):
+  // si staccano prima di cambiare l'HTML di un blocco e si rimettono dopo
+  function stacca(el){ var k = [].filter.call(el.children, function(c){ return c.matches(SALTA); }); k.forEach(function(c){ el.removeChild(c); }); return k; }
+  function rimetti(el, k){ k.forEach(function(c){ el.appendChild(c); }); }
+  function testoProprio(el){ var c = el.cloneNode(true); [].forEach.call(c.querySelectorAll(SALTA), function(x){ x.remove(); }); return c.textContent; }
   function saltato(n){ var e = n.nodeType === 1 ? n : n.parentElement; return !e || !!e.closest(SALTA); }
   function testi(radice){
     var out = [], w = document.createTreeWalker(radice, NodeFilter.SHOW_TEXT, {
@@ -54,27 +57,69 @@
   function etrusco(t){
     return t.replace(/[A-Za-zÀ-ÿ0-9ŭŬ]/g, function(){ return String.fromCodePoint(0x10300 + Math.floor(Math.random() * 31)); });
   }
-  function carmen(t){
-    // il punto o il punto esclamativo che chiude una frase diventa "?"
-    return t.replace(/([A-Za-zÀ-ÿ0-9)’”"])[.!](?=\s|$)/g, '$1?');
+  // ---- Carmen Di Pietro: ogni frase finisce con "?" ----
+  // Una "riga" finisce dove finisce un blocco (paragrafo, titolo, tasto,
+  // voce di elenco, riquadro...) o dove c'è un <br>. Questi pezzi in linea
+  // non spezzano la riga: lettere dei tasti, nomi della stessa riga di poeti.
+  var IN_LINEA = '.ch, .parola, .names .line > span, .fill';
+  // numeri che non sono frasi: cifre del codice a barre, contatore delle foto
+  var NO_DOMANDA = '.barcode-num, .lb-count';
+  var LETTERA = /[\p{L}\p{N}]/u;
+  function confine(el){
+    if(el.tagName === 'BR') return true;
+    if(el.matches(IN_LINEA)) return false;
+    var d = getComputedStyle(el).display;
+    return d !== 'inline' && d !== 'contents' && d !== 'none';
   }
-  function fineDomanda(el, anim){
-    var ns = testi(el);
-    // salta i pezzi finali fatti solo di frecce (es. <span>↓</span>)
-    var i = ns.length - 1;
-    while(i > 0 && /^[\s\u00a0>↓↑→←]*$/.test(ns[i].nodeValue)){ i--; }
-    var ultimo = ns[i];
-    if(!ultimo) return;
-    var v = anim ? ((anim.filter(function(x){ return x[0] === ultimo; })[0] || [])[1] || ultimo.nodeValue) : ultimo.nodeValue;
-    var m = v.match(/^([\s\S]*?)([\s ]*(?:>+|&gt;|[↓↑→←])*[\s ]*)$/);
+  // il nodo di testo è l'ultimo con lettere o numeri della sua riga?
+  function fineRiga(n){
+    var unita = n.parentElement;
+    while(unita && unita !== document.body && !confine(unita)){ unita = unita.parentElement; }
+    if(!unita) return true;
+    var w = document.createTreeWalker(unita, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
+      acceptNode:function(x){ return (x.nodeType === 1 && x.matches(SALTA)) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; }
+    });
+    w.currentNode = n;
+    var x;
+    while((x = w.nextNode())){
+      if(x.nodeType === 1){ if(confine(x)) return true; }
+      else if(LETTERA.test(x.nodeValue)) return false;
+    }
+    return true;
+  }
+  var CHIUDE = '»”"’\'';
+  // email e link non si toccano (un @nome di Instagram sì)
+  function indirizzo(parola){ return /^[^@\s]*[^@\s(]@[^@\s]+\.[^@\s]+$|:\/\/|^www\./i.test(parola); }
+  function carmen(t, finale){
+    // dentro il testo: ". ! …" che chiudono una frase seguita da un'altra
+    // (non le sigle come L.I.P.S. o n.0, né orari e date come 20.30)
+    t = t.replace(/([^\s ]*?)(\.\.\.|…|[.!]+)(?=[\s ]+[\p{Lu}«"“\d])/gu, function(tutto, prima, segno){
+      if(segno.charAt(0) === '!' || segno === '...' || segno === '…'){ return prima + '?'; }
+      // sigla puntata in fondo alla frase ("…circuito L.I.P.S. Puoi…"): "L.I.P.S? Puoi"
+      if(/^(\p{Lu}\.)+\p{Lu}$/u.test(prima)){ return prima + '?'; }
+      // niente sigle e numeri con il punto (n.0, 20.30), niente iniziali (J. Rossi)
+      if(prima.indexOf('.') >= 0 || indirizzo(prima) || !/[\p{L}\p{N}][)’”"»]?$/u.test(prima) || prima.replace(/[)’”"»]+$/, '').length < 2){ return tutto; }
+      return prima + '?';
+    });
+    if(!finale) return t;
+    // fine riga: il "?" va dopo l'ultima parola, prima di frecce, ">", "***"
+    var m = t.match(/^([\s\S]*?)([\s >↓↑→←*]*)$/);
     var corpo = m[1], coda = m[2];
-    if(/[?]$/.test(corpo)) return;
-    if(/[.!:;,]$/.test(corpo)){ corpo = corpo.slice(0, -1) + '?'; }
-    else if(/[A-Za-zÀ-ÿ0-9)’”"»]$/.test(corpo)){ corpo += '?'; }
-    else return;
-    // il "?" va prima delle eventuali frecce ">" finali
-    cambiaTesto(ultimo, corpo + coda, null);
-    if(anim){ anim.forEach(function(x){ if(x[0] === ultimo){ x[1] = corpo + coda; } }); }
+    if(!LETTERA.test(corpo)) return t;
+    var ultima = corpo.split(/[\s ]+/).pop();
+    if(indirizzo(ultima)) return t;
+    if(/\?[)»”"’']*$/.test(corpo)) return t;                       // c'è già
+    // via il segno finale (anche dopo le virgolette: “…CROAZIA”. → “…CROAZIA?”)
+    var nudo = corpo.replace(/(\.\.\.|…|[.!:;,])+$/, '');
+    if(CHIUDE.indexOf(nudo.slice(-1)) >= 0){
+      // «…parola?» : il "?" dentro le virgolette
+      var k = nudo.length - 1;
+      while(k > 0 && CHIUDE.indexOf(nudo.charAt(k - 1)) >= 0){ k--; }
+      corpo = nudo.slice(0, k).replace(/(\.\.\.|…|[.!:;,])+$/, '') + '?' + nudo.slice(k);
+    }
+    else if(/[\p{L}\p{N})\]]$/u.test(nudo)){ corpo = nudo + '?'; }
+    else return t;
+    return corpo + coda;
   }
 
   function applica(radice, anim){
@@ -84,11 +129,13 @@
       if(radice.nodeType === 1 && radice.matches && radice.matches(BLOCCHI)){ els.unshift(radice); }
       els.forEach(function(el){
         if(saltato(el) || blocchiOrig.has(el) || !el.isConnected) return;
-        var chiave = norm(el.textContent);
+        var chiave = norm(testoProprio(el));
         var t = EO[chiave];
         if(!t) return;
+        var k = stacca(el);
         blocchiOrig.set(el, el.innerHTML);
         el.innerHTML = t;
+        rimetti(el, k);
         if(el.classList.contains('btn')){
           el.setAttribute('aria-label', norm(el.textContent));
           if(window.bcLettere){ window.bcLettere(el); }
@@ -105,10 +152,16 @@
       testi(radice).forEach(function(n){ cambiaTesto(n, etrusco(testiOrig.has(n) && testiOrig.get(n) !== null ? testiOrig.get(n) : n.nodeValue), anim); });
     }
     if(modo === 'cdp'){
-      testi(radice).forEach(function(n){ var v = n.nodeValue, nv = carmen(v); if(nv !== v){ cambiaTesto(n, nv, anim); } });
-      var bl = [].slice.call(radice.querySelectorAll ? radice.querySelectorAll(FRASE) : []);
-      if(radice.nodeType === 1 && radice.matches && radice.matches(FRASE)){ bl.push(radice); }
-      bl.forEach(function(el){ if(!saltato(el)){ fineDomanda(el, anim); } });
+      // si parte sempre dal testo italiano: niente "??" anche rifacendo
+      testi(radice).forEach(function(n){
+        var orig = testiOrig.has(n) && testiOrig.get(n) !== null ? testiOrig.get(n) : n.nodeValue;
+        var fine = fineRiga(n) && !n.parentElement.closest(NO_DOMANDA), nv;
+        if(LETTERA.test(orig)){ nv = carmen(orig, fine); }
+        // pezzo senza lettere in fondo alla riga (il "." dopo un link):
+        // il "?" l'ha già preso l'ultima parola, il punto se ne va
+        else { nv = fine ? orig.replace(/^([\s\u00a0]*)(\.\.\.|…|[.!:;,])+/, '$1') : orig; }
+        if(nv !== n.nodeValue){ cambiaTesto(n, nv, anim); }
+      });
     }
   }
 
@@ -117,7 +170,9 @@
     testiOrig.clear();
     blocchiOrig.forEach(function(html, el){
       if(!el.isConnected) return;
+      var k = stacca(el);
       el.innerHTML = html;
+      rimetti(el, k);
       if(el.classList.contains('btn')){ el.setAttribute('aria-label', norm(el.textContent)); }
     });
     blocchiOrig.clear();
@@ -157,6 +212,8 @@
     var anim = animato ? [] : null;
     applica(document.body, anim);
     if(anim){ decodifica(anim); }
+    // scritte laterali (script.js): "BOLOGNA–g.m.aaaa? * " solo con Carmen Di Pietro
+    if(window.bcTape){ window.bcTape(modo); }
     if(window.bcTwAggiorna){ window.bcTwAggiorna(); setTimeout(window.bcTwAggiorna, 600); }
     pulisci();
     try{ localStorage.setItem('bc-lingua', modo); }catch(e){}

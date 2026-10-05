@@ -12,13 +12,24 @@
   // del codice a barre; contengono solo ripetizioni intere e la loro
   // altezza è esattamente quella del testo, così le due scritte iniziano
   // e finiscono alla pari, senza date tagliate né spazi vuoti
-  var stamp = 'BOLOGNA–' + d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear() + ' * ';
+  var data = 'BOLOGNA–' + d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear();
+  var stamp = data + ' * ';
+  // lingue.js: con Carmen Di Pietro anche le scritte laterali chiedono ("…2026? * "),
+  // si rifanno da capo perché il "?" allunga ogni ripetizione
+  window.bcTape = function(modo){
+    var nuovo = data + (modo === 'cdp' ? '?' : '') + ' * ';
+    if(nuovo === stamp) return;
+    stamp = nuovo;
+    sistemaTape();
+  };
   var tapes = document.querySelectorAll('.side-tape');
   var reduceTape = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function sistemaTape(){
     if(!tapes.length) return;
     var su = document.querySelector('.ticker') || document.querySelector('.main-nav');
-    var giu = document.querySelector('.barcode-num') || document.querySelector('.barcode');
+    // con il verso del codice a barre in vista, le scritte finiscono sotto il verso
+    var verso = document.querySelector('.barcode-verse');
+    var giu = (verso && verso.textContent.trim() && verso.offsetHeight) ? verso : (document.querySelector('.barcode-num') || document.querySelector('.barcode'));
     if(!su || !giu) return;
     var top = su.getBoundingClientRect().bottom + window.scrollY + 30;
     var fine = giu.getBoundingClientRect().bottom + window.scrollY;
@@ -258,6 +269,13 @@
     var CH = '0123456789*#';
     // il "bip" registrato: finché suona, i caratteri si rimescolano;
     // quando finisce, si fissano da sinistra a destra sul verso
+    // se il verso cambia altezza (compare, va a capo diversamente) le
+    // scritte laterali si rifanno per finire alla sua altezza
+    var hVerso = 0;
+    var altezzaVerso = function(){
+      var h = verseEl.offsetHeight;
+      if(h !== hVerso){ hVerso = h; sistemaTape(); }
+    };
     var bip = new Audio('assets/audio/bip.mp3');
     bip.preload = 'auto';
     var rivela = function(target){
@@ -271,6 +289,7 @@
         }
         verseEl.textContent = out;
         if(k0 >= target.length){ clearInterval(decoding); decoding = null; verseEl.textContent = target; }
+        altezzaVerso();
       }, 35);
     };
     var decode = function(){
@@ -283,7 +302,7 @@
       var fine = function(){
         if(fatto) return; fatto = true;
         if(decoding) clearInterval(decoding);
-        if(reduce){ decoding = null; verseEl.textContent = target; return; }
+        if(reduce){ decoding = null; verseEl.textContent = target; altezzaVerso(); return; }
         rivela(target);
       };
       // rimescolamento continuo finché l'audio va
@@ -294,6 +313,7 @@
             out += target[k] === ' ' ? ' ' : CH[Math.floor(Math.random() * CH.length)];
           }
           verseEl.textContent = out;
+          altezzaVerso();
         }, 35);
       } else {
         verseEl.textContent = '';

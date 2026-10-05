@@ -464,19 +464,23 @@ main{
 .site-foot{
   width:min(var(--col), calc(100% - 2rem));
   margin:0 auto;
-  padding:3.4rem 0 6rem;
+  /* sotto i numeri del codice a barre solo mezzo rem: la pagina finisce
+     dove finiscono le scritte laterali */
+  padding:1.8rem 0 0.5rem;
   text-align:center;
   font-size:var(--fs-big);
   line-height:1.5;
 }
-.site-foot .logo{ width:10rem; margin:0 auto 3.4rem; }
+.site-foot .logo{ width:10rem; margin:0 auto 1.7rem; }
+.site-foot > p:first-of-type{ margin:0; }
+main > .section:last-child{ margin-bottom:2.4rem; }
 .barcode{
   display:flex;
   justify-content:center;
   gap:2px;
   height:5.6rem;
   width:min(29.6rem, 100%);
-  margin:1.5rem auto 0;
+  margin:1.4rem auto 0;
 }
 .barcode span{ background:var(--ink); flex:0 0 auto; }
 
@@ -753,6 +757,8 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 /* ---------- telefono e tablet ---------- */
 @media(max-width:1060px){
   html{ font-size:15px; }
+  /* tablet: le tre anteprime dell'archivio non escono dallo schermo */
+  .gallery{ grid-template-columns:repeat(3, minmax(0, 16.4rem)); gap:1.2rem clamp(1rem, 3vw, 3.1rem); }
 }
 
 @media(max-width:760px){
@@ -761,13 +767,14 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
   .pair, .pair.img-left{ grid-template-columns:minmax(0, 1fr); gap:1.6rem; }
   .pair.img-left > .frame, .pair.img-left > figure{ order:-1; }
   .frame{ height:auto; aspect-ratio:auto; min-height:18rem; }
-  .frame img{ height:auto; max-height:26rem; width:auto; }
+  /* solo le foto dirette della cornice: non le stelle né i caroselli (.shot-crop, .cs-crop) */
+  .frame > img{ height:auto; max-height:26rem; width:auto; }
   .frame.fill img{ width:100%; max-height:none; }
   #chi-siamo .frame{ height:auto; }
   #chi-siamo .cs-crop{ height:auto; aspect-ratio:3 / 2; }
   .meta{ padding:0; justify-content:center; text-align:center; }
   .row-btns{ justify-content:center; }
-  .gallery{ grid-template-columns:minmax(0, 18rem); }
+  .gallery{ grid-template-columns:minmax(0, 1fr); max-width:30rem; margin:0 auto; gap:2rem; }
   .cards, .subpage .post-grid{ grid-template-columns:minmax(0, 1fr); }
   .links{ grid-template-columns:minmax(0, 1fr); }
   .justify{ text-align:left; }
@@ -782,8 +789,10 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
   .leader{ font-size:var(--fs-body); }
   .leader > span:first-child{ flex-basis:100%; }
   .claim .star{ top:-1.6rem !important; }
-  .shot-crop img{ transform:scale(1.12); }
-  .shot .frame{ height:22rem; }
+  /* archivio in home: cornice con le proporzioni delle foto (3:2), foto centrata e piena */
+  .shot .frame{ display:block; height:auto; min-height:0; }
+  .shot-crop{ height:auto; aspect-ratio:3 / 2; }
+  .shot-crop img{ transform:none; object-position:center; }
 }
 
 /* ---------- stelle nere (la "pazza stellina") che ballano ----------
@@ -875,9 +884,11 @@ main{ margin-top:4.6rem; }
 /* ---------- verso nascosto nel codice a barre ---------- */
 .barcode{ cursor:pointer; }
 .barcode:focus-visible{ outline:2px dashed var(--ink); outline-offset:6px; }
+/* vuoto non occupa spazio; quando compare il verso le scritte laterali
+   si ricalcolano per finire alla sua altezza (script.js) */
+.barcode-verse:empty{ display:none; }
 .barcode-verse{
-  min-height:1.6em;
-  margin:0.9rem 0 0;
+  margin:0.6rem 0 0;
   color:var(--orange);
   font-size:var(--fs-big);
   font-variant-numeric:tabular-nums;
@@ -907,7 +918,7 @@ main{ margin-top:4.6rem; }
 /* ---------- effetti (effetti.js) ---------- */
 /* titoli battuti a macchina */
 .bar.typing{ color:transparent; }
-.bar-tw{ position:absolute; inset:0; padding:0.1rem 0.5rem 0; color:var(--paper); text-align:center; white-space:nowrap; overflow:hidden; }
+.bar-tw{ position:absolute; inset:0; padding:0.1rem 0.5rem 0; color:var(--paper); text-align:center; white-space:pre-wrap; }
 .bar-rest{ visibility:hidden; }
 .bar-cur{ display:inline-block; width:0.55em; height:0.95em; margin-right:-0.55em; vertical-align:-0.12em; background:var(--paper); animation:cur-blink 1s steps(2, start) infinite; }
 /* linea rossa del lettore sul codice a barre: passa ogni tanto */
@@ -984,4 +995,97 @@ main{ margin-top:4.6rem; }
   .topline{ font-size:0.85rem; }
   .lingua{ margin-left:0; }
   .lingua select{ max-width:9rem; text-overflow:ellipsis; }
+}
+
+/* pannello foto dell'archivio: su computer "Chiudi" non serve (si chiude dal tasto della scheda) */
+.event-grid-close{ display:none; }
+.btn .parola{ white-space:nowrap; }
+
+/* ==========================================================
+   TELEFONO: aree tattili comode (almeno 44×44 px), tasti che
+   vanno a capo invece di uscire dallo schermo, archivio leggibile
+   ========================================================== */
+@media(max-width:760px){
+  /* tasti arancioni: alti 44 px, il testo lungo va a capo tra le parole */
+  .btn{ white-space:normal; max-width:100%; min-height:44px; padding:0.42rem 0.95rem 0.3rem; line-height:1.45; text-align:center; }
+  .back-btn{ display:inline-flex; align-items:center; flex-shrink:0; min-height:44px; padding:0.1rem 0.9rem 0; white-space:nowrap; }
+  /* sottopagine: "Bar Croazia · Bologna" sopra, lingua sotto, a destra del tasto Indietro */
+  .sub-topline{ gap:0.8rem; align-items:flex-start; }
+  .sub-topline > span:last-child{ display:flex; flex-direction:column; align-items:flex-end; gap:0.35rem; text-align:right; }
+  .sub-topline .lingua{ margin-left:0; }
+  .buy-btn{ min-height:44px; padding:0.1rem 1rem 0; }
+  .ticker .t{ line-height:2.75; }
+  .lingua select{ min-height:44px; }
+  /* pallini: il punto resta piccolo, ma l'area da toccare è 44×44 */
+  .call-dots{ gap:0; margin:-2.3rem 0 0.4rem; }
+  .call-dot, .call-dot:hover, .call-dot.on, .call-dot.on:hover{ position:relative; width:44px; height:44px; border:0; border-radius:0; background:none; }
+  .call-dot::before{ content:""; position:absolute; left:50%; top:50%; width:0.6rem; height:0.6rem; transform:translate(-50%, -50%); border:1px solid var(--ink); border-radius:50%; background:var(--paper); }
+  .call-dot.on::before{ background:var(--orange); border-color:var(--orange); }
+
+  /* archivio eventi: scheda leggibile, tasto che può andare a capo */
+  .event-tile-info{ padding:1rem 1rem 1.1rem; }
+  .event-tile-more{ display:inline-flex; align-items:center; gap:0.4rem; min-height:44px; max-width:100%; padding:0.35rem 0.9rem 0.25rem; white-space:normal; text-align:left; line-height:1.35; }
+  /* pannello delle foto: niente scroll dentro lo scroll (la pagina scorre
+     normalmente), intestazione con "Chiudi" che resta in vista, 3 colonne */
+  .event-grid{ padding:0 0.8rem 1rem; }
+  .event-grid-head{ position:sticky; top:0; z-index:3; display:flex; align-items:center; justify-content:space-between; gap:0.8rem; margin:0 0 0.8rem; padding:0.6rem 0; background:var(--paper); border-bottom:2px dotted var(--ink); }
+  .event-grid-head .event-grid-hint{ margin:0; }
+  .event-grid-close{ display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:0.15rem 1rem 0; border:1px solid var(--ink); background:var(--orange); color:var(--paper); font:inherit; text-transform:uppercase; cursor:pointer; box-shadow:3px 3px 0 var(--ink); }
+  .event-grid-close:active{ transform:translate(3px, 3px); box-shadow:none; }
+  .event-grid-close:focus-visible{ outline:2px dashed var(--ink); outline-offset:3px; }
+  .event-grid-list{ grid-template-columns:repeat(3, minmax(0, 1fr)); gap:0.55rem; max-height:none; overflow:visible; padding:0; }
+  /* miniatura quadrata: la foto è posata dentro in assoluto, così il
+     quadrato non dipende dalle misure della foto (anche su Safari) */
+  .event-thumb{ position:relative; width:100%; aspect-ratio:1 / 1; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+  .event-thumb img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; }
+
+  /* foto ingrandita: a tutto schermo, frecce e chiusura grandi in basso/in alto */
+  .lb-stage{ padding:3.8rem 0.5rem 5rem; }
+  .lb-img{ max-height:calc(100vh - 9rem); max-height:calc(100dvh - 9rem); }
+  .lightbox button{ min-width:48px; min-height:48px; font-size:1.7rem; padding:0.2rem 0.6rem 0; }
+  .lightbox .lb-close{ top:0.6rem; right:0.6rem; }
+  .lightbox .lb-prev, .lightbox .lb-next{ top:auto; bottom:0.9rem; transform:none; }
+  .lightbox .lb-prev{ left:0.8rem; }
+  .lightbox .lb-next{ right:0.8rem; }
+  .lightbox .lb-count{ bottom:1.55rem; font-size:1.1rem; padding:0.2rem 0.7rem 0; }
+}
+
+/* telefono: il codice a barre resta dentro lo schermo (linea del lettore compresa) */
+@media(max-width:760px){
+  .barcode .barcode-laser{ left:-0.5rem; right:-0.5rem; }
+}
+@media(max-width:400px){
+  .barcode{ gap:1.5px; }
+}
+/* telefono e tablet: le stelle che ballano vicino al bordo non fanno scorrere la pagina di lato */
+@media(max-width:1060px){
+  body{ overflow-x:clip; }
+}
+@media(max-width:760px){
+  #fanzine .star.a{ right:0.2rem; }
+}
+@media(max-width:760px){
+  .stack .star.b{ right:-0.2rem; }
+}
+@media(max-width:760px){
+  /* link dentro il testo: area da toccare più alta, senza spostare le righe */
+  .oc-text a:not(.btn){ padding:0.95em 0; }
+}
+/* tablet e schermi touch più larghi: stesse aree tattili, impaginazione invariata
+   (con il mouse non cambia niente) */
+@media(pointer:coarse) and (min-width:761px){
+  .btn{ min-height:44px; padding-top:0.32rem; padding-bottom:0.22rem; }
+  .back-btn{ display:inline-flex; align-items:center; min-height:44px; }
+  .buy-btn{ min-height:44px; }
+  .lingua select{ min-height:44px; }
+  .event-tile-more{ display:inline-flex; align-items:center; gap:0.4rem; min-height:44px; }
+  .call-dots{ gap:0; margin:-2.3rem 0 0.4rem; }
+  .call-dot, .call-dot:hover, .call-dot.on, .call-dot.on:hover{ position:relative; width:44px; height:44px; border:0; border-radius:0; background:none; }
+  .call-dot::before{ content:""; position:absolute; left:50%; top:50%; width:0.6rem; height:0.6rem; transform:translate(-50%, -50%); border:1px solid var(--ink); border-radius:50%; background:var(--paper); }
+  .call-dot.on::before{ background:var(--orange); border-color:var(--orange); }
+  .lightbox button{ min-width:48px; min-height:48px; }
+  .oc-text a:not(.btn){ padding:0.95em 0; }
+}
+@media(max-width:1060px){
+  #fanzine .star.a{ right:0.2rem; }
 }

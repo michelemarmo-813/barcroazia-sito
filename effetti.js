@@ -15,8 +15,14 @@
   // sopra si scrive la copia lettera per lettera
   var barre = document.querySelectorAll('.section > .bar');
   if(!ferme && barre.length && 'IntersectionObserver' in window){
+    // il testo della barra (senza la copia battuta): si rilegge a ogni lettera,
+    // così se nel frattempo cambia lingua (lingue.js) si batte quella giusta
+    var testoBarra = function(bar){
+      return [].filter.call(bar.childNodes, function(n){ return !(n.nodeType === 1 && n.classList.contains('bar-tw')); })
+        .map(function(n){ return n.textContent; }).join('').replace(/\s+/g, ' ').trim();
+    };
+    var esc = function(x){ return x.replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
     var batti = function(bar){
-      var testo = '*** ' + bar.textContent.trim().toUpperCase() + ' ***';
       var vis = document.createElement('span');
       vis.className = 'bar-tw';
       vis.setAttribute('aria-hidden', 'true');
@@ -24,10 +30,12 @@
       bar.classList.add('typing');
       var i = 0;
       (function passo(){
+        var testo = Array.from('*** ' + testoBarra(bar).toUpperCase() + ' ***');
+        if(i > testo.length){ i = testo.length; }
         // la parte ancora da battere c'è ma è invisibile: così le lettere
         // compaiono da sinistra a destra, già al loro posto definitivo
-        var nb = function(x){ return x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/ /g, '&nbsp;'); };
-        vis.innerHTML = nb(testo.slice(0, i)) + '<span class="bar-cur"></span><span class="bar-rest">' + nb(testo.slice(i)) + '</span>';
+        // (e un titolo lungo va a capo come quello vero, senza tagli)
+        vis.innerHTML = esc(testo.slice(0, i).join('')) + '<span class="bar-cur"></span><span class="bar-rest">' + esc(testo.slice(i).join('')) + '</span>';
         if(i++ < testo.length){ setTimeout(passo, 55); }
         else {
           setTimeout(function(){ bar.classList.remove('typing'); vis.remove(); }, 900);
@@ -65,9 +73,16 @@
     var t = b.textContent;
     if(!t.trim()) return;
     if(!b.hasAttribute('aria-label')){ b.setAttribute('aria-label', t.trim()); }
-    b.innerHTML = t.split('').map(function(c, i){
-      return '<span class="ch" aria-hidden="true" style="--i:' + i + '">' + (c === ' ' || c === '\u00a0' ? '&nbsp;' : c.replace(/&/g, '&amp;').replace(/</g, '&lt;')) + '</span>';
-    }).join('');
+    // ogni parola resta unita (su telefono un tasto lungo va a capo tra
+    // le parole, mai in mezzo a una parola); gli spazi sono spazi veri
+    var i = 0;
+    b.innerHTML = t.trim().split(/[ \u00a0]+/).map(function(parola){
+      var html = '<span class="parola" aria-hidden="true">' + Array.from(parola).map(function(c){
+        return '<span class="ch" style="--i:' + (i++) + '">' + c.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span>';
+      }).join('') + '</span>';
+      i++;
+      return html;
+    }).join(' ');
   };
   window.bcLettere = lettere;
   if(!ferme){
