@@ -234,13 +234,20 @@
       seme = (seme * 16807) % 2147483647;
       var r = seme % (k + 1), t = ordine[k]; ordine[k] = ordine[r]; ordine[r] = t;
     }
-    return citazioni[ordine[((g % n) + n) % n]];
+    var c = citazioni[ordine[((g % n) + n) % n]];
+    return typeof c === 'string' ? { testo:c, autore:'' } : c;
   }
   var tw = document.querySelector('.tw');
   if(tw){
     var twText = tw.querySelector('.tw-text');
     var oggi = giornoRoma();
-    if(citazioni.length){ twText.textContent = citazioneDelGiorno(oggi); }
+    var note = document.querySelector('.quote-note');
+    // l'autore compare in fondo, a destra, quando la citazione è finita
+    function mettiCitazione(c){
+      twText.textContent = c.testo;
+      if(note){ note.classList.remove('on'); note.innerHTML = ''; var b = document.createElement('b'); b.textContent = c.autore; note.appendChild(b); note.hidden = !c.autore; }
+    }
+    if(citazioni.length){ mettiCitazione(citazioneDelGiorno(oggi)); }
     var full = twText.textContent.trim();
     var vis = document.createElement('span');
     vis.className = 'tw-vis';
@@ -264,10 +271,12 @@
       (function step(){
         render(i);
         if(i++ < full.length){ battitura = setTimeout(step, 70); }
+        else if(note){ note.classList.add('on'); }
       })();
     };
     if(reduce){
       render(full.length);
+      if(note) note.classList.add('on');
     } else {
       render(0);
       if('IntersectionObserver' in window){
@@ -283,11 +292,11 @@
         var g = giornoRoma();
         if(g === oggi) return;
         oggi = g;
-        twText.textContent = citazioneDelGiorno(g);
+        mettiCitazione(citazioneDelGiorno(g));
         // un attimo dopo, quando lingue.js l'ha già adattata alla lingua scelta
         setTimeout(function(){
           full = twText.textContent.trim();
-          if(reduce){ render(full.length); } else { startType(); }
+          if(reduce){ render(full.length); if(note) note.classList.add('on'); } else { startType(); }
         }, 0);
       };
       setInterval(cambiaGiorno, 20000);

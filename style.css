@@ -870,6 +870,15 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
   animation:cur-blink 1s steps(2, start) infinite;
 }
 @keyframes cur-blink{ to{ visibility:hidden; } }
+.quote-note{
+  margin:0.7rem 0 0;
+  text-align:right;
+  font-size:0.95rem;
+  opacity:0;
+  transition:opacity .6s ease;
+}
+.quote-note.on{ opacity:1; }
+.quote-note b{ font-weight:700; }
 main{ margin-top:4.6rem; }
 
 /* ---------- verso nascosto nel codice a barre ---------- */
@@ -902,6 +911,7 @@ main{ margin-top:4.6rem; }
 }
 @media(prefers-reduced-motion:reduce){
   .tw-cur{ animation:none; }
+  .quote-note{ transition:none; }
   .btn, .back-btn{ transition:none; }
 }
 
