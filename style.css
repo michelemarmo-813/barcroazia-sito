@@ -1129,3 +1129,62 @@ main{ margin-top:4.6rem; }
   .topline{ font-size:0.74rem; }
   .lingua select{ max-width:6.8rem; }
 }
+
+/* autore della citazione: centrato sotto, in arancione */
+.quote-note{ text-align:center; color:var(--orange); }
+/* tasti e righe che esistono solo su telefono o solo su computer */
+.solo-telefono, .sc-meta, .sc-hr-meta{ display:none; }
+
+/* ==========================================================
+   TELEFONO: ordine titolo → foto → resto, come uno scontrino
+   (margini bianchi larghi con le scritte laterali, contenuti più stretti)
+   ========================================================== */
+@media(max-width:760px){
+  .solo-computer{ display:none; }
+
+  /* margini da scontrino: scritte laterali più grandi, aria bianca
+     ai lati, contenuti più stretti al centro */
+  .site-head, .main-nav, main, .quote, .site-foot{ width:calc(100% - 2 * max(2.9rem, 12.5vw)); }
+  .side-tape{ font-size:0.84rem; }
+  .side-tape.left{ left:max(0.7rem, 3.4vw); }
+  .side-tape.right{ right:max(0.7rem, 3.4vw); }
+  .barcode{ gap:1px; }
+
+  /* eventi: titolo, foto, scontrino con data e luogo, tasti */
+  .ev-item > .meta, .ev-item > hr.dots{ display:none; }
+  .ev-item .ev-title{ order:-2; margin:0 0 1.2rem; }
+  .sc-meta{ display:block; margin:0; text-align:center; }
+  .sc-meta span{ display:block; }
+  .sc-hr-meta{ display:block; }
+  /* fanzine, open call, chi siamo: titolo, foto, resto */
+  .fz-item .fz-num{ order:-2; text-align:center; }
+  .call-item > .leader{ order:-2; }
+  #chi-siamo > .bar{ order:-3; }
+  #chi-siamo > .claim{ order:-2; margin-bottom:1.6rem; }
+  /* dicono di noi: titolo, foto, data e testata */
+  .card{ display:flex; flex-direction:column; }
+  .card-body{ display:contents; }
+  .card-title{ order:-1; padding:0.75rem 0.8rem 0.65rem; }
+  .card-img{ border-top:1.5px solid var(--ink); }
+  .card .tag{ align-self:flex-start; margin:0.75rem 0.8rem 0.35rem; }
+  .card-src{ padding:0 0.8rem 1rem; }
+
+  /* righe-titolo con i puntini (fanzine, open call): sul telefono come
+     gli altri titoli, centrate, senza puntini */
+  .leader{ display:block; text-align:center; font-size:var(--fs-body); margin-bottom:1.4rem; }
+  .leader .fill{ display:none; }
+  .leader > span{ display:block; }
+  .leader > span:first-child{ color:var(--orange); font-size:var(--fs-big); line-height:1.35; }
+  .leader > span:first-child::before{ content:"*** "; }
+  .leader > span:first-child::after{ content:" ***"; }
+  .leader > span:last-child{ margin-top:0.25rem; }
+
+  /* tasti: testo centrato in altezza, con lo stesso spazio sopra e sotto */
+  /* alto 44 px (bordo compreso) con il testo esattamente in mezzo */
+  .btn, .btn.solo-telefono{ display:inline-block; min-height:0; line-height:1.3; padding:calc((44px - 1.3em - 2px) / 2 + 0.4px) 0.85rem calc((44px - 1.3em - 2px) / 2 - 0.4px); }
+  .btn.solo-computer{ display:none; }
+  .main-nav .btn{ width:100%; font-size:min(1.05rem, 3.6vw); padding-left:0.4rem; padding-right:0.4rem; }
+  .main-nav .btn:last-child{ width:auto; padding-left:0.85rem; padding-right:0.85rem; }
+  .topline{ font-size:0.74rem; }
+  .lingua select{ max-width:6.8rem; }
+}

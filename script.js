@@ -432,10 +432,11 @@
   })();
 
   // eventi: "scopri di più su Instagram" porta al post dell'evento mostrato
-  var ig = document.querySelector('.js-ig');
+  // (due tasti: quello lungo per il computer, "Instagram" per il telefono)
+  var ig = document.querySelectorAll('.js-ig');
   function syncEvento(){
     var c = current('.ev-item');
-    if(ig && c.items[c.i] && c.items[c.i].dataset.ig){ ig.href = c.items[c.i].dataset.ig; }
+    if(c.items[c.i] && c.items[c.i].dataset.ig){ ig.forEach(function(a){ a.href = c.items[c.i].dataset.ig; }); }
   }
 
   // open call: "invia la candidatura" e "scopri di più" seguono la call mostrata
