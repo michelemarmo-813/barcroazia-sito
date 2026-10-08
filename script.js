@@ -82,7 +82,7 @@
       if(Math.abs(h - ultimaAltezza) < 8) return;
       ultimaAltezza = h;
       clearTimeout(tapeTimer); tapeTimer = setTimeout(sistemaTape, 150);
-    }).observe(document.querySelector('main') || document.body);
+    }).observe(document.body);   // anche la citazione del giorno, fuori da main, cambia altezza
   }
 
   // ticker: il contenuto viene duplicato per scorrere senza interruzioni
@@ -214,13 +214,34 @@
   tickCountdown();
   setInterval(tickCountdown, 1000);
 
-  // ---- citazione battuta a macchina ----
+  // ---- citazione del giorno, battuta a macchina (testi in citazioni.js) ----
+  // Una citazione a caso al giorno, uguale per tutti per tutta la giornata:
+  // le citazioni sono rimescolate una volta per tutte (sempre nello stesso
+  // modo) e ogni giorno si passa alla successiva, così non si ripetono
+  // finché non sono uscite tutte. Cambia a mezzanotte, ora di Bologna.
   // Il testo completo resta nell'HTML (e per i lettori di schermo);
   // l'animazione è una copia visiva sopra. Alla fine resta ferma.
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var citazioni = window.CITAZIONI || [];
+  function giornoRoma(){
+    var p = romeParts(new Date());
+    return Math.floor(Date.UTC(+p.year, +p.month - 1, +p.day) / 864e5);
+  }
+  function citazioneDelGiorno(g){
+    var n = citazioni.length, ordine = [], seme = 20251006, k;
+    for(k = 0; k < n; k++){ ordine.push(k); }
+    for(k = n - 1; k > 0; k--){
+      seme = (seme * 16807) % 2147483647;
+      var r = seme % (k + 1), t = ordine[k]; ordine[k] = ordine[r]; ordine[r] = t;
+    }
+    return citazioni[ordine[((g % n) + n) % n]];
+  }
   var tw = document.querySelector('.tw');
   if(tw){
-    var full = tw.querySelector('.tw-text').textContent.trim();
+    var twText = tw.querySelector('.tw-text');
+    var oggi = giornoRoma();
+    if(citazioni.length){ twText.textContent = citazioneDelGiorno(oggi); }
+    var full = twText.textContent.trim();
     var vis = document.createElement('span');
     vis.className = 'tw-vis';
     vis.setAttribute('aria-hidden', 'true');
@@ -228,35 +249,49 @@
     tw.appendChild(vis);
     tw.classList.add('tw-on');
     var typed = vis.querySelector('.tw-typed'), rest = vis.querySelector('.tw-rest');
-    var note = document.querySelector('.quote-note');
-    var cur = 0;
+    var cur = 0, battitura = null;
     function render(i){ cur = i; typed.textContent = full.slice(0, i); rest.textContent = full.slice(i); }
     // quando cambia la lingua (lingue.js) la copia visiva riprende il testo nuovo
     window.bcTwAggiorna = function(){
-      var nuovo = tw.querySelector('.tw-text').textContent.trim();
+      var nuovo = twText.textContent.trim();
       var fin = cur >= full.length;
       full = nuovo;
       render(fin ? full.length : Math.min(cur, full.length));
     };
+    var startType = function(){
+      clearTimeout(battitura);
+      var i = 0;
+      (function step(){
+        render(i);
+        if(i++ < full.length){ battitura = setTimeout(step, 70); }
+      })();
+    };
     if(reduce){
       render(full.length);
-      if(note) note.classList.add('on');
     } else {
       render(0);
-      var startType = function(){
-        var i = 0;
-        (function step(){
-          render(i);
-          if(i++ < full.length){ setTimeout(step, 70); }
-          else if(note){ note.classList.add('on'); }
-        })();
-      };
       if('IntersectionObserver' in window){
         var io = new IntersectionObserver(function(es){
           if(es[0].isIntersecting){ io.disconnect(); startType(); }
         }, { threshold:0.6 });
         io.observe(tw);
       } else { startType(); }
+    }
+    // a mezzanotte (anche con la pagina rimasta aperta) arriva la citazione nuova
+    if(citazioni.length > 1){
+      var cambiaGiorno = function(){
+        var g = giornoRoma();
+        if(g === oggi) return;
+        oggi = g;
+        twText.textContent = citazioneDelGiorno(g);
+        // un attimo dopo, quando lingue.js l'ha già adattata alla lingua scelta
+        setTimeout(function(){
+          full = twText.textContent.trim();
+          if(reduce){ render(full.length); } else { startType(); }
+        }, 0);
+      };
+      setInterval(cambiaGiorno, 20000);
+      document.addEventListener('visibilitychange', function(){ if(!document.hidden){ cambiaGiorno(); } });
     }
   }
 
