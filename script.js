@@ -31,7 +31,8 @@
     var verso = document.querySelector('.barcode-verse');
     var giu = (verso && verso.textContent.trim() && verso.offsetHeight) ? verso : (document.querySelector('.barcode-num') || document.querySelector('.barcode'));
     if(!su || !giu) return;
-    var top = su.getBoundingClientRect().bottom + window.scrollY + 30;
+    // su telefono le scritte partono dalla cima della pagina (ai lati c'è posto)
+    var top = window.matchMedia('(max-width: 760px)').matches ? 6 : su.getBoundingClientRect().bottom + window.scrollY + 30;
     var fine = giu.getBoundingClientRect().bottom + window.scrollY;
     tapes.forEach(function(t){
       t.style.top = top + 'px';
@@ -338,7 +339,8 @@
     };
     var decode = function(){
       vIdx = (vIdx + 1) % versi.length;
-      var target = versi[vIdx];
+      // il codice a barre dice sempre la stessa parola
+      var target = 'Garibalbip';
       if(decoding) clearInterval(decoding);
       bip.onended = null;
       try{ bip.pause(); bip.currentTime = 0; }catch(e){}
@@ -418,17 +420,63 @@
     });
   });
 
-  // chi siamo: le foto si alternano da sole
+  // scorrere col dito (a destra o a sinistra) su un elemento: chiama vai(+1) o vai(-1).
+  // Lo scorrimento in su e in giù resta quello della pagina; dopo uno
+  // scorrimento il tocco non apre la foto ingrandita.
+  function scorrimento(el, vai){
+    var x0 = null, y0 = 0, appena = 0;
+    el.addEventListener('touchstart', function(e){
+      if(e.touches.length !== 1){ x0 = null; return; }
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+    }, { passive:true });
+    el.addEventListener('touchend', function(e){
+      if(x0 === null) return;
+      var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+      x0 = null;
+      if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5){
+        appena = Date.now();
+        vai(dx < 0 ? 1 : -1);
+      }
+    }, { passive:true });
+    el.addEventListener('click', function(e){
+      if(Date.now() - appena < 500){ e.preventDefault(); e.stopPropagation(); }
+    }, true);
+  }
+  // eventi, fanzine, open call: col dito si passa all'elemento dopo o prima
+  // (come il tasto "Prossimo…"); il nuovo entra scivolando da quel lato
+  ['.ev-item', '.fz-item', '.call-item'].forEach(function(sel){
+    document.querySelectorAll(sel).forEach(function(item){
+      scorrimento(item, function(dir){
+        var c = current(sel), n = c.items.length;
+        if(n < 2) return;
+        var dopo = (c.i + dir + n) % n;
+        mostra(sel, dopo);
+        if(!reduce){
+          var nuovo = c.items[dopo];
+          nuovo.classList.remove('entra-dx', 'entra-sx'); void nuovo.offsetWidth;
+          nuovo.classList.add(dir > 0 ? 'entra-dx' : 'entra-sx');
+        }
+      });
+    });
+  });
+
+  // chi siamo: le foto si alternano da sole, e col dito si sfogliano
   (function(){
     var foto = document.querySelectorAll('.cs-frame .cs-crop img');
-    if(reduce || foto.length < 2) return;
-    var cur = 0;
-    setInterval(function(){
-      if(document.hidden) return;
+    if(foto.length < 2) return;
+    var cur = 0, timer = null;
+    function vai(n){
       foto[cur].classList.remove('on');
-      cur = (cur + 1) % foto.length;
+      cur = (n + foto.length) % foto.length;
       foto[cur].classList.add('on');
-    }, 5000);
+    }
+    function parti(){
+      if(reduce) return;
+      clearInterval(timer);
+      timer = setInterval(function(){ if(!document.hidden){ vai(cur + 1); } }, 5000);
+    }
+    parti();
+    scorrimento(document.querySelector('.cs-frame .cs-crop'), function(dir){ vai(cur + dir); parti(); });
   })();
 
   // eventi: "scopri di più su Instagram" porta al post dell'evento mostrato
