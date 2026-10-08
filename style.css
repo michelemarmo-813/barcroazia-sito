@@ -1066,6 +1066,7 @@ main{ margin-top:4.6rem; }
 }
 @media(max-width:760px){
   .stack .star.b{ right:-0.2rem; }
+  .stack .star.a{ left:-0.2rem; }
 }
 @media(max-width:760px){
   /* link dentro il testo: area da toccare più alta, senza spostare le righe */
@@ -1088,4 +1089,43 @@ main{ margin-top:4.6rem; }
 }
 @media(max-width:1060px){
   #fanzine .star.a{ right:0.2rem; }
+}
+
+/* ==========================================================
+   TELEFONO (home): foto prima del testo, come su Instagram;
+   menu in due colonne; scritte laterali; ticker più piccolo
+   ========================================================== */
+@media(max-width:760px){
+  /* margini laterali un po' più larghi per far posto alle scritte laterali */
+  .site-head, .main-nav, main, .quote, .site-foot{ width:calc(100% - 3.4rem); }
+  .side-tape{ display:block; z-index:3; font-size:0.7rem; }   /* sopra le stelle che ballano: la scritta resta leggibile */
+  .side-tape.left{ left:0.45rem; }
+  .side-tape.right{ right:0.45rem; }
+  .scontrino .fessura{ margin:0 -0.35rem; }
+  .barcode .barcode-laser{ left:-0.3rem; right:-0.3rem; }
+
+  /* foto prima, poi le scritte: eventi, fanzine e open call (dentro ogni
+     scheda) e chi siamo (subito sotto il titolo della sezione) */
+  .ev-item:not([hidden]), .fz-item:not([hidden]), .call-item:not([hidden]){ display:flex; flex-direction:column; }
+  .ev-item .pair, .fz-item .pair, .call-item .pair, #chi-siamo .pair{ display:contents; }
+  .ev-item .pair > .frame, .fz-item .pair > .frame, .call-item .pair > .frame{ order:-1; margin:0 0 1.4rem; }
+  #chi-siamo{ display:flex; flex-direction:column; }
+  #chi-siamo > .bar{ order:-2; }
+  #chi-siamo .pair > .frame{ order:-1; margin:0 0 1.6rem; }
+  /* la stellina del motto sta sopra le scritte, non sopra le lettere */
+  #chi-siamo .claim{ padding-top:2.6rem; }
+  #chi-siamo .claim .star.a{ top:-0.3rem !important; left:1rem; width:3.4rem; height:3.4rem; }
+
+  /* menu: due colonne allineate verso l'esterno, tasti della stessa colonna
+     larghi uguali; "Canale Telegram" al centro sotto */
+  .main-nav{ display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:0.85rem 1.1rem; max-width:25rem; }
+  .main-nav .btn{ width:100%; font-size:min(1.1rem, 3.9vw); padding-left:0.5rem; padding-right:0.5rem; }
+  .main-nav .btn:last-child{ grid-column:1 / -1; justify-self:center; width:auto; margin-top:0.35rem; }
+
+  /* ticker un po' più piccolo */
+  .ticker .t{ font-size:0.98rem; line-height:2.45; padding:0.05rem 0.5rem 0; }
+}
+@media(max-width:350px){
+  .topline{ font-size:0.74rem; }
+  .lingua select{ max-width:6.8rem; }
 }
