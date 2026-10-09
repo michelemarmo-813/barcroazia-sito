@@ -215,15 +215,18 @@
   tickCountdown();
   setInterval(tickCountdown, 1000);
 
-  // ---- citazione del giorno, battuta a macchina (testi in citazioni.js) ----
-  // Una citazione a caso al giorno, uguale per tutti per tutta la giornata:
-  // le citazioni sono rimescolate una volta per tutte (sempre nello stesso
-  // modo) e ogni giorno si passa alla successiva, così non si ripetono
-  // finché non sono uscite tutte. Cambia a mezzanotte, ora di Bologna.
+  // ---- citazione del giorno, battuta a macchina ----
+  // Le citazioni si leggono dal foglio Google condiviso (indirizzo in
+  // citazioni.js): colonna A la citazione, colonna B chi l'ha detta.
+  // Le righe vuote non contano. Se il foglio non risponde, si usa
+  // l'elenco di riserva in citazioni.js.
+  // Una citazione a caso al giorno, uguale per tutti: le citazioni sono
+  // rimescolate sempre nello stesso modo e ogni giorno si passa alla
+  // successiva. Cambia a mezzanotte, ora di Bologna.
   // Il testo completo resta nell'HTML (e per i lettori di schermo);
   // l'animazione è una copia visiva sopra. Alla fine resta ferma.
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var citazioni = window.CITAZIONI || [];
+  var citazioni = (window.CITAZIONI || []).slice();
   function giornoRoma(){
     var p = romeParts(new Date());
     return Math.floor(Date.UTC(+p.year, +p.month - 1, +p.day) / 864e5);
@@ -238,18 +241,58 @@
     var c = citazioni[ordine[((g % n) + n) % n]];
     return typeof c === 'string' ? { testo:c, autore:'' } : c;
   }
+  // CSV del foglio -> [{testo, autore}], senza intestazione né righe vuote
+  function leggiCSV(t){
+    var righe = [], riga = [], campo = '', dentro = false;
+    for(var k = 0; k < t.length; k++){
+      var ch = t[k];
+      if(dentro){
+        if(ch === '"'){ if(t[k + 1] === '"'){ campo += '"'; k++; } else { dentro = false; } }
+        else { campo += ch; }
+      } else if(ch === '"'){ dentro = true; }
+      else if(ch === ','){ riga.push(campo); campo = ''; }
+      else if(ch === '\n' || ch === '\r'){
+        if(ch === '\r' && t[k + 1] === '\n'){ k++; }
+        riga.push(campo); righe.push(riga); riga = []; campo = '';
+      } else { campo += ch; }
+    }
+    if(campo !== '' || riga.length){ riga.push(campo); righe.push(riga); }
+    var pulisci = function(x){ return String(x || '').replace(/\s+/g, ' ').trim(); };
+    return righe.map(function(r){ return { testo:pulisci(r[0]), autore:pulisci(r[1]) }; })
+      .filter(function(c, k){ return c.testo && !(k === 0 && /^citazion/i.test(c.testo)); });
+  }
+  function caricaFoglio(fatto){
+    var url = window.CITAZIONI_FOGLIO, finito = false;
+    var fine = function(lista){ if(finito) return; finito = true; if(lista && lista.length){ citazioni = lista; } fatto(); };
+    if(!url || !window.fetch){ fine(null); return; }
+    setTimeout(function(){ fine(null); }, 4000);           // il foglio tarda: si usa la riserva
+    fetch(url + (url.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now(), { cache:'no-store' })
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); })
+      .then(function(t){ fine(leggiCSV(t)); })
+      .catch(function(){ fine(null); });
+  }
+  // la citazione di oggi resta la stessa per tutto il giorno anche se il
+  // foglio cambia nel frattempo (le modifiche valgono dal giorno dopo),
+  // a meno che quella citazione sia stata cancellata dal foglio
+  function scegli(g){
+    var mem = null;
+    try{ mem = JSON.parse(localStorage.getItem('bc-citazione') || 'null'); }catch(e){}
+    if(mem && mem.g === g && citazioni.some(function(c){ return c.testo === mem.testo; })){ return mem; }
+    var c = citazioneDelGiorno(g);
+    try{ localStorage.setItem('bc-citazione', JSON.stringify({ g:g, testo:c.testo, autore:c.autore })); }catch(e){}
+    return c;
+  }
   var tw = document.querySelector('.tw');
   if(tw){
     var twText = tw.querySelector('.tw-text');
     var oggi = giornoRoma();
     var note = document.querySelector('.quote-note');
-    // l'autore compare in fondo, a destra, quando la citazione è finita
+    // l'autore compare in fondo, centrato, quando la citazione è finita
     function mettiCitazione(c){
       twText.textContent = c.testo;
       if(note){ note.classList.remove('on'); note.innerHTML = ''; var b = document.createElement('b'); b.textContent = c.autore; note.appendChild(b); note.hidden = !c.autore; }
     }
-    if(citazioni.length){ mettiCitazione(citazioneDelGiorno(oggi)); }
-    var full = twText.textContent.trim();
+    var full = '';
     var vis = document.createElement('span');
     vis.className = 'tw-vis';
     vis.setAttribute('aria-hidden', 'true');
@@ -275,34 +318,37 @@
         else if(note){ note.classList.add('on'); }
       })();
     };
-    if(reduce){
-      render(full.length);
-      if(note) note.classList.add('on');
-    } else {
-      render(0);
-      if('IntersectionObserver' in window){
-        var io = new IntersectionObserver(function(es){
-          if(es[0].isIntersecting){ io.disconnect(); startType(); }
-        }, { threshold:0.6 });
-        io.observe(tw);
-      } else { startType(); }
+    // mette la citazione e, un attimo dopo (quando lingue.js l'ha già
+    // adattata alla lingua scelta), la batte a macchina
+    var pronta = false, inVista = !('IntersectionObserver' in window);
+    function mostra(){
+      if(citazioni.length){ mettiCitazione(scegli(oggi)); }
+      setTimeout(function(){
+        full = twText.textContent.trim();
+        pronta = true;
+        if(reduce){ render(full.length); if(note) note.classList.add('on'); }
+        else if(inVista){ startType(); }
+        else { render(0); }
+      }, 0);
     }
-    // a mezzanotte (anche con la pagina rimasta aperta) arriva la citazione nuova
-    if(citazioni.length > 1){
-      var cambiaGiorno = function(){
-        var g = giornoRoma();
-        if(g === oggi) return;
-        oggi = g;
-        mettiCitazione(citazioneDelGiorno(g));
-        // un attimo dopo, quando lingue.js l'ha già adattata alla lingua scelta
-        setTimeout(function(){
-          full = twText.textContent.trim();
-          if(reduce){ render(full.length); if(note) note.classList.add('on'); } else { startType(); }
-        }, 0);
-      };
-      setInterval(cambiaGiorno, 20000);
-      document.addEventListener('visibilitychange', function(){ if(!document.hidden){ cambiaGiorno(); } });
+    render(0);
+    if(!reduce && !inVista){
+      var io = new IntersectionObserver(function(es){
+        if(es[0].isIntersecting){ io.disconnect(); inVista = true; if(pronta){ startType(); } }
+      }, { threshold:0.6 });
+      io.observe(tw);
     }
+    caricaFoglio(mostra);
+    // a mezzanotte (anche con la pagina rimasta aperta) arriva la citazione nuova,
+    // dal foglio riletto in quel momento
+    var cambiaGiorno = function(){
+      var g = giornoRoma();
+      if(g === oggi) return;
+      oggi = g;
+      caricaFoglio(function(){ inVista = true; mostra(); });
+    };
+    setInterval(cambiaGiorno, 20000);
+    document.addEventListener('visibilitychange', function(){ if(!document.hidden){ cambiaGiorno(); } });
   }
 
   // ---- il codice a barre nasconde un verso (versi.js) ----

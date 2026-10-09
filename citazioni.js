@@ -1,4 +1,10 @@
-/* Citazioni del giorno (dal documento "Elenco di citazioni (trash) del giorno").
+/* Indirizzo del foglio Google con le citazioni (colonna A: citazione,
+   colonna B: autore). Il sito lo legge a ogni apertura e a mezzanotte.
+   Il foglio deve essere visibile a "chiunque abbia il link". */
+window.CITAZIONI_FOGLIO = 'https://docs.google.com/spreadsheets/d/1kViKywScsVFCh2xnJExodJEYc0bcORzTtPNnEeP52PU/gviz/tq?tqx=out:csv';
+
+/* Elenco di RISERVA, usato solo se il foglio non risponde.
+   Citazioni del giorno (dal documento "Elenco di citazioni (trash) del giorno").
    script.js ne mostra una al giorno, a caso, con il suo autore,
    e cambia a mezzanotte (ora di Roma). */
 window.CITAZIONI = [
