@@ -1275,3 +1275,9 @@ main > .section:last-child{ margin-bottom:2.4rem; }
   .links a span{ white-space:nowrap; }
   .links a span + span{ margin-left:auto; }
 }
+
+/* elenco articoli: stesso effetto della home al passaggio del mouse
+   (la cornice arancione della foto diventa nera) */
+.post-card:hover .post-photo{ background:var(--ink); }
+/* tutte le fanzine: la copertina si apre ingrandita, le scritte aprono le informazioni */
+.issue-cover{ cursor:zoom-in; }

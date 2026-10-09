@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/icone/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="assets/icone/favicon-16.png">
 <link rel="apple-touch-icon" href="assets/icone/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=dcfe230b">
+<link rel="stylesheet" href="style.css?v=e308be53">
 </head>
 <body class="subpage">
 <div class="sub-topline">
@@ -28,7 +28,7 @@
     <section class="zine-section revealed">
       <div class="issue-grid">
         <div class="issue-card">
-          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n0.jpg" alt=""></div>
+          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n0.jpg" alt="Copertina della fanzine n.0" data-zoom></div>
           <div class="issue-info">
             <span class="issue-title">Fanzine n.0</span>
             <span class="issue-date">Lunedì 22 settembre 2025 &middot; Bologna</span>
@@ -43,7 +43,7 @@
           </div>
         </div>
         <div class="issue-card">
-          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n1.jpg" alt=""></div>
+          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n1.jpg" alt="Copertina della fanzine n.1" data-zoom></div>
           <div class="issue-info">
             <span class="issue-title">Fanzine n.1</span>
             <span class="issue-date">Lunedì 20 ottobre 2025 &middot; Bologna</span>
@@ -58,7 +58,7 @@
           </div>
         </div>
         <div class="issue-card">
-          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n2.jpg" alt=""></div>
+          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n2.jpg" alt="Copertina della fanzine n.2" data-zoom></div>
           <div class="issue-info">
             <span class="issue-title">Fanzine n.2</span>
             <span class="issue-date">Lunedì 24 novembre 2025 &middot; Bologna</span>
@@ -73,7 +73,7 @@
           </div>
         </div>
         <div class="issue-card">
-          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n3.jpg" alt=""></div>
+          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n3.jpg" alt="Copertina della fanzine n.3" data-zoom></div>
           <div class="issue-info">
             <span class="issue-title">Fanzine n.3</span>
             <span class="issue-date">Martedì 20 gennaio 2026 &middot; Bologna</span>
@@ -88,7 +88,7 @@
           </div>
         </div>
         <div class="issue-card">
-          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n4.jpg" alt=""></div>
+          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n4.jpg" alt="Copertina della fanzine n.4" data-zoom></div>
           <div class="issue-info">
             <span class="issue-title">Fanzine n.4</span>
             <span class="issue-date">Lunedì 27 aprile 2026 &middot; Bologna</span>
@@ -104,7 +104,7 @@
           </div>
         </div>
         <div class="issue-card">
-          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n5.jpg" alt=""></div>
+          <div class="issue-cover"><img src="assets/img/fanzine/fanzine-n5.jpg" alt="Copertina della fanzine n.5" data-zoom></div>
           <div class="issue-info">
             <span class="issue-title">Fanzine n.5</span>
             <span class="issue-date">Lunedì 22 giugno 2026 &middot; Bologna</span>
@@ -146,6 +146,8 @@
   document.querySelectorAll('.issue-card').forEach(function(card){
     card.addEventListener('click', function(e){
       if(e.target.closest('.buy-btn')) return;
+      // la copertina si apre ingrandita (lightbox.js), le scritte aprono le informazioni
+      if(e.target.closest('.issue-cover')) return;
       card.classList.toggle('open');
     });
   });
