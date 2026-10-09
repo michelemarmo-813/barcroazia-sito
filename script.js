@@ -220,9 +220,8 @@
   // citazioni.js): colonna A la citazione, colonna B chi l'ha detta.
   // Le righe vuote non contano. Se il foglio non risponde, si usa
   // l'elenco di riserva in citazioni.js.
-  // Una citazione a caso al giorno, uguale per tutti: le citazioni sono
-  // rimescolate sempre nello stesso modo e ogni giorno si passa alla
-  // successiva. Cambia a mezzanotte, ora di Bologna.
+  // Una citazione a caso al giorno, uguale per tutti. Cambia a mezzanotte,
+  // ora di Bologna.
   // Il testo completo resta nell'HTML (e per i lettori di schermo);
   // l'animazione è una copia visiva sopra. Alla fine resta ferma.
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -231,15 +230,28 @@
     var p = romeParts(new Date());
     return Math.floor(Date.UTC(+p.year, +p.month - 1, +p.day) / 864e5);
   }
+  // Scelta del giorno: ogni citazione riceve un "numero a caso" che dipende
+  // solo dalla data e dal suo testo; vince quella col numero più basso.
+  // Così aggiungere o togliere una riga dal foglio cambia la citazione di
+  // oggi solo se la riga nuova vince, o se si cancella proprio quella di oggi.
+  function numero(t){
+    var h = 2166136261;
+    for(var k = 0; k < t.length; k++){ h ^= t.charCodeAt(k); h = Math.imul(h, 16777619) >>> 0; }
+    h ^= h >>> 15; h = Math.imul(h, 2246822507) >>> 0; h ^= h >>> 13;
+    return h >>> 0;
+  }
+  function classifica(g){
+    return citazioni.map(function(c){
+      if(typeof c === 'string'){ c = { testo:c, autore:'' }; }
+      return { c:c, n:numero(g + '|' + c.testo) };
+    }).sort(function(a, b){ return a.n - b.n; });
+  }
+  // (se la vincitrice di oggi è la stessa di ieri, tocca alla seconda)
   function citazioneDelGiorno(g){
-    var n = citazioni.length, ordine = [], seme = 20251006, k;
-    for(k = 0; k < n; k++){ ordine.push(k); }
-    for(k = n - 1; k > 0; k--){
-      seme = (seme * 16807) % 2147483647;
-      var r = seme % (k + 1), t = ordine[k]; ordine[k] = ordine[r]; ordine[r] = t;
-    }
-    var c = citazioni[ordine[((g % n) + n) % n]];
-    return typeof c === 'string' ? { testo:c, autore:'' } : c;
+    var oggi = classifica(g), ieri = classifica(g - 1);
+    if(!oggi.length) return null;
+    if(oggi.length > 1 && ieri.length && oggi[0].c.testo === ieri[0].c.testo){ return oggi[1].c; }
+    return oggi[0].c;
   }
   // CSV del foglio -> [{testo, autore}], senza intestazione né righe vuote
   function leggiCSV(t){
