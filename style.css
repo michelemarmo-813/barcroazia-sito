@@ -1235,3 +1235,16 @@ main{ margin-top:4.6rem; }
   #eventi .pair > .frame{ height:auto; min-height:20rem; align-self:stretch; }
   #eventi .pair > .frame img[data-zoom]{ height:calc(20rem - 1.8rem - 2px); }
 }
+
+@media(max-width:760px){
+  /* chi siamo: foto centrata, bordo arancione uguale su tutti i lati */
+  #chi-siamo .frame.cs-frame{ min-height:0; height:auto; padding:0.9rem; }
+  #chi-siamo .cs-crop{ height:auto; aspect-ratio:3 / 2; }
+  .frame .cs-crop img[data-zoom]{ object-fit:cover; }
+
+  /* divisori: solo puntini, mai due di fila */
+  main > .section + .section::before{ border-top:2px dotted var(--ink); }
+  #blog > hr.dots{ display:none; }
+  #blog .cards{ margin-bottom:1.6rem; }
+  .site-foot{ border-top:0; margin-top:0; padding-top:1.6rem; }
+}
