@@ -335,7 +335,8 @@
     // mette la citazione e, un attimo dopo (quando lingue.js l'ha già
     // adattata alla lingua scelta), la batte a macchina
     var pronta = false, inVista = !('IntersectionObserver' in window);
-    function mostra(){
+    // (nome diverso da mostra(), che serve ai tasti "Prossimo…")
+    function mostraCitazione(){
       if(citazioni.length){ mettiCitazione(scegli(oggi)); }
       setTimeout(function(){
         full = twText.textContent.trim();
@@ -352,14 +353,14 @@
       }, { threshold:0.6 });
       io.observe(tw);
     }
-    caricaFoglio(mostra);
+    caricaFoglio(mostraCitazione);
     // a mezzanotte (anche con la pagina rimasta aperta) arriva la citazione nuova,
     // dal foglio riletto in quel momento
     var cambiaGiorno = function(){
       var g = giornoRoma();
       if(g === oggi) return;
       oggi = g;
-      caricaFoglio(function(){ inVista = true; mostra(); });
+      caricaFoglio(function(){ inVista = true; mostraCitazione(); });
     };
     setInterval(cambiaGiorno, 20000);
     document.addEventListener('visibilitychange', function(){ if(!document.hidden){ cambiaGiorno(); } });
