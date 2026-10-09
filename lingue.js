@@ -54,6 +54,22 @@
   }
 
   // ---- le trasformazioni ----
+  // un testo che cambia da solo (il conto alla rovescia) tiene i segni
+  // delle lettere e cifre rimaste uguali: cambiano solo quelle nuove,
+  // così si vede scorrere l'ultima cifra come in un vero conto alla rovescia
+  var segniEtr = new WeakMap();   // elemento -> { orig, out } dell'ultima volta
+  function etruscoCome(n, t){
+    var el = n.parentElement, prima = el && segniEtr.get(el), out;
+    if(prima){
+      var a = Array.from(t), pa = Array.from(prima.orig), po = Array.from(prima.out);
+      if(a.length === pa.length && po.length === pa.length){
+        out = a.map(function(c, k){ return c === pa[k] ? po[k] : etrusco(c); }).join('');
+      }
+    }
+    if(out === undefined){ out = etrusco(t); }
+    if(el){ segniEtr.set(el, { orig:t, out:out }); }
+    return out;
+  }
   function etrusco(t){
     return t.replace(/[A-Za-zÀ-ÿ0-9ŭŬ]/g, function(){ return String.fromCodePoint(0x10300 + Math.floor(Math.random() * 31)); });
   }
@@ -149,7 +165,7 @@
       });
     }
     if(modo === 'etr'){
-      testi(radice).forEach(function(n){ cambiaTesto(n, etrusco(testiOrig.has(n) && testiOrig.get(n) !== null ? testiOrig.get(n) : n.nodeValue), anim); });
+      testi(radice).forEach(function(n){ cambiaTesto(n, etruscoCome(n, testiOrig.has(n) && testiOrig.get(n) !== null ? testiOrig.get(n) : n.nodeValue), anim); });
     }
     if(modo === 'cdp'){
       // si parte sempre dal testo italiano: niente "??" anche rifacendo
@@ -206,6 +222,7 @@
   function imposta(nuovo, animato){
     if(!MODI.some(function(m){ return m[0] === nuovo; })){ nuovo = 'it'; }
     ripristina();
+    segniEtr = new WeakMap();     // a ogni scelta dell'etrusco, segni nuovi
     modo = nuovo;
     document.documentElement.lang = LANG[modo];
     document.documentElement.setAttribute('data-lingua', modo);
