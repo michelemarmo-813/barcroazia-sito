@@ -93,7 +93,7 @@ window.LINGUE_EO = {
  "Scopri di più": "Pli da informoj",
  "Invia la candidatura": "Sendu kandidatiĝon",
  "Prossima call>": "Sekva alvoko&gt;",
- "Tutte le foto dal 2024": "Ĉiuj fotoj ekde 2024",
+ "Tutte le foto dal 2025": "Ĉiuj fotoj ekde 2025",
  "Vedi tutte le foto >": "Vidu ĉiujn fotojn &gt;",
  "30 maggio 2026": "30 majo 2026",
  "27 marzo 2026": "27 marto 2026",
