@@ -58,7 +58,7 @@ window.ARCHIVIO = [
     luogo: "",
     data: "5 ottobre 2026",
     fotografo: "Cecilia Romano",
-    foto: []
+    foto: serie("2026-10-05", 56)
   },
   {
     titolo: "Finale regionale Poetry Slam",

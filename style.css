@@ -1227,3 +1227,11 @@ main{ margin-top:4.6rem; }
   .quote{ margin-top:60px; }
   main{ margin-top:54.8px; }
 }
+
+/* computer: nella sezione eventi la cornice arancione si allunga fino
+   all'altezza del testo (niente vuoti), e la locandina resta al centro */
+@media(min-width:761px){
+  #eventi .pair{ align-items:stretch; }
+  #eventi .pair > .frame{ height:auto; min-height:20rem; align-self:stretch; }
+  #eventi .pair > .frame img[data-zoom]{ height:calc(20rem - 1.8rem - 2px); }
+}
