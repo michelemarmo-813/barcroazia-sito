@@ -1261,3 +1261,17 @@ main > .section:last-child{ margin-bottom:2.4rem; }
   main > .section:last-child{ margin-bottom:0; }
   .section > .row-btns{ margin-top:1.8rem; }
 }
+
+/* contatti: il testo arancione a destra (anche quando ci sono due versioni) */
+.links a span + span{ color:var(--orange); }
+.links a:hover span + span{ color:var(--paper); }
+@media(max-width:760px){
+  /* telefono: "Il nostro canale" al posto di "Duo Cane Raw Poetry" */
+  .links a .solo-telefono{ display:inline; }
+}
+@media(max-width:760px){
+  /* contatti: nome e indirizzo sempre distanziati, su una riga quando c'è posto */
+  .links a{ flex-wrap:wrap; align-items:center; gap:0.2rem 0.7rem; min-height:44px; font-size:0.92rem; }
+  .links a span{ white-space:nowrap; }
+  .links a span + span{ margin-left:auto; }
+}
