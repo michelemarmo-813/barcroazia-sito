@@ -29,7 +29,7 @@ window.LINGUE_EO = {
  "Fanzine n.2": "Fanzino n.2",
  "Lunedì 24 novembre 2025 · Bologna": "Lundo, 24 novembro 2025 · Bolonjo",
  "Fanzine n.3": "Fanzino n.3",
- "Lunedì 19 gennaio 2026 · Bologna": "Lundo, 19 januaro 2026 · Bolonjo",
+ "Martedì 20 gennaio 2026 · Bologna": "Mardo, 20 januaro 2026 · Bolonjo",
  "Fanzine n.4": "Fanzino n.4",
  "Lunedì 27 aprile 2026 · Bologna": "Lundo, 27 aprilo 2026 · Bolonjo",
  "Illustrazioni di": "Ilustraĵoj de",

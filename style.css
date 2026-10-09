@@ -1243,8 +1243,21 @@ main{ margin-top:4.6rem; }
   .frame .cs-crop img[data-zoom]{ object-fit:cover; }
 
   /* divisori: solo puntini, mai due di fila */
-  main > .section + .section::before{ border-top:2px dotted var(--ink); }
-  #blog > hr.dots{ display:none; }
+  /* il divisore è il puntinato in fondo a ogni sezione, dopo i suoi tasti */
+  main > .section + .section::before{ content:none; display:none; }
+  .section > hr.dots:last-child{ margin:1.8rem 0 2.4rem; }
   #blog .cards{ margin-bottom:1.6rem; }
   .site-foot{ border-top:0; margin-top:0; padding-top:1.6rem; }
+}
+
+/* divisori in fondo alle sezioni, dopo i tasti (su computer e telefono) */
+.section > .row-btns{ margin-top:2rem; }
+.section > hr.dots:last-child{ margin:2rem 0 0; }
+.section{ margin-bottom:3.6rem; }
+main > .section:last-child{ margin-bottom:2.4rem; }
+@media(max-width:760px){
+  .section{ margin-bottom:0; }
+  .section > hr.dots:last-child{ margin:1.8rem 0 2.4rem; }
+  main > .section:last-child{ margin-bottom:0; }
+  .section > .row-btns{ margin-top:1.8rem; }
 }
