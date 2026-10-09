@@ -289,7 +289,9 @@
   function scegli(g){
     var mem = null;
     try{ mem = JSON.parse(localStorage.getItem('bc-citazione') || 'null'); }catch(e){}
-    if(mem && mem.g === g && citazioni.some(function(c){ return c.testo === mem.testo; })){ return mem; }
+    // (si prende la riga dal foglio, così un autore corretto si vede subito)
+    var stessa = mem && mem.g === g && citazioni.filter(function(c){ return c.testo === mem.testo; })[0];
+    if(stessa){ return stessa; }
     var c = citazioneDelGiorno(g);
     try{ localStorage.setItem('bc-citazione', JSON.stringify({ g:g, testo:c.testo, autore:c.autore })); }catch(e){}
     return c;
