@@ -117,9 +117,19 @@ body{ position:relative; }
   display:flex;
   width:max-content;
   animation:ticker 40s linear infinite;
+  /* livello grafico proprio e stabile: su telefono, scorrendo la pagina
+     su e giù, la striscia non resta più bianca o sbiadita */
+  will-change:transform;
+  transform:translate3d(0, 0, 0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
 }
-.ticker:hover .ticker-track{ animation-play-state:paused; }
-@keyframes ticker{ to{ transform:translateX(-50%); } }
+/* pausa e colori al passaggio solo con un mouse vero: su telefono il tocco
+   non lascia più un tasto "acceso" o la striscia ferma */
+@media(hover:hover){
+  .ticker:hover .ticker-track{ animation-play-state:paused; }
+}
+@keyframes ticker{ from{ transform:translate3d(0, 0, 0); } to{ transform:translate3d(-50%, 0, 0); } }
 
 .ticker .t{
   display:block;
@@ -137,7 +147,9 @@ body{ position:relative; }
   letter-spacing:inherit;
   border-top:0; border-bottom:0; border-right:0;
 }
-.ticker .t:hover,
+@media(hover:hover){
+  .ticker .t:hover{ background:var(--orange); color:var(--paper); outline:none; }
+}
 .ticker .t:focus-visible{ background:var(--orange); color:var(--paper); outline:none; }
 
 @media(prefers-reduced-motion:reduce){
