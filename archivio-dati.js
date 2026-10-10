@@ -50,8 +50,8 @@ window.ARCHIVIO = [
     titolo: "Poetry Slam I round",
     luogo: "FARM",
     data: "6 ottobre 2026",
-    fotografo: "Cecilia Romano",
-    foto: []
+    fotografo: "Ilaria Budetta",
+    foto: serie("2026-10-06", 52)
   },
   {
     titolo: "Raw Poetry",
@@ -80,6 +80,13 @@ window.ARCHIVIO = [
     data: "20 aprile 2026",
     fotografo: "Valentina Pocaterra",
     foto: serie("2026-04-20", 170)
+  },
+  {
+    titolo: "Segreti e Ritratti",
+    luogo: "",
+    data: "13 aprile 2026",
+    fotografo: "Chiara Pinesi",
+    foto: serie("2026-04-13", 21)
   },
   {
     titolo: "Poetry Slam I round",
@@ -190,8 +197,8 @@ window.ARCHIVIO = [
     titolo: "Open mic",
     luogo: "",
     data: "31 marzo 2025",
-    fotografo: "",
-    foto: []
+    fotografo: "Cecilia Romano",
+    foto: serie("2025-03-31", 68)
   },
   {
     titolo: "Raw Poetry",
