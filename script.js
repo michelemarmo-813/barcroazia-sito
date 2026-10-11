@@ -107,6 +107,16 @@
     });
   });
 
+  // "1… 2… 3… Grappa!!!": a ogni clic un passo avanti, poi si ricomincia
+  var grappa = ['1…', '2…', '3…', 'Grappa!!!'];
+  document.querySelectorAll('.js-grappa').forEach(function(b){
+    var i = 0;
+    b.addEventListener('click', function(){
+      i = (i + 1) % grappa.length;
+      document.querySelectorAll('.js-grappa').forEach(function(x){ x.textContent = grappa[i]; });
+    });
+  });
+
   // "Scopri poeta": un nome a caso da poeti.js. L'etichetta mostra il
   // nome e porta alla pagina di Wikipedia in italiano; se quella pagina
   // non esiste (o la verifica tarda), porta alla pagina inglese.
