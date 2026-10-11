@@ -12,7 +12,7 @@
    La scelta resta anche passando da una pagina all'altra.
    ========================================================== */
 (function(){
-  var MODI = [['it', 'Italiano'], ['hr', 'Hrvatski'], ['eo', 'Esperanto'], ['etr', 'Etrusco'], ['cdp', 'Carmen Di Pietro']];
+  var MODI = [['it', 'Italiano'], ['hr', 'Croato'], ['eo', 'Esperanto'], ['etr', 'Etrusco'], ['cdp', 'Carmen Di Pietro']];
   var LANG = { it:'it', hr:'hr', eo:'eo', etr:'ett', cdp:'it' };
   // pezzi di frase da tradurre ovunque (date, testi che cambiano da soli)
   function frasi(lista){
