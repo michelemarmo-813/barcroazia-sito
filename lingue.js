@@ -1,8 +1,8 @@
 /* ==========================================================
    Lingue del sito (usato da tutte le pagine)
-   Un piccolo selettore in alto cambia i testi in quattro modi:
+   Un piccolo selettore in alto cambia i testi in cinque modi:
    - Italiano: il sito com'è;
-   - Esperanto: tradotto davvero (testi in lingue-dati.js);
+   - Croato ed Esperanto: tradotti davvero (testi in lingue-dati.js);
    - Etrusco: non traduce niente, ogni lettera diventa un segno a caso
      dell'alfabeto etrusco (cambia a ogni scelta), spazi e punteggiatura
      restano;
@@ -12,26 +12,45 @@
    La scelta resta anche passando da una pagina all'altra.
    ========================================================== */
 (function(){
-  var MODI = [['it', 'Italiano'], ['eo', 'Esperanto'], ['etr', 'Etrusco'], ['cdp', 'Carmen Di Pietro']];
-  var LANG = { it:'it', eo:'eo', etr:'ett', cdp:'it' };
+  var MODI = [['it', 'Italiano'], ['hr', 'Hrvatski'], ['eo', 'Esperanto'], ['etr', 'Etrusco'], ['cdp', 'Carmen Di Pietro']];
+  var LANG = { it:'it', hr:'hr', eo:'eo', etr:'ett', cdp:'it' };
+  // pezzi di frase da tradurre ovunque (date, testi che cambiano da soli)
+  function frasi(lista){
+    return lista.map(function(f){
+      var parola = /^[A-Za-zÀ-ÿ]+$/.test(f[0]);
+      return [new RegExp((parola ? '(^|[^A-Za-zÀ-ÿ])(' : '()(') + f[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')(?![A-Za-zÀ-ÿ])', 'gi'), f[1]];
+    });
+  }
+  var MESI = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+  // croato: "12 ottobre" diventa "12. listopada" (il mese dopo un numero va al genitivo)
+  var MESI_HR_GEN = ['siječnja','veljače','ožujka','travnja','svibnja','lipnja','srpnja','kolovoza','rujna','listopada','studenoga','prosinca'];
+  var DATA_HR = new RegExp('(^|[^0-9.])(\\d{1,2})[\\s\u00a0]+(' + MESI.join('|') + ')(?![A-Za-zÀ-ÿ])', 'gi');
   var EO = window.LINGUE_EO || {};
-  var FRASI = (window.LINGUE_EO_FRASI || []).concat([
+  var FRASI = frasi((window.LINGUE_EO_FRASI || []).concat([
     ['gennaio','januaro'],['febbraio','februaro'],['marzo','marto'],['aprile','aprilo'],['maggio','majo'],['giugno','junio'],
     ['luglio','julio'],['agosto','aŭgusto'],['settembre','septembro'],['ottobre','oktobro'],['novembre','novembro'],['dicembre','decembro'],
     ['lunedì','lundo'],['martedì','mardo'],['mercoledì','merkredo'],['giovedì','ĵaŭdo'],['venerdì','vendredo'],['sabato','sabato'],['domenica','dimanĉo'],
     ['Bologna','Bolonjo']
-  ]).map(function(f){
-    var parola = /^[A-Za-zÀ-ÿ]+$/.test(f[0]);
-    return [new RegExp((parola ? '(^|[^A-Za-zÀ-ÿ])(' : '()(') + f[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')(?![A-Za-zÀ-ÿ])', 'gi'), f[1]];
-  });
-  // dove si cercano i testi interi da tradurre in esperanto
+  ]));
+  var DIZ = {
+    eo: { testi:EO, frasi:FRASI },
+    hr: { testi:window.LINGUE_HR || {}, frasi:frasi((window.LINGUE_HR_FRASI || []).concat([
+      ['gennaio','siječanj'],['febbraio','veljača'],['marzo','ožujak'],['aprile','travanj'],['maggio','svibanj'],['giugno','lipanj'],
+      ['luglio','srpanj'],['agosto','kolovoz'],['settembre','rujan'],['ottobre','listopad'],['novembre','studeni'],['dicembre','prosinac'],
+      ['lunedì','ponedjeljak'],['martedì','utorak'],['mercoledì','srijeda'],['giovedì','četvrtak'],['venerdì','petak'],['sabato','subota'],['domenica','nedjelja'],
+      ['ore','u']
+    ])) }
+  };
+  // la maiuscola iniziale resta: "Lunedì" -> "Ponedjeljak"
+  function comeOrig(orig, nuovo){ return (orig.charAt(0) !== orig.charAt(0).toLowerCase()) ? nuovo.charAt(0).toUpperCase() + nuovo.slice(1) : nuovo; }
+  // dove si cercano i testi interi da tradurre (croato, esperanto)
   var BLOCCHI = 'p, h1, h2, h3, li, dt, dd, a, button, figcaption, .leader > span, .meta > span, .cap, .issue-title, .issue-date, .post-title, .post-author, .post-date, .claim, .bar, .subtitle, .article-outlet, .article-author, .article-date, .oc-meta > span, .event-tile-title, .event-tile-date, .sub-topline > span, .topline > span, .fz-num';
   var SALTA = 'script, style, svg, noscript, iframe, textarea, select, option, .lingua, .side-tape, .bar-tw, .tw-vis, .mail-pop-addr';
   var ferme = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var modo = 'it';
   var testiOrig = new Map();     // nodo di testo -> testo italiano
-  var blocchiOrig = new Map();   // elemento -> HTML italiano (esperanto)
+  var blocchiOrig = new Map();   // elemento -> HTML italiano (croato, esperanto)
   var mo = null;
 
   function norm(t){ return t.replace(/ /g, ' ').replace(/\s+/g, ' ').trim(); }
@@ -140,13 +159,14 @@
 
   function applica(radice, anim){
     if(modo === 'it') return;
-    if(modo === 'eo'){
+    if(DIZ[modo]){
+      var D = DIZ[modo].testi, F = DIZ[modo].frasi;
       var els = [].slice.call(radice.querySelectorAll ? radice.querySelectorAll(BLOCCHI) : []);
       if(radice.nodeType === 1 && radice.matches && radice.matches(BLOCCHI)){ els.unshift(radice); }
       els.forEach(function(el){
         if(saltato(el) || blocchiOrig.has(el) || !el.isConnected) return;
         var chiave = norm(testoProprio(el));
-        var t = EO[chiave];
+        var t = D[chiave];
         if(!t) return;
         var k = stacca(el);
         blocchiOrig.set(el, el.innerHTML);
@@ -160,7 +180,8 @@
       });
       testi(radice).forEach(function(n){
         var v = n.nodeValue, nv = v;
-        FRASI.forEach(function(f){ nv = nv.replace(f[0], function(_, a){ return a + f[1]; }); });
+        if(modo === 'hr'){ nv = nv.replace(DATA_HR, function(_, a, g, m){ return a + g + '. ' + MESI_HR_GEN[MESI.indexOf(m.toLowerCase())]; }); }
+        F.forEach(function(f){ nv = nv.replace(f[0], function(_, a, o){ return a + (modo === 'hr' ? comeOrig(o, f[1]) : f[1]); }); });
         if(nv !== v){ cambiaTesto(n, nv, anim); }
       });
     }
