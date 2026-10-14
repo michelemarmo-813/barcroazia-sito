@@ -44,7 +44,7 @@
   // la maiuscola iniziale resta: "Lunedì" -> "Ponedjeljak"
   function comeOrig(orig, nuovo){ return (orig.charAt(0) !== orig.charAt(0).toLowerCase()) ? nuovo.charAt(0).toUpperCase() + nuovo.slice(1) : nuovo; }
   // dove si cercano i testi interi da tradurre (croato, esperanto)
-  var BLOCCHI = 'p, h1, h2, h3, li, dt, dd, a, button, figcaption, .leader > span, .meta > span, .cap, .issue-title, .issue-date, .post-title, .post-author, .post-date, .claim, .bar, .subtitle, .article-outlet, .article-author, .article-date, .oc-meta > span, .event-tile-title, .event-tile-date, .sub-topline > span, .topline > span, .fz-num';
+  var BLOCCHI = 'p, h1, h2, h3, li, dt, dd, a, button, figcaption, .leader > span, .meta > span, .sc-meta > span, .cap, .issue-title, .issue-date, .post-title, .post-author, .post-date, .claim, .bar, .subtitle, .article-outlet, .article-author, .article-date, .oc-meta > span, .event-tile-title, .event-tile-date, .sub-topline > span, .topline > span, .fz-num';
   var SALTA = 'script, style, svg, noscript, iframe, textarea, select, option, .lingua, .side-tape, .bar-tw, .tw-vis, .mail-pop-addr';
   var ferme = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
