@@ -1246,6 +1246,8 @@ main{ margin-top:4.6rem; }
   #eventi .pair{ align-items:stretch; }
   #eventi .pair > .frame{ height:auto; min-height:20rem; align-self:stretch; }
   #eventi .pair > .frame img[data-zoom]{ height:calc(20rem - 1.8rem - 2px); }
+  /* per un evento si può chiedere la locandina più grande (grande=True in build_index.py) */
+  #eventi .pair > .frame.frame-grande img[data-zoom]{ height:25rem; }
 }
 
 @media(max-width:760px){
