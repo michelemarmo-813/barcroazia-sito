@@ -101,6 +101,21 @@
   prev.addEventListener('click', function(){ pos = (pos - 1 + list.length) % list.length; show(); });
   next.addEventListener('click', function(){ pos = (pos + 1) % list.length; show(); });
 
+  // cellulare (soprattutto Safari su iPhone): due tocchi veloci su frecce,
+  // chiusura o contatore non devono ingrandire la pagina. Il secondo tocco
+  // veloce non lascia fare lo zoom al browser, ma conta lo stesso come clic.
+  var ultimoTocco = 0;
+  [prev, next, lb.querySelector('.lb-close'), count].forEach(function(b){
+    b.addEventListener('touchend', function(e){
+      var ora = Date.now();
+      if(ora - ultimoTocco < 350){
+        e.preventDefault();
+        if(b.tagName === 'BUTTON'){ b.click(); }
+      }
+      ultimoTocco = ora;
+    });
+  });
+
   document.addEventListener('keydown', function(e){
     if(!lb.classList.contains('open')) return;
     if(e.key === 'Escape') close();
