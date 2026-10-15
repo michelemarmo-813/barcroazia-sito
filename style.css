@@ -504,6 +504,7 @@ main > .section:last-child{ margin-bottom:2.4rem; }
   display:none;
   background:rgba(0,0,0,0.9);
   overflow:hidden;
+  touch-action:none;        /* con la foto aperta, la pagina sotto non scorre né si ingrandisce */
 }
 .lightbox.open{ display:block; }
 .lb-stage{
@@ -526,6 +527,7 @@ main > .section:last-child{ margin-bottom:2.4rem; }
 }
 .lightbox.zoomed .lb-img{ cursor:grab; }
 .lightbox.dragging .lb-img{ transition:none; }
+.lightbox.zoomed .lb-img, .lightbox.dragging .lb-img{ will-change:transform; }
 .lightbox.zoomed .lb-img:active{ cursor:grabbing; }
 .lightbox button{
   position:absolute;
@@ -1056,7 +1058,7 @@ main{ margin-top:4.6rem; }
   .lb-img{ max-height:calc(100vh - 9rem); max-height:calc(100dvh - 9rem); }
   /* tocchi veloci sulle frecce (e sugli altri tasti): niente zoom della pagina col doppio tocco;
      la foto resta con touch-action:none per il suo zoom interno */
-  .lightbox, .lightbox button, .lightbox .lb-count{ touch-action:manipulation; }
+  .lightbox button, .lightbox .lb-count{ touch-action:manipulation; }
   .lightbox button{ min-width:48px; min-height:48px; font-size:1.7rem; padding:0.2rem 0.6rem 0; }
   .lightbox .lb-close{ top:0.6rem; right:0.6rem; }
   .lightbox .lb-prev, .lightbox .lb-next{ top:auto; bottom:0.9rem; transform:none; }
