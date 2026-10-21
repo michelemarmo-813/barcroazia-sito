@@ -2,6 +2,7 @@
    Traduzione da far rivedere a chi parla esperanto.
    Più in basso, con la stessa forma, i testi in croato. */
 window.LINGUE_EO = {
+ "Lunedì 26 ottobre 2026": "Lundo, 26 oktobro 2026",
  "Lunedì 19 e 26 ottobre 2026": "Lundoj, 19 kaj 26 oktobro 2026",
  "Raw Poetry – nuova stagione, ottobre 2026 parte 2": "Raw Poetry – nova sezono, oktobro 2026, parto 2",
  "Ospiti di lunedì 19 ottobre:": "Gastoj de lundo, 19 oktobro:",
@@ -154,6 +155,7 @@ window.LINGUE_EO_FRASI = [["Prossimo Raw Poetry", "Venonta Raw Poetry"], ["Siamo
 /* Testi in croato (lingue.js): testo italiano -> HTML in croato.
    Traduzione da far rivedere a chi parla croato. */
 window.LINGUE_HR = {
+ "Lunedì 26 ottobre 2026": "Ponedjeljak, 26. listopada 2026.",
  "Lunedì 19 e 26 ottobre 2026": "Ponedjeljak, 19. i 26. listopada 2026.",
  "Raw Poetry – nuova stagione, ottobre 2026 parte 2": "Raw Poetry – nova sezona, listopad 2026., 2. dio",
  "Ospiti di lunedì 19 ottobre:": "Gosti u ponedjeljak, 19. listopada:",
