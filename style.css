@@ -920,11 +920,22 @@ main{ margin-top:4.6rem; }
 
 @media(max-width:760px){
   .tw-text, .tw-vis{ font-size:1.45rem; }
+  /* parole lunghe: vanno a capo con il trattino nei punti preparati da
+     script.js; se una parola non ne ha, si spezza comunque al bordo */
+  .tw-text, .tw-vis{ hyphens:manual; -webkit-hyphens:manual; overflow-wrap:break-word; }
+  /* il cursore non occupa spazio e non crea punti dove andare a capo:
+     mentre si scrive, le righe restano quelle del testo finito */
+  .tw-cur{ display:inline; position:relative; width:auto; height:auto; margin:0; background:none; animation:none; vertical-align:baseline; }
+  .tw-cur::after{
+    content:""; position:absolute; left:0.06em; bottom:0.125em;
+    width:0.55em; height:0.95em; background:var(--orange);
+    animation:cur-blink 1s steps(2, start) infinite;
+  }
   .quote{ margin-top:3.8rem; }
   main{ margin-top:4.4rem; }
 }
 @media(prefers-reduced-motion:reduce){
-  .tw-cur{ animation:none; }
+  .tw-cur, .tw-cur::after{ animation:none; }
   .quote-note{ transition:none; }
   .btn, .back-btn{ transition:none; }
 }

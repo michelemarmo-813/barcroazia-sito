@@ -311,9 +311,67 @@
     var twText = tw.querySelector('.tw-text');
     var oggi = giornoRoma();
     var note = document.querySelector('.quote-note');
+    // ---- telefono: parole lunghe che vanno a capo con il trattino ----
+    // Nelle parole di più di 9 lettere si mettono dei "trattini invisibili"
+    // (\u00AD) tra le sillabe: il browser li mostra come "-" solo se la
+    // parola deve davvero spezzarsi a fine riga. Solo su telefono
+    // (max-width:760px): su computer il testo resta identico.
+    var telefono = window.matchMedia ? window.matchMedia('(max-width: 760px)') : { matches:false };
+    var SHY = '\u00AD';
+    function vocale(ch){ return /[aeiouy]/.test(ch.normalize('NFD').charAt(0).toLowerCase()); }
+    // l+r dopo b c d f g p t v, e ch gh gn: restano attaccate alla vocale dopo
+    function unite(c1, c2){
+      c1 = c1.toLowerCase(); c2 = c2.toLowerCase();
+      return (/[bcdfgptv]/.test(c1) && /[lr]/.test(c2)) || ((c1 === 'c' || c1 === 'g') && c2 === 'h') || (c1 === 'g' && c2 === 'n');
+    }
+    function sillaba(p){
+      var n = p.length, tagli = [];
+      if(n <= 9) return p;
+      // punti di taglio tra le sillabe (regole semplici dell'italiano)
+      var k = 0;
+      while(k < n && !vocale(p[k])){ k++; }
+      while(k < n){
+        while(k < n && vocale(p[k])){ k++; }          // gruppo di vocali
+        var c0 = k;
+        while(k < n && !vocale(p[k])){ k++; }         // consonanti in mezzo
+        if(k >= n) break;                             // consonanti finali: niente taglio
+        var lc = k - c0, t;
+        if(lc === 0) continue;
+        // (s + altra consonante va con la sillaba dopo; le doppie si dividono: tas-se)
+        if(lc === 1 || (p[c0].toLowerCase() === 's' && p[c0 + 1].toLowerCase() !== 's') || (lc === 2 && unite(p[c0], p[c0 + 1]))){ t = c0; }
+        else { t = c0 + 1; }
+        tagli.push(t);
+      }
+      // almeno 3 lettere all'inizio e alla fine
+      tagli = tagli.filter(function(t){ return t >= 3 && t <= n - 3; });
+      // pezzi troppo lunghi senza sillabe utili: un taglio ogni 6 lettere
+      var tutti = [], da = 0;
+      tagli.concat([n]).forEach(function(t){
+        while(t - da > 7 && da + 6 <= n - 3){ da += 6; tutti.push(da); }
+        if(t < n){ tutti.push(t); da = t; }
+      });
+      var out = '', prima = 0;
+      tutti.forEach(function(t){ out += p.slice(prima, t) + SHY; prima = t; });
+      return out + p.slice(prima);
+    }
+    function adatta(testo){
+      testo = testo.replace(/\u00AD/g, '');
+      return telefono.matches ? testo.replace(/[\p{L}\p{M}]+/gu, sillaba) : testo;
+    }
+    var testoCitazione = null;
+    // passando da telefono a computer (o il contrario) i trattini si rifanno
+    var cambiaSchermo = function(){
+      if(testoCitazione === null) return;
+      twText.textContent = adatta(testoCitazione);
+      setTimeout(function(){ if(window.bcTwAggiorna){ window.bcTwAggiorna(); } }, 0);
+    };
+    if(telefono.addEventListener){ telefono.addEventListener('change', cambiaSchermo); }
+    else if(telefono.addListener){ telefono.addListener(cambiaSchermo); }
+
     // l'autore compare in fondo, centrato, quando la citazione è finita
     function mettiCitazione(c){
-      twText.textContent = c.testo;
+      testoCitazione = c.testo;
+      twText.textContent = adatta(c.testo);
       if(note){ note.classList.remove('on'); note.innerHTML = ''; var b = document.createElement('b'); b.textContent = c.autore; note.appendChild(b); note.hidden = !c.autore; }
     }
     var full = '';
