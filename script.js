@@ -312,9 +312,11 @@
     var oggi = giornoRoma();
     var note = document.querySelector('.quote-note');
     // ---- telefono: parole lunghe che vanno a capo con il trattino ----
-    // Nelle parole di più di 9 lettere si mettono dei "trattini invisibili"
-    // (\u00AD) tra le sillabe: il browser li mostra come "-" solo se la
-    // parola deve davvero spezzarsi a fine riga. Solo su telefono
+    // Di base una parola che non entra nella riga va a capo intera. Solo se
+    // una parola, da sola, è più larga di un'intera riga, tra le sue sillabe
+    // si mettono dei "trattini invisibili" (\u00AD): il browser li mostra
+    // come "-" dove la spezza. La larghezza si misura davvero (stesso
+    // carattere e stessa misura del testo). Solo su telefono
     // (max-width:760px): su computer il testo resta identico.
     var telefono = window.matchMedia ? window.matchMedia('(max-width: 760px)') : { matches:false };
     var SHY = '\u00AD';
@@ -354,36 +356,97 @@
       tutti.forEach(function(t){ out += p.slice(prima, t) + SHY; prima = t; });
       return out + p.slice(prima);
     }
+    // larghezza di un pezzo di testo, misurata con un elemento nascosto
+    // che ha lo stesso carattere e la stessa misura della citazione
+    var misura = document.createElement('span');
+    misura.className = 'tw-misura';
+    misura.setAttribute('aria-hidden', 'true');
+    tw.appendChild(misura);
+    function larghezza(t){ misura.textContent = t; var w = misura.getBoundingClientRect().width; misura.textContent = ''; return w; }
     function adatta(testo){
       testo = testo.replace(/\u00AD/g, '');
-      return telefono.matches ? testo.replace(/[\p{L}\p{M}]+/gu, sillaba) : testo;
+      if(!telefono.matches) return testo;
+      var riga = twText.clientWidth;
+      if(!riga) return testo;
+      var pezzi = testo.split(/(\s+)/);
+      var ultimo = pezzi.length - 1;
+      while(ultimo > 0 && !pezzi[ultimo].trim()){ ultimo--; }
+      return pezzi.map(function(p, k){
+        if(!p.trim()) return p;
+        // l'ultima parola va a capo insieme al cursore: conta anche lui
+        var w = larghezza(k === ultimo ? p + '\u00A0' : p);
+        return w > riga ? p.replace(/[\p{L}\p{M}]+/gu, sillaba) : p;
+      }).join('');
+    }
+    // alla fine del testo vero, il posto del cursore (.tw-fine: uno spazio
+    // che non va a capo, vedi style.css), incollato all'ultima parola: così
+    // l'altezza comprende il cursore, che non può né andare a capo da solo
+    // né finire sull'autore
+    function mettiTesto(t){
+      twText.textContent = t;
+      var f = document.createElement('span');
+      f.className = 'tw-fine';
+      f.setAttribute('aria-hidden', 'true');
+      twText.appendChild(f);
     }
     var testoCitazione = null;
     // passando da telefono a computer (o il contrario) i trattini si rifanno
     var cambiaSchermo = function(){
       if(testoCitazione === null) return;
-      twText.textContent = adatta(testoCitazione);
+      mettiTesto(adatta(testoCitazione));
       setTimeout(function(){ if(window.bcTwAggiorna){ window.bcTwAggiorna(); } }, 0);
     };
     if(telefono.addEventListener){ telefono.addEventListener('change', cambiaSchermo); }
     else if(telefono.addListener){ telefono.addListener(cambiaSchermo); }
+    // la larghezza della riga cambia (rotazione, finestra più stretta): si rimisura
+    var largPrima = twText.clientWidth, attesaRiga = null;
+    window.addEventListener('resize', function(){
+      clearTimeout(attesaRiga);
+      attesaRiga = setTimeout(function(){
+        var w = twText.clientWidth;
+        if(w !== largPrima){ largPrima = w; if(telefono.matches){ cambiaSchermo(); } }
+      }, 150);
+    });
+    // e quando il carattere del sito è caricato davvero
+    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ if(telefono.matches){ cambiaSchermo(); } }); }
 
     // l'autore compare in fondo, centrato, quando la citazione è finita
     function mettiCitazione(c){
       testoCitazione = c.testo;
-      twText.textContent = adatta(c.testo);
+      mettiTesto(adatta(c.testo));
       if(note){ note.classList.remove('on'); note.innerHTML = ''; var b = document.createElement('b'); b.textContent = c.autore; note.appendChild(b); note.hidden = !c.autore; }
     }
     var full = '';
     var vis = document.createElement('span');
     vis.className = 'tw-vis';
     vis.setAttribute('aria-hidden', 'true');
-    vis.innerHTML = '<span class="tw-typed"></span><span class="tw-cur"></span><span class="tw-rest"></span>';
+    vis.innerHTML = '<span class="tw-typed"></span><span class="tw-cur"></span><span class="tw-rest"></span><span class="tw-fine"></span>';
     tw.appendChild(vis);
     tw.classList.add('tw-on');
-    var typed = vis.querySelector('.tw-typed'), rest = vis.querySelector('.tw-rest');
+    var typed = vis.querySelector('.tw-typed'), rest = vis.querySelector('.tw-rest'), cursore = vis.querySelector('.tw-cur');
+    if(!twText.querySelector('.tw-fine')){ mettiTesto(twText.textContent); }
     var cur = 0, battitura = null;
-    function render(i){ cur = i; typed.textContent = full.slice(0, i); rest.textContent = full.slice(i); }
+    // il cursore non occupa spazio (è disegnato sopra): se la prossima lettera
+    // è già sulla riga dopo, il cursore va lì, all'inizio della riga, invece
+    // di sporgere oltre la fine di quella sopra
+    function posizionaCursore(){
+      cursore.style.removeProperty('--cx');
+      cursore.style.removeProperty('--cy');
+      var n = rest.firstChild;
+      if(!n || !n.nodeValue) return;
+      var s = n.nodeValue, k = 0;
+      while(k < s.length && /[\s\u00AD\u2060]/.test(s[k])){ k++; }
+      if(k >= s.length) return;
+      var r = document.createRange();
+      r.setStart(n, k); r.setEnd(n, k + 1);
+      var a = r.getBoundingClientRect(), c = cursore.getBoundingClientRect();
+      if(a.height && a.top - c.top > a.height / 2){
+        var em = parseFloat(getComputedStyle(cursore).fontSize) || 16;
+        cursore.style.setProperty('--cx', (a.left - c.left - 0.06 * em) + 'px');
+        cursore.style.setProperty('--cy', (a.bottom - c.bottom) + 'px');
+      }
+    }
+    function render(i){ cur = i; typed.textContent = full.slice(0, i); rest.textContent = full.slice(i); posizionaCursore(); }
     // quando cambia la lingua (lingue.js) la copia visiva riprende il testo nuovo
     window.bcTwAggiorna = function(){
       var nuovo = twText.textContent.trim();

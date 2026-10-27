@@ -23,3 +23,10 @@ assets/
 ## Pubblicazione
 
 Il sito è pensato per essere pubblicato così com'è, ad esempio con GitHub Pages: basta abilitare Pages sul branch principale, cartella radice (`/`).
+
+## Citazione del giorno: due regole di impaginazione
+
+La citazione in home (`script.js`, blocco "citazione del giorno, battuta a macchina"; `style.css`, sezione "citazione battuta a macchina") è fatta da due copie dello stesso testo: `.tw-text` (il testo vero, invisibile, che tiene l'altezza) e `.tw-vis` (la copia che si scrive lettera per lettera, sopra). Le due copie devono andare a capo negli stessi punti.
+
+1. **Il cursore finale resta attaccato all'ultima parola, mai sull'autore.** In fondo a entrambe le copie c'è un posto vuoto grande quanto il cursore (`.tw-fine`), incollato all'ultima parola con un word joiner (U+2060): l'ultima parola e il cursore vanno a capo sempre insieme e l'altezza della citazione comprende il cursore, così `.quote-note` (l'autore) non viene mai coperto. Il cursore (`.tw-cur`) non occupa spazio: è disegnato sopra il testo con `::after`; se la lettera successiva è già sulla riga sotto, lo script lo sposta all'inizio di quella riga invece di farlo sporgere oltre la colonna.
+2. **Su telefono (max-width: 760px) le parole vanno a capo intere; il trattino solo per le parole più larghe di una riga.** Una parola che non entra nella riga passa intera alla riga dopo. Solo se una parola, da sola, è più larga dell'intera riga (misurata davvero, con lo stesso carattere e la stessa misura del testo; per l'ultima parola si conta anche il cursore), lo script mette tra le sue sillabe dei trattini invisibili (U+00AD), e il browser la spezza lì con un "-". La misura si rifà quando cambia la larghezza della pagina e quando il carattere è caricato. `overflow-wrap: break-word` resta solo come rete di sicurezza. Su computer il testo non viene toccato.

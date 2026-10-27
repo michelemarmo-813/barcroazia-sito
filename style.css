@@ -874,14 +874,34 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
   line-height:1.35;
 }
 .tw-rest{ visibility:hidden; }
-.tw-cur{
-  display:inline-block;
+/* il cursore non occupa spazio e non crea punti dove andare a capo: è
+   disegnato sopra il testo. Così, mentre si scrive, le righe restano quelle
+   del testo finito; se la lettera dopo è già sulla riga sotto, script.js lo
+   sposta lì (--cx, --cy) */
+.tw-cur{ position:relative; }
+.tw-cur::after{
+  content:"";
+  position:absolute;
+  left:calc(0.06em + var(--cx, 0px));
+  bottom:calc(0.125em - var(--cy, 0px));
   width:0.55em;
   height:0.95em;
-  margin-left:0.06em;
-  vertical-align:-0.12em;
   background:var(--orange);
   animation:cur-blink 1s steps(2, start) infinite;
+}
+/* in fondo al testo (sia quello vero sia la copia) il posto del cursore:
+   uno spazio che non va mai a capo (U+00A0), largo quanto una lettera, cioè
+   almeno quanto il cursore. È incollato all'ultima parola, va a capo con lei
+   e conta nell'altezza: il cursore finale non tocca mai l'autore */
+.tw-fine::after{ content:"\00a0"; }
+/* per misurare le parole (script.js): stesso carattere, invisibile */
+.tw-misura{
+  position:absolute;
+  left:0; top:0;
+  visibility:hidden;
+  white-space:nowrap;
+  font-size:1.9rem;
+  pointer-events:none;
 }
 @keyframes cur-blink{ to{ visibility:hidden; } }
 .quote-note{
@@ -919,18 +939,11 @@ main{ margin-top:4.6rem; }
 }
 
 @media(max-width:760px){
-  .tw-text, .tw-vis{ font-size:1.45rem; }
-  /* parole lunghe: vanno a capo con il trattino nei punti preparati da
-     script.js; se una parola non ne ha, si spezza comunque al bordo */
+  .tw-text, .tw-vis, .tw-misura{ font-size:1.45rem; }
+  /* parole più larghe di una riga: vanno a capo con il trattino nei punti
+     preparati da script.js; se una parola non ne ha, si spezza comunque
+     al bordo (rete di sicurezza) */
   .tw-text, .tw-vis{ hyphens:manual; -webkit-hyphens:manual; overflow-wrap:break-word; }
-  /* il cursore non occupa spazio e non crea punti dove andare a capo:
-     mentre si scrive, le righe restano quelle del testo finito */
-  .tw-cur{ display:inline; position:relative; width:auto; height:auto; margin:0; background:none; animation:none; vertical-align:baseline; }
-  .tw-cur::after{
-    content:""; position:absolute; left:0.06em; bottom:0.125em;
-    width:0.55em; height:0.95em; background:var(--orange);
-    animation:cur-blink 1s steps(2, start) infinite;
-  }
   .quote{ margin-top:3.8rem; }
   main{ margin-top:4.4rem; }
 }
