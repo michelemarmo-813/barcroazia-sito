@@ -4,3 +4,6 @@
 # File temporanei di editor
 *.swp
 *~
+
+# Copie di sicurezza (originali, file non più usati): non si pubblicano
+backup/

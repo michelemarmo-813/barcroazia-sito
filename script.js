@@ -740,7 +740,7 @@
       fig.innerHTML =
         '<div class="cap">' + esc(ev.titolo + ' ' + ev.data) + '</div>' +
         '<div class="frame"><div class="shot-crop" role="button" tabindex="0" aria-label="' + esc('Sfoglia le ' + ev.foto.length + ' foto di ' + ev.titolo + ' ' + ev.data) + '">' +
-          '<img class="bw on" src="' + esc(ev.foto[cur]) + '" alt="' + esc(alt(cur)) + '"><img class="bw" alt="">' +
+          '<img class="bw on" src="' + esc(ev.foto[cur]) + '" alt="' + esc(alt(cur)) + '" loading="lazy" decoding="async"><img class="bw" alt="">' +
         '</div></div>' +
         '<figcaption>📷 ' + esc(ev.fotografo) + '</figcaption>';
       gallery.appendChild(fig);
@@ -752,9 +752,15 @@
       crop.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); apri(); } });
       if(ev.foto.length > 1 && !reduce){
         var vis = 0, attesa = false;
+        // le foto cambiano (e si scaricano) solo quando la cornice è sullo
+        // schermo: chi è in un'altra sezione non scarica foto per niente
+        var visibile = !('IntersectionObserver' in window);
+        if(!visibile){
+          new IntersectionObserver(function(es){ visibile = es[0].isIntersecting; }, { rootMargin:'100px' }).observe(fig);
+        }
         // ritmi un po' diversi, così i tre caroselli non cambiano insieme
         setInterval(function(){
-          if(document.hidden || attesa) return;
+          if(document.hidden || attesa || !visibile) return;
           var i = pesca(cur), dopo = lastre[1 - vis];
           attesa = true;
           // la nuova foto entra solo quando è già caricata

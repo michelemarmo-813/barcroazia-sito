@@ -67,6 +67,11 @@
     var io = 'IntersectionObserver' in window ? new IntersectionObserver(function(entries){
       entries.forEach(function(en){ en.isIntersecting ? visibili.add(en.target) : visibili.delete(en.target); });
     }, { rootMargin:'100px' }) : null;
+    var vicino = 'IntersectionObserver' in window ? new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting && en.target.__prima){ en.target.__prima(); en.target.__prima = null; vicino.unobserve(en.target); }
+      });
+    }, { rootMargin:'600px' }) : null;
     function anteprima(tile, foto, k){
       var lastre = tile.querySelectorAll('.event-tile-photo .ph');
       var mazzo = [], cur = -1, vis = 0, attesa = false;
@@ -81,7 +86,9 @@
         return mazzo.pop();
       }
       cur = pesca();
-      lastre[0].style.backgroundImage = "url('" + foto[cur] + "')";
+      // la prima foto si scarica solo quando la scheda si avvicina allo schermo
+      var prima = function(){ lastre[0].style.backgroundImage = "url('" + foto[cur] + "')"; };
+      if(vicino){ tile.__prima = prima; vicino.observe(tile); } else { prima(); }
       if(ferme || foto.length < 2) return;
       var btn = tile.querySelector('.event-tile-photo');
       if(io){ io.observe(btn); } else { visibili.add(btn); }
