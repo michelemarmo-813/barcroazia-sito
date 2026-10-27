@@ -5,6 +5,7 @@
    - tasti arancioni che ondeggiano, con le lettere che saltano
    - eventi: il testo esce a scatti da una fessura, come uno scontrino
    - stelline che schizzano dai tasti "importanti" e dal codice a barre
+   - "← Indietro" torna alla pagina da cui si è arrivati
    Con "riduci movimento" non si muove niente.
    ========================================================== */
 (function(){
@@ -141,6 +142,52 @@
       anim.onfinish = (function(el){ return function(){ el.remove(); }; })(s);
     }
   };
+  // ---- "← Indietro": torna alla pagina da cui si è arrivati ----
+  // Il tasto resta un link vero (il suo href vale senza JavaScript, col
+  // clic centrale, aprendo in una nuova scheda o arrivando da fuori).
+  // Se invece si è arrivati qui da una pagina del sito che è proprio quella
+  // dove il tasto porterebbe (per un articolo: "tutti gli articoli" oppure
+  // la home), il clic fa come il tasto indietro del browser: torna a quella
+  // voce della cronologia, nella stessa posizione, senza aggiungerne altre.
+  // Per essere sicuri che la voce precedente della cronologia sia davvero
+  // quella pagina, ogni clic normale su un link interno lascia un biglietto
+  // (in questa scheda soltanto); la pagina d'arrivo lo appunta sulla propria
+  // voce di cronologia, dove resta anche tornandoci con avanti/indietro.
+  var percorso = function(u){ return u.pathname.replace(/\/index\.html$/, '/'); };
+  var NOTA = 'bc-arrivo';
+  try{
+    var nota = JSON.parse(sessionStorage.getItem(NOTA) || 'null');
+    sessionStorage.removeItem(NOTA);
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    var avanti = !nav || nav.type === 'navigate';           // non con avanti/indietro né ricaricando
+    if(nota && avanti && nota.a === location.pathname){
+      var st = (history.state && typeof history.state === 'object') ? history.state : {};
+      st.bcDa = nota.da;
+      history.replaceState(st, '');
+    }
+  }catch(err){}
+  document.addEventListener('click', function(e){
+    if(e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var l = e.target.closest && e.target.closest('a[href]');
+    if(!l || (l.target && l.target !== '_self')) return;
+    var u = new URL(l.getAttribute('href'), location.href);
+    if(u.origin !== location.origin || u.pathname === location.pathname) return;
+    try{ sessionStorage.setItem(NOTA, JSON.stringify({ da:location.pathname, a:u.pathname })); }catch(err){}
+  }, true);
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a.back-btn');
+    if(!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var daQui = history.state && history.state.bcDa;
+    if(!daQui) return;                                      // non si sa da dove si è arrivati: vale il link
+    var da = new URL(daQui, location.href);
+    var meta = new URL(a.getAttribute('href'), location.href);
+    var giusta = percorso(da) === percorso(meta) ||
+      (/\/articolo-[^\/]*$/.test(location.pathname) && percorso(da) === percorso(new URL('index.html', location.href)));
+    if(!giusta) return;
+    e.preventDefault();
+    history.back();
+  });
+
   if(!ferme){
     var festa = /^(ottieni una copia|acquista|invia la candidatura|invia un articolo)$/i;
     document.addEventListener('click', function(e){

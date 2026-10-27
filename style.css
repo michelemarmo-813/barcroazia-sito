@@ -185,8 +185,13 @@ body{ position:relative; }
 }
 /* ombra piena come un tasto di cassa: al passaggio si scurisce, al clic
    si abbassa e l'ombra sparisce */
-.btn:hover,
-.back-btn:hover{ background:var(--orange-dark); color:var(--paper); }
+/* effetti al passaggio del mouse: solo dove c'è un mouse vero (hover:hover).
+   Su telefono e tablet un tocco lasciava il tasto "acceso" (più scuro,
+   che ondeggia) finché non si toccava altrove */
+@media(hover:hover){
+  .btn:hover,
+  .back-btn:hover{ background:var(--orange-dark); color:var(--paper); }
+}
 .btn:active,
 .back-btn:active{ transform:translate(4px, 4px); box-shadow:0 0 0 var(--ink); }
 .btn:focus-visible,
@@ -426,8 +431,10 @@ main{
 }
 .card-title{ font-size:var(--fs-big); line-height:1.05; }
 .card-src{ color:var(--orange); line-height:1.4; margin-top:0.2rem; }
-.card:hover .card-title{ color:var(--orange); }
-.card:hover .card-img{ background:var(--ink); }
+@media(hover:hover){
+  .card:hover .card-title{ color:var(--orange); }
+  .card:hover .card-img{ background:var(--ink); }
+}
 
 /* ---------- ultime cose ---------- */
 .stack{
@@ -459,8 +466,10 @@ main{
   text-decoration:none;
 }
 .links a span:last-child{ color:var(--orange); }
-.links a:hover{ background:var(--orange); color:var(--paper); }
-.links a:hover span:last-child{ color:var(--paper); }
+@media(hover:hover){
+  .links a:hover{ background:var(--orange); color:var(--paper); }
+  .links a:hover span:last-child{ color:var(--paper); }
+}
 
 .map{
   width:100%;
@@ -541,7 +550,7 @@ main > .section:last-child{ margin-bottom:2.4rem; }
   padding:0.4rem 0.7rem 0.3rem;
   cursor:pointer;
 }
-.lightbox button:hover{ background:var(--paper); color:var(--orange); }
+@media(hover:hover){ .lightbox button:hover{ background:var(--paper); color:var(--orange); } }
 .lightbox .lb-close{ top:1rem; right:1rem; }
 .lightbox .lb-prev{ left:1rem; top:50%; transform:translateY(-50%); }
 .lightbox .lb-next{ right:1rem; top:50%; transform:translateY(-50%); }
@@ -636,7 +645,7 @@ main > .section:last-child{ margin-bottom:2.4rem; }
   display:inline-block;
   text-decoration:none;
 }
-.buy-btn:hover{ background:var(--orange-dark); }
+@media(hover:hover){ .buy-btn:hover{ background:var(--orange-dark); } }
 .buy-btn:focus-visible{ outline:2px dashed var(--ink); outline-offset:3px; }
 
 /* archivio eventi */
@@ -676,7 +685,8 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
   cursor:pointer;
   transition:background-color .15s ease, color .15s ease;
 }
-.event-tile-more:hover, .event-tile.open .event-tile-more{ background:var(--ink); color:var(--paper); }
+.event-tile.open .event-tile-more{ background:var(--ink); color:var(--paper); }
+@media(hover:hover){ .event-tile-more:hover{ background:var(--ink); color:var(--paper); } }
 .event-tile-more:focus-visible{ outline:2px dashed var(--ink); outline-offset:3px; }
 /* elenco delle foto di un evento */
 .event-grid{ grid-column:1 / -1; border-top:1.5px solid var(--ink); padding:0.9rem 1rem 1rem; }
@@ -692,8 +702,12 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 }
 .event-thumb{ display:block; padding:0; border:2px solid var(--ink); background:var(--orange); cursor:zoom-in; aspect-ratio:1; overflow:hidden; }
 .event-thumb img{ width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.1); transition:filter .2s ease; }
-.event-thumb:hover img, .event-thumb:focus-visible img{ filter:none; }
-.event-thumb:hover, .event-thumb:focus-visible{ border-color:var(--orange); outline:2px solid var(--ink); outline-offset:0; }
+.event-thumb:focus-visible img{ filter:none; }
+.event-thumb:focus-visible{ border-color:var(--orange); outline:2px solid var(--ink); outline-offset:0; }
+@media(hover:hover){
+  .event-thumb:hover img{ filter:none; }
+  .event-thumb:hover{ border-color:var(--orange); outline:2px solid var(--ink); outline-offset:0; }
+}
 .no-foto .event-tile-photo{ display:flex; align-items:center; justify-content:center; }
 .no-foto .event-tile-photo span{ padding:0.15rem 0.5rem 0; background:var(--paper); border:1px solid var(--ink); font-size:0.85rem; }
 
@@ -706,13 +720,15 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 .post-date{ order:-1; margin-bottom:1.4rem; padding:0.05rem 0.55rem 0; border:1px solid var(--orange); color:var(--orange); line-height:1.8; }
 .post-title{ font-size:var(--fs-big); line-height:1.05; }
 .post-author{ color:var(--orange); margin-top:0.2rem; }
-.post-card:hover .post-title{ color:var(--orange); }
+@media(hover:hover){ .post-card:hover .post-title{ color:var(--orange); } }
 
 .call-dots{ display:flex; justify-content:center; gap:0.55rem; margin:-1.3rem 0 1.5rem; }
 .call-dot{ width:0.6rem; height:0.6rem; padding:0; border:1px solid var(--ink); border-radius:50%; background:var(--paper); cursor:pointer; transition:background-color .2s ease; }
 .call-dot.on{ background:var(--orange); border-color:var(--orange); }
-.call-dot:hover{ background:var(--ink); }
-.call-dot.on:hover{ background:var(--orange); }
+@media(hover:hover){
+  .call-dot:hover{ background:var(--ink); }
+  .call-dot.on:hover{ background:var(--orange); }
+}
 .call-dot:focus-visible{ outline:2px dashed var(--ink); outline-offset:3px; }
 
 /* riquadro con l'indirizzo email (tasti che mandano una mail) */
@@ -727,7 +743,7 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 .mail-pop-subj:empty{ display:none; }
 .mail-pop-btns{ display:flex; flex-wrap:wrap; justify-content:center; gap:1rem; margin-top:1.4rem; }
 .mail-pop-close{ position:absolute; top:0.4rem; right:0.5rem; border:0; background:none; font:inherit; font-size:1.6rem; line-height:1; cursor:pointer; color:var(--ink); }
-.mail-pop-close:hover{ color:var(--orange); }
+@media(hover:hover){ .mail-pop-close:hover{ color:var(--orange); } }
 .mail-pop-open-page{ overflow:hidden; }
 
 /* chi siamo: foto che si alternano */
@@ -757,7 +773,9 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 /* articolo */
 .article-photo-wrap{ display:flex; flex-direction:column; align-items:center; }
 .article-photo{ padding:1.45rem; background:var(--orange); border:1px solid var(--ink); cursor:zoom-in; max-width:44rem; }
-.article-photo img{ border:2px solid var(--ink); }
+/* height:auto: la foto ha larghezza e altezza scritte nell'HTML (così il suo
+   posto è tenuto libero prima che arrivi), ma resta in proporzione */
+.article-photo img{ border:2px solid var(--ink); height:auto; }
 .article-photo-hint{ display:block; margin-top:0.8rem; text-align:center; color:var(--orange); }
 
 .subpage footer{
@@ -847,7 +865,7 @@ button.event-tile-photo:focus-visible{ outline:2px dashed var(--ink); outline-of
 
 .panel .mail{ margin-top:1.2rem; }
 .panel .mail a{ color:var(--orange); }
-.panel .mail a:hover{ color:var(--ink); }
+@media(hover:hover){ .panel .mail a:hover{ color:var(--ink); } }
 
 /* ---------- conto alla rovescia nel ticker (non cliccabile) ---------- */
 .ticker .t-static{ cursor:default; font-variant-numeric:tabular-nums; }
@@ -970,11 +988,13 @@ main{ margin-top:4.6rem; }
   44%  { opacity:0; }
   100% { top:0;    opacity:0; }
 }
-.barcode:hover .barcode-laser{ animation-duration:2.4s; }
+@media(hover:hover){ .barcode:hover .barcode-laser{ animation-duration:2.4s; } }
 /* tasti: ondeggiano e le lettere saltano una dopo l'altra */
 .btn .ch{ display:inline-block; }
-.btn:hover{ animation:tasto-ondeggia .45s ease-in-out; }
-.btn:hover .ch{ animation:lettera-salta .4s ease calc(var(--i) * 30ms); }
+@media(hover:hover){
+  .btn:hover{ animation:tasto-ondeggia .45s ease-in-out; }
+  .btn:hover .ch{ animation:lettera-salta .4s ease calc(var(--i) * 30ms); }
+}
 @keyframes tasto-ondeggia{ 25%{ transform:rotate(-3deg); } 50%{ transform:rotate(2.5deg); } 75%{ transform:rotate(-1deg); } }
 @keyframes lettera-salta{ 40%{ transform:translateY(-6px); } }
 .btn:active{ animation:none; }
@@ -1016,6 +1036,19 @@ main{ margin-top:4.6rem; }
 }
 
 /* ---------- selettore della lingua (lingue.js) ---------- */
+/* Il selettore arriva con lo script, un attimo dopo il resto: il suo posto
+   è tenuto libero fin dall'inizio, alto quanto lui, così menu, ticker e
+   pagina non scendono di colpo quando compare. Home: la riga in alto ha già
+   la sua altezza finale. Sottopagine (telefono): sotto "Bar Croazia ·
+   Bologna" un segnaposto alto quanto il selettore, finché lingue.js non lo
+   mette (classe lingua-pronta su <html>). */
+.topline{ min-height:calc(1.5em + 0.05rem + 2px); }
+@media(max-width:760px), (pointer:coarse){
+  .topline{ min-height:44px; }
+}
+@media(max-width:760px){
+  html:not(.lingua-pronta) .sub-topline > span:last-child::after{ content:""; display:block; width:1px; height:44px; }
+}
 .lingua{ display:inline-flex; align-items:center; gap:0.4rem; margin-left:0.9rem; color:var(--ink); }
 .lingua-nome{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
 .lingua select{
@@ -1026,7 +1059,7 @@ main{ margin-top:4.6rem; }
   background-position:calc(100% - 0.75rem) 55%, calc(100% - 0.45rem) 55%;
   background-size:0.3rem 0.3rem; background-repeat:no-repeat;
 }
-.lingua select:hover{ background-color:var(--orange); color:var(--paper); }
+@media(hover:hover){ .lingua select:hover{ background-color:var(--orange); color:var(--paper); } }
 .lingua select:focus-visible{ outline:2px dashed var(--ink); outline-offset:2px; }
 /* telefono: data, Bologna e lingua stanno sulla stessa riga */
 @media(max-width:480px){
@@ -1307,7 +1340,7 @@ main > .section:last-child{ margin-bottom:2.4rem; }
 
 /* contatti: il testo arancione a destra (anche quando ci sono due versioni) */
 .links a span + span{ color:var(--orange); }
-.links a:hover span + span{ color:var(--paper); }
+@media(hover:hover){ .links a:hover span + span{ color:var(--paper); } }
 @media(max-width:760px){
   /* telefono: "Il nostro canale" al posto di "Duo Cane Raw Poetry" */
   .links a .solo-telefono{ display:inline; }
@@ -1321,6 +1354,6 @@ main > .section:last-child{ margin-bottom:2.4rem; }
 
 /* elenco articoli: stesso effetto della home al passaggio del mouse
    (la cornice arancione della foto diventa nera) */
-.post-card:hover .post-photo{ background:var(--ink); }
+@media(hover:hover){ .post-card:hover .post-photo{ background:var(--ink); } }
 /* tutte le fanzine: la copertina si apre ingrandita, le scritte aprono le informazioni */
 .issue-cover{ cursor:zoom-in; }

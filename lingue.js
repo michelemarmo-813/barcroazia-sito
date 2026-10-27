@@ -269,6 +269,8 @@
     MODI.forEach(function(m){ var o = document.createElement('option'); o.value = m[0]; o.textContent = m[1]; sel.appendChild(o); });
     sel.addEventListener('change', function(){ imposta(sel.value, true); });
     posto.appendChild(box);
+    // il posto tenuto libero per il selettore (style.css) non serve più
+    document.documentElement.classList.add('lingua-pronta');
   }
 
   function avvia(){

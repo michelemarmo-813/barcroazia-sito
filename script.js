@@ -24,7 +24,13 @@
   };
   var tapes = document.querySelectorAll('.side-tape');
   var reduceTape = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function sistemaTape(){
+  // Le scritte si rifanno solo se è cambiato davvero qualcosa che le riguarda:
+  // dove iniziano e finiscono, la larghezza della finestra, il testo, il
+  // carattere. Su telefono, mentre si scorre, la barra del browser compare e
+  // sparisce e la finestra cambia solo di altezza: lì non si tocca niente
+  // (prima le scritte si rifacevano da capo e ripartivano con un salto).
+  var ultimaTape = '';
+  function sistemaTape(forza){
     if(!tapes.length) return;
     var su = document.querySelector('.ticker') || document.querySelector('.main-nav');
     // con il verso del codice a barre in vista, le scritte finiscono sotto il verso
@@ -34,12 +40,18 @@
     // su telefono le scritte partono dalla cima della pagina (ai lati c'è posto)
     var top = window.matchMedia('(max-width: 760px)').matches ? 6 : su.getBoundingClientRect().bottom + window.scrollY + 30;
     var fine = giu.getBoundingClientRect().bottom + window.scrollY;
+    var chiave = [Math.round(top), Math.round(fine), window.innerWidth, stamp].join('|');
+    if(forza !== true && chiave === ultimaTape) return;
+    ultimaTape = chiave;
     tapes.forEach(function(t){
       t.style.top = top + 'px';
       if(getComputedStyle(t).display === 'none') return;
       t.style.height = Math.max(fine - top, 0) + 'px';
-      t.innerHTML = '<span></span>';
-      var testo = t.firstChild;
+      // la scritta che c'è già si aggiorna (non si ricrea): se sta scorrendo,
+      // continua a scorrere da dov'era
+      var testo = t.firstElementChild;
+      if(!testo || testo.tagName !== 'SPAN'){ t.innerHTML = '<span></span>'; testo = t.firstChild; }
+      testo.style.letterSpacing = '';
       // altezza di una ripetizione (misurata su dieci, per contare anche gli spazi)
       testo.textContent = new Array(11).join(stamp) + 'X';
       var dieci = testo.getBoundingClientRect().height;
@@ -68,13 +80,14 @@
         testo.style.setProperty('--passo', (h / n) + 'px');
         testo.textContent += stamp;
         testo.classList.add('scorre');
-      }
+      } else { testo.classList.remove('scorre'); }
     });
   }
   sistemaTape();
-  window.addEventListener('load', sistemaTape);
-  window.addEventListener('resize', sistemaTape);
-  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(sistemaTape); }
+  window.addEventListener('load', function(){ sistemaTape(); });
+  window.addEventListener('resize', function(){ sistemaTape(); });
+  // il carattere vero cambia la misura delle lettere: lì si rifà comunque
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ sistemaTape(true); }); }
   // se la pagina cambia altezza (foto caricate, pannelli aperti) si ricalcola
   if('ResizeObserver' in window){
     var tapeTimer, ultimaAltezza = 0;
@@ -411,11 +424,28 @@
     if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ if(telefono.matches){ cambiaSchermo(); } }); }
 
     // l'autore compare in fondo, centrato, quando la citazione è finita
+    // Se chi legge ha già fatto scorrere la pagina oltre la citazione e questa
+    // cambia altezza (arriva dal foglio, o va a capo diversamente), la pagina
+    // si sposta della stessa misura: il testo che si sta leggendo resta fermo
+    // sotto il dito invece di saltare (Safari su iPhone non lo fa da solo)
+    var sezQuote = tw.closest('.quote') || tw;
     function mettiCitazione(c){
+      var prima = sezQuote.getBoundingClientRect();
       testoCitazione = c.testo;
       mettiTesto(adatta(c.testo));
       if(note){ note.classList.remove('on'); note.innerHTML = ''; var b = document.createElement('b'); b.textContent = c.autore; note.appendChild(b); note.hidden = !c.autore; }
+      var dopo = sezQuote.getBoundingClientRect();
+      var diff = (dopo.bottom - dopo.top) - (prima.bottom - prima.top);
+      if(diff && prima.bottom <= 0){
+        try{ window.scrollBy({ top:diff, left:0, behavior:'instant' }); }catch(e){ window.scrollBy(0, diff); }
+      }
     }
+    // la citazione di oggi già vista (memoria del telefono) si mette subito,
+    // senza aspettare il foglio: così la pagina non cambia altezza all'arrivo
+    try{
+      var giaVista = JSON.parse(localStorage.getItem('bc-citazione-2') || 'null');
+      if(giaVista && giaVista.g === oggi && giaVista.testo){ mettiCitazione({ testo:giaVista.testo, autore:giaVista.autore || '' }); }
+    }catch(e){}
     var full = '';
     var vis = document.createElement('span');
     vis.className = 'tw-vis';
