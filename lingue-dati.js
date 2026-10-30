@@ -2,6 +2,12 @@
    Traduzione da far rivedere a chi parla esperanto.
    Più in basso, con la stessa forma, i testi in croato. */
 window.LINGUE_EO = {
+ "Lunedì 2 e 9 novembre 2026": "Lundoj, 2 kaj 9 novembro 2026",
+ "Raw Poetry – nuova stagione, novembre 2026 parte 1": "Raw Poetry – nova sezono, novembro 2026, unua parto",
+ "Ospiti di lunedì 2 novembre:": "Gastoj de lundo, 2 novembro:",
+ "Giuria di Nicole Venturi, Emanuele Resini + 1 dal pubblico": "Ĵurio: Nicole Venturi, Emanuele Resini + 1 el la publiko",
+ "Ospiti di lunedì 9 novembre:": "Gastoj de lundo, 9 novembro:",
+ "Giuria di Alessandra Arini, Marco Italiano + 1 dal pubblico": "Ĵurio: Alessandra Arini, Marco Italiano + 1 el la publiko",
  "Martedì 3 novembre 2026": "Mardo, 3 novembro 2026",
  "FARM, via Sant’Isaia 57/D": "FARM, via Sant’Isaia 57/D",
  "Poetry Slam round II – Bar Croazia x Farm": "Poetry Slam, dua rondo – Bar Croazia x Farm",
@@ -159,6 +165,12 @@ window.LINGUE_EO_FRASI = [["Prossimo Raw Poetry", "Venonta Raw Poetry"], ["Siamo
 /* Testi in croato (lingue.js): testo italiano -> HTML in croato.
    Traduzione da far rivedere a chi parla croato. */
 window.LINGUE_HR = {
+ "Lunedì 2 e 9 novembre 2026": "Ponedjeljak, 2. i 9. studenoga 2026.",
+ "Raw Poetry – nuova stagione, novembre 2026 parte 1": "Raw Poetry – nova sezona, studeni 2026., 1. dio",
+ "Ospiti di lunedì 2 novembre:": "Gosti u ponedjeljak, 2. studenoga:",
+ "Giuria di Nicole Venturi, Emanuele Resini + 1 dal pubblico": "Žiri: Nicole Venturi, Emanuele Resini + 1 iz publike",
+ "Ospiti di lunedì 9 novembre:": "Gosti u ponedjeljak, 9. studenoga:",
+ "Giuria di Alessandra Arini, Marco Italiano + 1 dal pubblico": "Žiri: Alessandra Arini, Marco Italiano + 1 iz publike",
  "Martedì 3 novembre 2026": "Utorak, 3. studenoga 2026.",
  "FARM, via Sant’Isaia 57/D": "FARM, via Sant’Isaia 57/D",
  "Poetry Slam round II – Bar Croazia x Farm": "Poetry Slam, drugi krug – Bar Croazia x Farm",
