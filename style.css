@@ -75,7 +75,11 @@ body{ position:relative; }
   line-height:1;
   white-space:nowrap;
   writing-mode:vertical-rl;
+  /* le scritte si ricalcolano (script.js): il browser non deve mai usarle come
+     punto di riferimento per tenere ferma la pagina, altrimenti la sposta */
+  overflow-anchor:none;
 }
+.side-tape *{ overflow-anchor:none; }
 .side-tape.left{ left:calc(50% - var(--col) / 2 - 4.4rem); transform:rotate(180deg); }
 .side-tape.right{ right:calc(50% - var(--col) / 2 - 4.4rem); }
 @media(min-width:1200px){ .side-tape{ display:block; } }

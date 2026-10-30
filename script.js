@@ -428,16 +428,25 @@
     // cambia altezza (arriva dal foglio, o va a capo diversamente), la pagina
     // si sposta della stessa misura: il testo che si sta leggendo resta fermo
     // sotto il dito invece di saltare (Safari su iPhone non lo fa da solo)
+    // (Chrome e Android lo fanno già da soli: si corregge solo se il testo
+    // che si sta leggendo si è davvero spostato, mai due volte)
     var sezQuote = tw.closest('.quote') || tw;
     function mettiCitazione(c){
       var prima = sezQuote.getBoundingClientRect();
+      // il testo che si sta leggendo: quello a metà schermo, sotto la citazione
+      var rif = null, rifTop = 0;
+      if(prima.bottom <= 0 && document.elementFromPoint){
+        rif = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2);
+        if(rif && !sezQuote.contains(rif)){ rifTop = rif.getBoundingClientRect().top; } else { rif = null; }
+      }
       testoCitazione = c.testo;
       mettiTesto(adatta(c.testo));
       if(note){ note.classList.remove('on'); note.innerHTML = ''; var b = document.createElement('b'); b.textContent = c.autore; note.appendChild(b); note.hidden = !c.autore; }
-      var dopo = sezQuote.getBoundingClientRect();
-      var diff = (dopo.bottom - dopo.top) - (prima.bottom - prima.top);
-      if(diff && prima.bottom <= 0){
-        try{ window.scrollBy({ top:diff, left:0, behavior:'instant' }); }catch(e){ window.scrollBy(0, diff); }
+      if(rif && rif.isConnected){
+        var spostato = Math.round(rif.getBoundingClientRect().top - rifTop);
+        if(spostato){
+          try{ window.scrollBy({ top:spostato, left:0, behavior:'instant' }); }catch(e){ window.scrollBy(0, spostato); }
+        }
       }
     }
     // la citazione di oggi già vista (memoria del telefono) si mette subito,
