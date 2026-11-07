@@ -4,6 +4,10 @@ Sito one-page per Bar Croazia, movimento di poesia di Bologna.
 
 Sito statico, senza framework: solo HTML, CSS e JavaScript. Nessuna build richiesta — basta aprire `index.html` in un browser, oppure servirlo con un semplice server statico.
 
+## Lingue
+
+`lingue.js` traduce il sito in croato ed esperanto con i dizionari di `lingue-dati.js` (la chiave è il testo italiano). Ogni testo nuovo va aggiunto in tutti e due i dizionari. Negli eventi, l'elenco dei nomi (`.names`) non si traduce: nomi e nomi d'arte restano come sono; se accanto al nome c'è il paese, lo `<span>` del paese ha la classe `paese` e quello sì si traduce.
+
 ## Struttura della cartella
 
 ```

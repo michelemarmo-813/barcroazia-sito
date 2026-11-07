@@ -2,6 +2,17 @@
    Traduzione da far rivedere a chi parla esperanto.
    Più in basso, con la stessa forma, i testi in croato. */
 window.LINGUE_EO = {
+ "Martedì 17 novembre 2026": "Mardo, 17 novembro 2026",
+ "Ostello Bello, via del Porto 6": "Ostello Bello, via del Porto 6",
+ "ore 20.30": "je la 20.30",
+ "Poetry Slam Internazionale – Bar Croazia x Ostello Bello": "Internacia Poetry Slam – Bar Croazia x Ostello Bello",
+ "Ostello Bello e Bar Croazia presentano la prima serata del nuovo format Poetry Slam Internazionale!": "Ostello Bello kaj Bar Croazia prezentas la unuan vesperon de la nova formato Internacia Poetry Slam!",
+ "Italia": "Italio",
+ "Russia": "Rusio",
+ "Svizzera": "Svislando",
+ "Venezuela": "Venezuelo",
+ "Sacrifice della serata: Tokyo, dal Brasile": "Sacrifice de la vespero: Tokyo, el Brazilo",
+ "Tre manche, testi in lingua originale con traduzione in italiano.Ingresso libero e gratuito.": "Tri vicoj, tekstoj en la originala lingvo kun itala traduko.<br>Libera kaj senpaga eniro.",
  "Lunedì 9 novembre 2026": "Lundo, 9 novembro 2026",
  "Raw Poetry – nuova stagione, novembre 2026 parte 1": "Raw Poetry – nova sezono, novembro 2026, unua parto",
  "Ospiti di lunedì 2 novembre:": "Gastoj de lundo, 2 novembro:",
@@ -165,6 +176,17 @@ window.LINGUE_EO_FRASI = [["Prossimo Raw Poetry", "Venonta Raw Poetry"], ["Siamo
 /* Testi in croato (lingue.js): testo italiano -> HTML in croato.
    Traduzione da far rivedere a chi parla croato. */
 window.LINGUE_HR = {
+ "Martedì 17 novembre 2026": "Utorak, 17. studenoga 2026.",
+ "Ostello Bello, via del Porto 6": "Ostello Bello, via del Porto 6",
+ "ore 20.30": "u 20.30",
+ "Poetry Slam Internazionale – Bar Croazia x Ostello Bello": "Međunarodni Poetry Slam – Bar Croazia x Ostello Bello",
+ "Ostello Bello e Bar Croazia presentano la prima serata del nuovo format Poetry Slam Internazionale!": "Ostello Bello i Bar Croazia predstavljaju prvu večer novog formata Međunarodni Poetry Slam!",
+ "Italia": "Italija",
+ "Russia": "Rusija",
+ "Svizzera": "Švicarska",
+ "Venezuela": "Venezuela",
+ "Sacrifice della serata: Tokyo, dal Brasile": "Sacrifice večeri: Tokyo iz Brazila",
+ "Tre manche, testi in lingua originale con traduzione in italiano.Ingresso libero e gratuito.": "Tri kruga, tekstovi na izvornom jeziku s prijevodom na talijanski.<br>Ulaz je slobodan i besplatan.",
  "Lunedì 9 novembre 2026": "Ponedjeljak, 9. studenoga 2026.",
  "Raw Poetry – nuova stagione, novembre 2026 parte 1": "Raw Poetry – nova sezona, studeni 2026., 1. dio",
  "Ospiti di lunedì 2 novembre:": "Gosti u ponedjeljak, 2. studenoga:",
