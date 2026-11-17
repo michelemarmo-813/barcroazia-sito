@@ -367,6 +367,18 @@ main{
 
 /* ---------- open call ---------- */
 #call .pair{ gap:1.3rem; }
+/* open call: quando non ce n'è nessuna aperta, titolo con due stelle e testo centrato */
+.oc-tit{ position:relative; width:max-content; max-width:100%; margin:0.6rem auto 0; }
+.oc-tit .ev-title{ margin:0; padding:0.9rem 0; }
+.oc-tit .star.oc1{ top:-1.4rem; left:-4.6rem; width:4.2rem; height:4.2rem; transform:rotate(-12deg); }
+.oc-tit .star.oc2{ bottom:-1.3rem; right:-2.8rem; width:2.9rem; height:2.9rem; transform:rotate(10deg); }
+.oc-vuoto{ max-width:44rem; margin:0 auto; }
+.oc-vuoto p{ text-align:center; }
+@media(max-width:760px){
+  .oc-tit{ padding:0 1.6rem; }
+  .oc-tit .star.oc1{ top:-0.9rem; left:-0.6rem; width:3.2rem; height:3.2rem; }
+  .oc-tit .star.oc2{ bottom:-0.9rem; right:-0.4rem; width:2.4rem; height:2.4rem; }
+}
 #call .star.a{ top:1.3rem; right:2.3rem; }
 #call .star.b{ bottom:0.6rem; left:1.9rem; width:4.8rem; height:4.8rem; }
 

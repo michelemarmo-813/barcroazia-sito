@@ -8,6 +8,10 @@ Sito statico, senza framework: solo HTML, CSS e JavaScript. Nessuna build richie
 
 `lingue.js` traduce il sito in croato ed esperanto con i dizionari di `lingue-dati.js` (la chiave è il testo italiano). Ogni testo nuovo va aggiunto in tutti e due i dizionari. Negli eventi, l'elenco dei nomi (`.names`) non si traduce: nomi e nomi d'arte restano come sono; se accanto al nome c'è il paese, lo `<span>` del paese ha la classe `paese` e quello sì si traduce.
 
+## Open call
+
+Quando non c'è nessuna open call aperta, la sezione Open call della home mostra il titolo "Al momento nessuna open call aperta" con due stelle (`.oc-tit`, stelle `.oc1` e `.oc2`), un breve testo centrato (`.oc-vuoto`) e i tasti Canale Telegram e Scrivici. Quando riapre una call si rimettono le schede `.call-item` (ognuna con `data-page`, `data-apply` e, per un modulo online, `data-newtab="1"`), i pallini `.call-dots` e i tasti `js-more` (Scopri di più), `js-apply` (Invia la candidatura) e, se le call sono più d'una, `js-next` (Prossima call): `script.js` li gestisce da solo. L'ultima versione con le call aperte è nella cronologia di GitHub (prima del 17 novembre 2026).
+
 ## Struttura della cartella
 
 ```

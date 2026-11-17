@@ -2,6 +2,10 @@
    Traduzione da far rivedere a chi parla esperanto.
    Più in basso, con la stessa forma, i testi in croato. */
 window.LINGUE_EO = {
+ "Al momento nessuna open call aperta": "Nuntempe neniu malferma alvoko",
+ "Le call per il torneo di Poetry Slam e per la fanzine sono chiuse: grazie a chi ha partecipato!": "La alvokoj por la <span class=\"o\">Poetry Slam-turniro</span> kaj por la <span class=\"o\">fanzino</span> estas fermitaj: dankon al ĉiuj, kiuj partoprenis!",
+ "Stiamo preparando le prossime. Per non perdertele entra nel canale Telegram; intanto scrivi, che serve sempre.": "Ni preparas la venontajn. Por ne maltrafi ilin, aliĝu al la <span class=\"o\">Telegram-kanalo</span>; intertempe skribu, ĉar tio ĉiam utilas.",
+ "Scrivici": "Skribu al ni",
  "Lunedì 23 novembre 2026": "Lundo, 23 novembro 2026",
  "Raw Poetry – nuova stagione, novembre 2026 parte 2": "Raw Poetry – nova sezono, novembro 2026, parto 2",
  "Ospiti di lunedì 16 novembre:": "Gastoj de lundo, 16 novembro:",
@@ -182,6 +186,10 @@ window.LINGUE_EO_FRASI = [["Prossimo Raw Poetry", "Venonta Raw Poetry"], ["Siamo
 /* Testi in croato (lingue.js): testo italiano -> HTML in croato.
    Traduzione da far rivedere a chi parla croato. */
 window.LINGUE_HR = {
+ "Al momento nessuna open call aperta": "Trenutačno nema otvorenih poziva",
+ "Le call per il torneo di Poetry Slam e per la fanzine sono chiuse: grazie a chi ha partecipato!": "Pozivi za <span class=\"o\">Poetry Slam turnir</span> i za <span class=\"o\">fanzin</span> su zatvoreni: hvala svima koji su sudjelovali!",
+ "Stiamo preparando le prossime. Per non perdertele entra nel canale Telegram; intanto scrivi, che serve sempre.": "Pripremamo sljedeće. Da ih ne propustiš, pridruži se <span class=\"o\">Telegram kanalu</span>; a u međuvremenu piši, to uvijek dobro dođe.",
+ "Scrivici": "Piši nam",
  "Lunedì 23 novembre 2026": "Ponedjeljak, 23. studenoga 2026.",
  "Raw Poetry – nuova stagione, novembre 2026 parte 2": "Raw Poetry – nova sezona, studeni 2026., 2. dio",
  "Ospiti di lunedì 16 novembre:": "Gosti u ponedjeljak, 16. studenoga:",
