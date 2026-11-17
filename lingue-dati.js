@@ -2,7 +2,7 @@
    Traduzione da far rivedere a chi parla esperanto.
    Più in basso, con la stessa forma, i testi in croato. */
 window.LINGUE_EO = {
- "Lunedì 16 e 23 novembre 2026": "Lundoj 16 kaj 23 nov. 2026",
+ "Lunedì 23 novembre 2026": "Lundo, 23 novembro 2026",
  "Raw Poetry – nuova stagione, novembre 2026 parte 2": "Raw Poetry – nova sezono, novembro 2026, parto 2",
  "Ospiti di lunedì 16 novembre:": "Gastoj de lundo, 16 novembro:",
  "Giuria di Lorenzo Biondi, Nikolas Monti + 1 dal pubblico": "Ĵurio: Lorenzo Biondi, Nikolas Monti + 1 el la publiko",
@@ -182,7 +182,7 @@ window.LINGUE_EO_FRASI = [["Prossimo Raw Poetry", "Venonta Raw Poetry"], ["Siamo
 /* Testi in croato (lingue.js): testo italiano -> HTML in croato.
    Traduzione da far rivedere a chi parla croato. */
 window.LINGUE_HR = {
- "Lunedì 16 e 23 novembre 2026": "Pon. 16. i 23. studenoga 2026.",
+ "Lunedì 23 novembre 2026": "Ponedjeljak, 23. studenoga 2026.",
  "Raw Poetry – nuova stagione, novembre 2026 parte 2": "Raw Poetry – nova sezona, studeni 2026., 2. dio",
  "Ospiti di lunedì 16 novembre:": "Gosti u ponedjeljak, 16. studenoga:",
  "Giuria di Lorenzo Biondi, Nikolas Monti + 1 dal pubblico": "Žiri: Lorenzo Biondi, Nikolas Monti + 1 iz publike",
