@@ -47,6 +47,20 @@ function serie(cartella, quante){
 
 window.ARCHIVIO = [
   {
+    titolo: "Avventura a Milano",
+    luogo: "",
+    data: "14 novembre 2026",
+    fotografo: "Ilaria Budetta",
+    foto: serie("2026-11-14", 64)
+  },
+  {
+    titolo: "Poetry Slam II round",
+    luogo: "FARM",
+    data: "3 novembre 2026",
+    fotografo: "Ilaria Budetta",
+    foto: serie("2026-11-03", 79)
+  },
+  {
     titolo: "Poetry Slam I round",
     luogo: "FARM",
     data: "6 ottobre 2026",
