@@ -45,7 +45,7 @@
 
 </div>
 
-<script src="archivio-dati.js?v=e729153d"></script>
+<script src="archivio-dati.js?v=5af277b1"></script>
 <script>
   var revealEls = document.querySelectorAll('.zine-section');
   if('IntersectionObserver' in window){
@@ -82,15 +82,13 @@
         if(en.isIntersecting && en.target.__prima){ en.target.__prima(); en.target.__prima = null; vicino.unobserve(en.target); }
       });
     }, { rootMargin:'600px' }) : null;
-    function anteprima(tile, foto, k){
+    function anteprima(tile, foto, k, piu){
       var lastre = tile.querySelectorAll('.event-tile-photo .ph');
       var mazzo = [], cur = -1, vis = 0, attesa = false;
       function pesca(){
         if(!mazzo.length){
-          mazzo = foto.map(function(_, i){ return i; });
-          for(var j = mazzo.length - 1; j > 0; j--){
-            var r = Math.floor(Math.random() * (j + 1)), t = mazzo[j]; mazzo[j] = mazzo[r]; mazzo[r] = t;
-          }
+          // (le foto in "piuSpesso" escono due volte per giro)
+          mazzo = mazzoArchivio(foto.length, piu);
           if(mazzo.length > 1 && mazzo[mazzo.length - 1] === cur){ mazzo.unshift(mazzo.pop()); }
         }
         return mazzo.pop();
@@ -168,7 +166,7 @@
           if(t && window.openLightbox) window.openLightbox(foto, +t.dataset.i);
         });
       }
-      if(foto.length){ anteprima(tile, foto, k); }
+      if(foto.length){ anteprima(tile, foto, k, ev.piuSpesso); }
       lista.appendChild(tile);
     });
   })();

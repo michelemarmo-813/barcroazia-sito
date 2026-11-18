@@ -766,10 +766,8 @@
       var mazzo = [];
       function pesca(ultima){
         if(!mazzo.length){
-          mazzo = ev.foto.map(function(_, i){ return i; });
-          for(var j = mazzo.length - 1; j > 0; j--){
-            var r = Math.floor(Math.random() * (j + 1)), t = mazzo[j]; mazzo[j] = mazzo[r]; mazzo[r] = t;
-          }
+          // (le foto in "piuSpesso" escono due volte per giro)
+          mazzo = mazzoArchivio(ev.foto.length, ev.piuSpesso);
           if(mazzo.length > 1 && mazzo[mazzo.length - 1] === ultima){ mazzo.unshift(mazzo.pop()); }
         }
         return mazzo.pop();

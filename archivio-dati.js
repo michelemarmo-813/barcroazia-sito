@@ -14,6 +14,10 @@
      data       la data, per esempio "2 marzo 2026"
      fotografo  chi ha scattato le foto (dopo 📷)
      foto       le foto dell'evento; [] vuol dire "foto in arrivo"
+     piuSpesso  (facoltativo) i numeri delle foto che nelle
+                anteprime a scorrimento devono uscire un po' più
+                spesso delle altre, per esempio [58]: escono due
+                volte per ogni giro invece di una, mai vicine
 
    LE FOTO di ogni evento stanno in una cartella con la data,
    dentro assets/img/archivio/ (per esempio 2026-03-02), e si
@@ -45,6 +49,31 @@ function serie(cartella, quante){
   return out;
 }
 
+// l'ordine casuale delle anteprime: tutte le foto mescolate
+// (n = quante sono), e quelle in "piuSpesso" due volte, lontane
+// fra loro almeno un terzo del giro e mai all'inizio o alla fine
+// del giro (così non escono vicine neanche tra un giro e l'altro)
+function mazzoArchivio(n, piuSpesso){
+  var m = [];
+  for(var i = 0; i < n; i++){ m.push(i); }
+  for(var j = m.length - 1; j > 0; j--){
+    var r = Math.floor(Math.random() * (j + 1)), t = m[j]; m[j] = m[r]; m[r] = t;
+  }
+  (piuSpesso || []).forEach(function(num){
+    var f = num - 1, pos = m.indexOf(f);
+    if(pos < 0) return;
+    var len = m.length + 1, bordo = Math.floor(len / 10), d = Math.floor(len / 3);
+    var ultimo = len - 1 - bordo;
+    if(ultimo - d < bordo) return;
+    m.splice(pos, 1);
+    var a = bordo + Math.floor(Math.random() * (ultimo - d - bordo + 1));
+    var b = a + d + Math.floor(Math.random() * (ultimo - a - d + 1));
+    m.splice(a, 0, f);
+    m.splice(b, 0, f);
+  });
+  return m;
+}
+
 window.ARCHIVIO = [
   {
     titolo: "Avventura a Milano",
@@ -58,7 +87,8 @@ window.ARCHIVIO = [
     luogo: "FARM",
     data: "3 novembre 2026",
     fotografo: "Ilaria Budetta",
-    foto: serie("2026-11-03", 79)
+    foto: serie("2026-11-03", 79),
+    piuSpesso: [58]
   },
   {
     titolo: "Poetry Slam I round",
