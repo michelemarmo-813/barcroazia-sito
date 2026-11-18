@@ -777,7 +777,7 @@
       function alt(i){ return ev.titolo + ' ' + ev.data + ', foto ' + (i + 1) + ' di ' + ev.foto.length + ', di ' + ev.fotografo; }
       var cur = pesca(-1);
       fig.innerHTML =
-        '<div class="cap">' + esc(ev.titolo + ' ' + ev.data) + '</div>' +
+        '<div class="cap"><span class="cap-tit">' + esc(ev.titolo) + '</span><span class="cap-data">' + esc(ev.data) + '</span></div>' +
         '<div class="frame"><div class="shot-crop" role="button" tabindex="0" aria-label="' + esc('Sfoglia le ' + ev.foto.length + ' foto di ' + ev.titolo + ' ' + ev.data) + '">' +
           '<img class="bw on" src="' + esc(ev.foto[cur]) + '" alt="' + esc(alt(cur)) + '" loading="lazy" decoding="async"><img class="bw" alt="">' +
         '</div></div>' +

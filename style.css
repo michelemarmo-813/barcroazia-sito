@@ -391,7 +391,7 @@ main{
   gap:1.2rem 3.1rem;
 }
 .shot{ margin:0; text-align:center; }
-.shot .cap{ display:flex; align-items:flex-end; justify-content:center; min-height:2.6em; color:var(--orange); font-size:0.88rem; line-height:1.3; margin-bottom:0.5rem; }
+.shot .cap{ display:flex; flex-direction:column; align-items:center; justify-content:flex-end; min-height:2.6em; color:var(--orange); font-size:0.88rem; line-height:1.3; margin-bottom:0.5rem; }
 .shot .frame{ width:100%; height:19.9rem; padding:0.9rem; }
 
 .shot figcaption{ margin-top:0.7rem; }
