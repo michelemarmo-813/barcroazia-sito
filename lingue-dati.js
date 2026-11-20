@@ -2,6 +2,9 @@
    Traduzione da far rivedere a chi parla esperanto.
    Più in basso, con la stessa forma, i testi in croato. */
 window.LINGUE_EO = {
+"Martedì 1 dicembre 2026": "Mardo, 1 decembro 2026",
+"Poetry Slam round III – Bar Croazia x Farm": "Poetry Slam, tria rondo – Bar Croazia x Farm",
+"Farm e Bar Croazia presentano il terzo round del torneo di Poetry Slam!": "Farm kaj Bar Croazia prezentas la trian rondon de la Poetry Slam-turniro!",
  "Al momento nessuna open call aperta": "Nuntempe neniu malferma alvoko",
  "Le call per il torneo di Poetry Slam e per la fanzine sono chiuse: grazie a chi ha partecipato!": "La alvokoj por la <span class=\"o\">Poetry Slam-turniro</span> kaj por la <span class=\"o\">fanzino</span> estas fermitaj: dankon al ĉiuj, kiuj partoprenis!",
  "Stiamo preparando le prossime. Per non perdertele entra nel canale Telegram; intanto scrivi, che serve sempre.": "Ni preparas la venontajn. Por ne maltrafi ilin, aliĝu al la <span class=\"o\">Telegram-kanalo</span>; intertempe skribu, ĉar tio ĉiam utilas.",
@@ -186,6 +189,9 @@ window.LINGUE_EO_FRASI = [["Prossimo Raw Poetry", "Venonta Raw Poetry"], ["Siamo
 /* Testi in croato (lingue.js): testo italiano -> HTML in croato.
    Traduzione da far rivedere a chi parla croato. */
 window.LINGUE_HR = {
+"Martedì 1 dicembre 2026": "Utorak, 1. prosinca 2026.",
+"Poetry Slam round III – Bar Croazia x Farm": "Poetry Slam, treći krug – Bar Croazia x Farm",
+"Farm e Bar Croazia presentano il terzo round del torneo di Poetry Slam!": "Farm i Bar Croazia predstavljaju treći krug Poetry Slam turnira!",
  "Al momento nessuna open call aperta": "Trenutačno nema otvorenih poziva",
  "Le call per il torneo di Poetry Slam e per la fanzine sono chiuse: grazie a chi ha partecipato!": "Pozivi za <span class=\"o\">Poetry Slam turnir</span> i za <span class=\"o\">fanzin</span> su zatvoreni: hvala svima koji su sudjelovali!",
  "Stiamo preparando le prossime. Per non perdertele entra nel canale Telegram; intanto scrivi, che serve sempre.": "Pripremamo sljedeće. Da ih ne propustiš, pridruži se <span class=\"o\">Telegram kanalu</span>; a u međuvremenu piši, to uvijek dobro dođe.",
