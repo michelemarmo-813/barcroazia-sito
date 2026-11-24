@@ -76,6 +76,13 @@ function mazzoArchivio(n, piuSpesso){
 
 window.ARCHIVIO = [
   {
+    titolo: "Poetry Slam Internazionale",
+    luogo: "Ostello Bello",
+    data: "17 novembre 2026",
+    fotografo: "Ilaria Budetta",
+    foto: serie("2026-11-17", 222)
+  },
+  {
     titolo: "Avventura a Milano",
     luogo: "",
     data: "14 novembre 2026",
